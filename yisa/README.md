@@ -7,38 +7,38 @@
 ![PWA](https://img.shields.io/badge/PWA-Offline%20Ready-green)
 ![License](https://img.shields.io/badge/License-MIT-green)
 
-## 🎯 **Sobre YISA**
+## 🎯 **About YISA**
 
-**YISA** (*Your Interactive School Assistant*) é uma **Progressive Web App (PWA)** inovadora para digitalização de documentos escolares em Moçambique, desenvolvida como solução para o problema de transferências escolares.
+**YISA** (*Your Interactive School Assistant*) is an innovative **Progressive Web App (PWA)** for digitizing school documents in Mozambique, developed as a solution for the school transfer problem.
 
-### 🏆 **Contexto**
-- **Projeto**: Source Jam 2025 - Grupo 1 (Pilar Educação)
-- **Organizadores**: MozDev + Maputo Frontenders
-- **Foco**: Solução open source para educação moçambicana
-- **Diferencial**: Funciona 100% offline
+### 🏆 **Context**
+- **Project**: Source Jam 2025 - Team 1 (Education Pillar)
+- **Organizers**: MozDev + Maputo Frontenders
+- **Focus**: Open source solution for Mozambican education
+- **Differentiator**: Works 100% offline
 
-## 📊 **O Problema Resolvido**
+## 📊 **The Problem Solved**
 
-| Métrica | Situação Atual | Com YISA |
-|---------|----------------|----------|
-| Alunos transferidos/ano | 25.000 | 25.000 (processo digital) |
-| Tempo de transferência | 18-45 dias | <1 hora |
-| Dias letivos perdidos | 360.000-540.000 | ~0 |
-| Custo administrativo | 64-210M MT | ~80% redução |
-| Escolas sem internet | 60% | Funciona offline |
+| Metric | Current Situation | With YISA |
+|---------|-------------------|-----------|
+| Students transferred/year | 25,000 | 25,000 (digital process) |
+| Transfer time | 18-45 days | <1 hour |
+| School days lost | 360,000-540,000 | ~0 |
+| Administrative cost | 64-210M MZN | ~80% reduction |
+| Schools without internet | 60% | Works offline |
 
-## 💡 **Nossa Solução**
+## 💡 **Our Solution**
 
-### ✨ **Características Principais**
+### ✨ **Key Features**
 
-- 📱 **100% Offline**: Funciona sem conexão à internet
-- 🔐 **QR Codes Criptográficos**: Assinatura digital ECDSA (nível Bitcoin)
-- 📊 **Dashboard Analytics**: Estatísticas em tempo real
-- 📱 **Mobile-First**: Otimizado para Android (90% mercado MZ)
-- 🌍 **Multi-idioma**: Português + Ronga/Changana
-- 🔄 **Sincronização Automática**: Quando conexão disponível
+- 📱 **100% Offline**: Works without internet connection
+- 🔐 **Cryptographic QR Codes**: ECDSA digital signature (Bitcoin level)
+- 📊 **Dashboard Analytics**: Real-time statistics
+- 📱 **Mobile-First**: Optimized for Android (90% MZ market)
+- 🌍 **Multi-language**: Portuguese + Ronga/Changana
+- 🔄 **Automatic Synchronization**: When connection is available
 
-### 🛠️ **Arquitetura Técnica**
+### 🛠️ **Technical Architecture**
 
 ```
 ┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
@@ -53,33 +53,33 @@
 
 ## 🚀 **Getting Started**
 
-### Pré-requisitos
+### Prerequisites
 - Node.js 18+
-- npm ou yarn
-- Conta Firebase (opcional para dev local)
+- npm or yarn
+- Firebase account (optional for local dev)
 
-### Instalação
+### Installation
 
 ```bash
-# Clonar o repositório principal
-git clone https://github.com/[username]/source_jam.git
-cd source_jam/yisa
+# Clone main repository
+git clone https://github.com/Domingos-Jr17/source_jam_2025_yisa.git
+cd source_jam_2025_yisa/yisa
 
-# Instalar dependências
+# Install dependencies
 npm install
 
-# Configurar variáveis de ambiente
+# Configure environment variables
 cp .env.example .env
-# Editar .env com suas chaves Firebase
+# Edit .env with your Firebase keys
 
-# Iniciar desenvolvimento
+# Start development
 npm run dev
 
-# Abrir no navegador
+# Open in browser
 # http://localhost:5173
 ```
 
-### Variáveis de Ambiente
+### Environment Variables
 
 ```bash
 # .env
@@ -91,105 +91,105 @@ VITE_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
 VITE_FIREBASE_APP_ID=your_app_id
 ```
 
-## 📦 **Scripts Disponíveis**
+## 📦 **Available Scripts**
 
 ```bash
-npm run dev          # Servidor de desenvolvimento
-npm run build        # Build para produção
-npm run preview      # Preview do build
-npm run test         # Executar testes
-npm run test:watch   # Testes em modo watch
-npm run lint         # Linting do código
-npm run lint:fix     # Corrigir linting automaticamente
-npm run type-check   # Verificação TypeScript
-npm run pwa-build    # Build otimizado para PWA
+npm run dev          # Development server
+npm run build        # Production build
+npm run preview      # Preview build
+npm run test         # Run tests
+npm run test:watch   # Tests in watch mode
+npm run lint         # Code linting
+npm run lint:fix     # Auto-fix linting
+npm run type-check   # TypeScript checking
+npm run pwa-build    # Optimized PWA build
 ```
 
-## 🏗️ **Estrutura do Projeto**
+## 🏗️ **Project Structure**
 
 ```
 src/
-├── components/          # Componentes React reutilizáveis
-│   ├── ui/             # Componentes shadcn/ui
-│   ├── forms/          # Formulários reutilizáveis
-│   └── common/         # Componentes genéricos
-├── pages/              # Páginas principais
-│   ├── auth/           # Autenticação
-│   ├── dashboard/      # Dashboard principal
-│   ├── transfer/       # Transferências
+├── components/          # Reusable React components
+│   ├── ui/             # shadcn/ui components
+│   ├── forms/          # Reusable forms
+│   └── common/         # Generic components
+├── pages/              # Main pages
+│   ├── auth/           # Authentication
+│   ├── dashboard/      # Main dashboard
+│   ├── transfer/       # Transfers
 │   └── qr/             # QR Code generation/scan
-├── hooks/              # Hooks personalizados
-│   ├── useAuth.ts      # Autenticação
-│   ├── useOffline.ts   # Funcionalidade offline
+├── hooks/              # Custom hooks
+│   ├── useAuth.ts      # Authentication
+│   ├── useOffline.ts   # Offline functionality
 │   └── useQR.ts        # QR Code operations
-├── services/           # Serviços externos
-│   ├── firebase.ts     # Configuração Firebase
+├── services/           # External services
+│   ├── firebase.ts     # Firebase configuration
 │   ├── qr.ts           # QR Code generation/validation
 │   └── storage.ts      # Local storage management
-├── utils/              # Funções utilitárias
-│   ├── crypto.ts       # Criptografia ECDSA
-│   ├── validation.ts   # Validação de dados
+├── utils/              # Utility functions
+│   ├── crypto.ts       # ECDSA cryptography
+│   ├── validation.ts   # Data validation
 │   └── offline.ts      # Offline helpers
-├── types/              # Definições TypeScript
-│   ├── auth.ts         # Tipos de autenticação
-│   ├── school.ts       # Tipos de escola/aluno
-│   └── qr.ts           # Tipos QR Code
-├── assets/             # Assets estáticos
-│   ├── images/         # Imagens
-│   ├── icons/          # Ícones PWA
-│   └── fonts/          # Fontes locais
-└── styles/             # Estilos globais
-    ├── globals.css     # CSS global
-    └── components.css  # Estilos específicos
+├── types/              # TypeScript definitions
+│   ├── auth.ts         # Authentication types
+│   ├── school.ts       # School/student types
+│   └── qr.ts           # QR Code types
+├── assets/             # Static assets
+│   ├── images/         # Images
+│   ├── icons/          # PWA icons
+│   └── fonts/          # Local fonts
+└── styles/             # Global styles
+    ├── globals.css     # Global CSS
+    └── components.css  # Specific styles
 ```
 
-## 🔧 **Funcionalidades Principais**
+## 🔧 **Core Features**
 
-### 1. 🔐 **Autenticação**
-- Login com email/senha
-- Recuperação de senha
-- Perfis: Administrador, Secretária, Pai/Aluno
-- Session persistente offline
+### 1. 🔐 **Authentication**
+- Email/password login
+- Password recovery
+- Profiles: Admin, Secretary, Parent/Student
+- Persistent offline session
 
 ### 2. 📱 **QR Code Management**
-- Geração de QR codes criptográficos
-- Validação offline instantânea
-- Assinatura digital ECDSA
-- Verificação de integridade
+- Cryptographic QR code generation
+- Instant offline validation
+- ECDSA digital signature
+- Integrity verification
 
-### 3. 📊 **Transferência Digital**
-- Formulário digital de transferência
-- Anexos digitizados (documentos)
-- Histórico completo
-- Status tracking em tempo real
+### 3. 📊 **Digital Transfer**
+- Digital transfer form
+- Digitized attachments (documents)
+- Complete history
+- Real-time status tracking
 
 ### 4. 📈 **Dashboard Analytics**
-- Estatísticas de transferências
-- Métricas por escola/período
-- Visualizações interativas
-- Exportação de relatórios
+- Transfer statistics
+- Metrics by school/period
+- Interactive visualizations
+- Report export
 
-### 5. 🔄 **Sincronização**
-- Sync automático quando online
-- Queue de operações offline
+### 5. 🔄 **Synchronization**
+- Automatic sync when online
+- Offline operation queue
 - Conflict resolution
-- Backup em nuvem
+- Cloud backup
 
-## 🧪 **Desenvolvimento e Testes**
+## 🧪 **Development and Testing**
 
 ### Testing Setup
 
 ```bash
-# Testes unitários
+# Unit tests
 npm run test
 
-# Testes E2E (Playwright)
+# E2E tests (Playwright)
 npm run test:e2e
 
-# Testes de acessibilidade
+# Accessibility tests
 npm run test:a11y
 
-# Performance testing
+# Performance tests
 npm run test:performance
 ```
 
@@ -202,7 +202,7 @@ npm run lint
 # Type checking
 npm run type-check
 
-# Formatação automática
+# Auto formatting
 npm run format
 
 # Pre-commit hooks
@@ -229,7 +229,7 @@ npm run prepare
 - Conflict resolution on sync
 - Graceful degradation
 
-## 🔒 **Segurança**
+## 🔒 **Security**
 
 ### Cryptographic Implementation
 - ECDSA key pairs (secp256k1)
@@ -243,18 +243,18 @@ npm run prepare
 - Secure key management
 - GDPR compliance ready
 
-## 🚀 **Deploy**
+## 🚀 **Deployment**
 
 ### Production Build
 
 ```bash
-# Build otimizado
+# Optimized build
 npm run build
 
-# Testar build localmente
+# Test build locally
 npm run preview
 
-# Deploy para Vercel
+# Deploy to Vercel
 vercel --prod
 ```
 
@@ -265,10 +265,10 @@ vercel --prod
 
 ## 📋 **Product Backlog**
 
-O backlog completo está disponível em `../docs/yisa_product_backlog.md`. Principais funcionalidades por sprint:
+Complete backlog available in `../docs/yisa_product_backlog.md`. Main features by sprint:
 
 ### Sprint 1 (Current - Source Jam)
-- [x] Autenticação básica
+- [x] Basic authentication
 - [x] QR code generation
 - [x] Offline foundation
 - [ ] Transfer form
@@ -300,7 +300,7 @@ O backlog completo está disponível em `../docs/yisa_product_backlog.md`. Princ
 - **Offline Load Time**: <1s
 - **Storage Efficiency**: <50MB
 
-## 🤝 **Como Contribuir**
+## 🤝 **How to Contribute**
 
 ### Development Workflow
 
@@ -370,6 +370,6 @@ This project is licensed under the **MIT License** - see [LICENSE](LICENSE) file
 
 ---
 
-**"YISA** - *Levar, Conduzir, Trazer* (Ronga/Changana)"
+**"YISA** - *To Carry, To Lead, To Bring* (Ronga/Changana)"
 
-*Digitalizando a educação em Moçambique, uma transferência de cada vez.* 🇲🇿
+*Digitizing education in Mozambique, one transfer at a time.* 🇲🇿

@@ -1,195 +1,195 @@
-# 🚀 Source Jam 2025 - Grupo 1 (Pilar Educação)
+# 🚀 Source Jam 2025 - Team 1 (Education Pillar)
 
 ![MozDev](https://img.shields.io/badge/MozDev-Community-blue)
 ![Maputo Frontenders](https://img.shields.io/badge/Maputo%20Frontenders-Frontend-purple)
 ![Source Jam](https://img.shields.io/badge/Source%20Jam-2025-green)
 ![License](https://img.shields.io/badge/License-MIT-green)
 
-## 📋 **Visão Geral**
+## 📋 **Overview**
 
-Bem-vindo ao repositório do **Grupo 1 - Pilar Educação** do **Source Jam 2025**! Este projeto está sendo desenvolvido como parte da competição organizada pelas comunidades **MozDev** e **Maputo Frontenders**.
+Welcome to the **Team 1 - Education Pillar** repository for **Source Jam 2025**! This project is being developed as part of the competition organized by **MozDev** and **Maputo Frontenders** communities.
 
-### 🎯 **Evento**
-- **Nome**: Source Jam 2025 - *"Building Open Source Solutions Together"*
-- **Organizadores**: MozDev + Maputo Frontenders
-- **Datas**: 25 Outubro (Lançamento) - 15 Novembro (HackDay)
-- **Pilar**: Educação
-- **Equipa**: Grupo 1
+### 🎯 **Event**
+- **Name**: Source Jam 2025 - *"Building Open Source Solutions Together"*
+- **Organizers**: MozDev + Maputo Frontenders
+- **Dates**: October 25 (Launch) - November 15 (HackDay)
+- **Pillar**: Education
+- **Team**: Team 1
 
-## 🏗️ **Estrutura do Projeto**
+## 🏗️ **Project Structure**
 
 ```
 source_jam/
-├── README.md                 # Este ficheiro
-├── .gitignore               # Ignorar arquivos do Git
-├── docs/                    # 📚 Documentação do projeto
-│   ├── yisa_proposal.md     # Proposta completa do YISA
-│   ├── yisa_final_proposal.md # Versão final da proposta
-│   ├── yisa_product_backlog.md # Backlog do produto
-│   ├── desafio.txt          # Desafio do Source Jam
-│   └── Proposta_grupo_1_Pilar_1.docx # Documento oficial
-└── yisa/                    # 💻 Código da aplicação
-    ├── README.md            # README específico do YISA
-    ├── package.json         # Dependências e scripts
-    ├── src/                 # Código fonte React
-    └── public/              # Assets estáticos
+├── README.md                 # This file
+├── .gitignore               # Git ignore file
+├── docs/                    # 📚 Project documentation
+│   ├── yisa_proposal.md     # Complete YISA proposal
+│   ├── yisa_final_proposal.md # Final proposal version
+│   ├── yisa_product_backlog.md # Product backlog
+│   ├── desafio.txt          # Source Jam challenge
+│   └── Proposta_grupo_1_Pilar_1.docx # Official document
+└── yisa/                    # 💻 Application code
+    ├── README.md            # YISA-specific README
+    ├── package.json         # Dependencies and scripts
+    ├── src/                 # React source code
+    └── public/              # Static assets
 ```
 
-## 🎓 **Nosso Projeto: YISA**
+## 🎓 **Our Project: YISA**
 
 ### **YISA** - *Your Interactive School Assistant*
 
-YISA é uma **Progressive Web App (PWA)** inovadora para digitalização de documentos escolares em Moçambique, focada em resolver o problema de transferências escolares.
+YISA is an innovative **Progressive Web App (PWA)** for digitizing school documents in Mozambique, focused on solving the school transfer problem.
 
-#### 📊 **O Problema**
-- **25.000 alunos** transferidos anualmente
-- **18-45 dias** de burocracia para transferência
-- **360.000+ dias letivos** perdidos anualmente
-- **60% das escolas** sem internet estável
+#### 📊 **The Problem**
+- **25,000 students** transferred annually
+- **18-45 days** of bureaucracy for transfers
+- **360,000+ school days** lost annually
+- **60% of schools** without stable internet
 
-#### 💡 **A Solução**
-- **100% Offline**: Funciona sem conexão à internet
-- **QR Codes Criptográficos**: Assinatura digital ECDSA
-- **Mobile-First**: Otimizado para smartphones Android
-- **Dashboard Analytics**: Estatísticas em tempo real
-- **Multi-idioma**: Português + línguas locais
+#### 💡 **The Solution**
+- **100% Offline**: Works without internet connection
+- **Cryptographic QR Codes**: ECDSA digital signature
+- **Mobile-First**: Optimized for Android smartphones
+- **Dashboard Analytics**: Real-time statistics
+- **Multi-language**: Portuguese + local languages
 
-#### 🛠️ **Stack Tecnológico**
+#### 🛠️ **Tech Stack**
 - **Frontend**: React 19 + TypeScript + Vite + Tailwind CSS
 - **Backend**: Firebase (Auth, Firestore, Storage)
 - **PWA**: Service Workers + offline-first architecture
 - **Deploy**: Vercel + GitHub open source
 
-## 🚀 **Começar a Desenvolver**
+## 🚀 **Getting Started**
 
-### Pré-requisitos
+### Prerequisites
 - Node.js 18+
-- npm ou yarn
+- npm or yarn
 - Git
 
-### Setup Inicial
+### Initial Setup
 
 ```bash
-# 1. Clonar repositório
-git clone https://github.com/[username]/source_jam.git
-cd source_jam
+# 1. Clone repository
+git clone https://github.com/Domingos-Jr17/source_jam_2025_yisa.git
+cd source_jam_2025_yisa
 
-# 2. Entrar na pasta da aplicação
+# 2. Enter application folder
 cd yisa
 
-# 3. Instalar dependências
+# 3. Install dependencies
 npm install
 
-# 4. Iniciar desenvolvimento
+# 4. Start development
 npm run dev
 
-# 5. Abrir no navegador
+# 5. Open in browser
 # http://localhost:5173
 ```
 
-## 👥 **Como Contribuir**
+## 👥 **How to Contribute**
 
-Este é um projeto open source colaborativo para o Source Jam 2025.
+This is an open source collaborative project for Source Jam 2025.
 
-### Para Membros da Equipa
+### For Team Members
 
-1. **Fazer Fork** do repositório
-2. **Criar branch**: `git checkout -b feature/sua-funcionalidade`
-3. **Commit**: `git commit -m 'Add: descrição da funcionalidade'`
-4. **Push**: `git push origin feature/sua-funcionalidade`
-5. **Pull Request**: Abrir PR com descrição detalhada
+1. **Fork** the repository
+2. **Create branch**: `git checkout -b feature/your-feature`
+3. **Commit**: `git commit -m 'Add: feature description'`
+4. **Push**: `git push origin feature/your-feature`
+5. **Pull Request**: Open PR with detailed description
 
-### Padrões de Commit
+### Commit Standards
 ```
-Add: nova funcionalidade
-Fix: correção de bug
-Update: atualização existente
-Docs: documentação
-Style: formatação/código
-Refactor: refatoração
-Test: testes
+Add: new functionality
+Fix: bug correction
+Update: existing update
+Docs: documentation
+Style: formatting/code
+Refactor: refactoring
+Test: tests
 ```
 
 ### Branches
-- `main` : Branch principal (produção)
-- `develop` : Branch de desenvolvimento
-- `feature/*` : Funcionalidades específicas
-- `hotfix/*` : Correções urgentes
+- `main` : Main branch (production)
+- `develop` : Development branch
+- `feature/*` : Specific features
+- `hotfix/*` : Urgent fixes
 
-## 📋 **Documentação**
+## 📋 **Documentation**
 
-Toda a documentação do projeto está na pasta `docs/`:
+All project documentation is in the `docs/` folder:
 
-- [`yisa_proposal.md`](docs/yisa_proposal.md) - Proposta completa
-- [`yisa_product_backlog.md`](docs/yisa_product_backlog.md) - Backlog detalhado
-- [`yisa_final_proposal.md`](docs/yisa_final_proposal.md) - Versão final
-- [`desafio.txt`](docs/desafio.txt) - Desafio do Source Jam 2025
+- [`yisa_proposal.md`](docs/yisa_proposal.md) - Complete proposal
+- [`yisa_product_backlog.md`](docs/yisa_product_backlog.md) - Detailed backlog
+- [`yisa_final_proposal.md`](docs/yisa_final_proposal.md) - Final version
+- [`desafio.txt`](docs/desafio.txt) - Source Jam 2025 challenge
 
-## 🎯 **Objetivos para Source Jam**
+## 🎯 **Source Jam Goals**
 
-### MVP (Meta para 15 Novembro)
-- [ ] Autenticação de utilizadores completa
-- [ ] Geração e validação de QR codes
-- [ ] Funcionalidade 100% offline
-- [ ] Dashboard administrativo básico
-- [ ] Demo impactante para apresentação
+### MVP (November 15 Goal)
+- [ ] Complete user authentication
+- [ ] QR code generation and validation
+- [ ] 100% offline functionality
+- [ ] Basic admin dashboard
+- [ ] Impactful presentation demo
 
-### Critérios de Sucesso
-- **Impacto Social**: Solução real para problema moçambicano
-- **Inovação**: PWA offline-first criptográfica
-- **Execução**: Código limpo, documentado e testável
-- **Apresentação**: Demo técnica memorável
+### Success Criteria
+- **Social Impact**: Real solution for Mozambican problem
+- **Innovation**: Offline-first cryptographic PWA
+- **Execution**: Clean, documented, testable code
+- **Presentation**: Memorable technical demo
 
-## 📊 **Métricas de Impacto**
+## 📊 **Impact Metrics**
 
-- **Educação**: 540.000 dias letivos recuperados/ano
-- **Econômico**: 210 milhões MT economizados/ano
-- **Tecnológico**: Primeira solução PWA educacional em Moçambique
-- **Escalabilidade**: 1.200 escolas em 2 anos
+- **Education**: 540,000 school days recovered/year
+- **Economic**: 210 million MZN saved/year
+- **Technological**: First educational PWA in Mozambique
+- **Scalability**: 1,200 schools in 2 years
 
-## 🏆 **Competição Source Jam**
+## 🏆 **Source Jam Competition**
 
-### Pilares
-- **🎓 Educação** - Nosso pilar com YISA
-- **🚗 Mobilidade** - Soluções de transporte
-- **💼 Empregabilidade** - Oportunidades de trabalho
+### Pillars
+- **🎓 Education** - Our pillar with YISA
+- **🚗 Mobility** - Transportation solutions
+- **💼 Employability** - Job opportunities
 
-### Critérios de Avaliação
-1. **Inovação** - Criatividade e originalidade
-2. **Impacto** - Benefício real para Moçambique
-3. **Execução** - Qualidade técnica e implementação
-4. **Apresentação** - Clareza e impacto da demo
-5. **Open Source** - Qualidade da documentação e colaboração
+### Evaluation Criteria
+1. **Innovation** - Creativity and originality
+2. **Impact** - Real benefit for Mozambique
+3. **Execution** - Technical quality and implementation
+4. **Presentation** - Clarity and impact of demo
+5. **Open Source** - Documentation and collaboration quality
 
-## 🔗 **Links Importantes**
+## 🔗 **Important Links**
 
-- **Source Jam 2025**: [Informações do evento](docs/desafio.txt)
-- **MozDev**: [Comunidade MozDev](https://mozdev.org)
-- **Maputo Frontenders**: [Comunidade Frontend](https://maputofrontenders.org)
-- **Projeto YISA**: Ver pasta `yisa/` e seu README específico
+- **Source Jam 2025**: [Event information](docs/desafio.txt)
+- **MozDev**: [MozDev Community](https://mozdev.org)
+- **Maputo Frontenders**: [Frontend Community](https://maputofrontenders.org)
+- **YISA Project**: See `yisa/` folder and its specific README
 
-## 📞 **Contacto da Equipa**
+## 📞 **Team Contact**
 
-- **Canal de Comunicação**: Discord do Source Jam 2025
-- **GitHub Issues**: Para bugs e sugestões técnicas
-- **Email**: [email-da-equipa]
-- **Documentação**: Ver pasta `docs/`
+- **Communication Channel**: Source Jam 2025 Discord
+- **GitHub Issues**: For technical bugs and suggestions
+- **Email**: [team-email]
+- **Documentation**: See `docs/` folder
 
-## 📄 **Licença**
+## 📄 **License**
 
-Este projeto está licenciado sob **MIT License** - ver ficheiro [LICENSE](LICENSE).
+This project is licensed under **MIT License** - see [LICENSE](LICENSE) file.
 
 ---
 
-## 🙏 **Agradecimentos**
+## 🙏 **Acknowledgments**
 
-- **MozDev** e **Maputo Frontenders** pela organização
-- **Mentores** e **jurados** do Source Jam 2025
-- **Comunidade tech** de Moçambique pelo apoio
-- **Escolas piloto** pela colaboração no desenvolvimento
+- **MozDev** and **Maputo Frontenders** for organization
+- **Mentors** and **judges** of Source Jam 2025
+- **Mozambican tech community** for support
+- **Pilot schools** for collaboration in development
 
 ---
 
 **"Building Open Source Solutions Together"** 🇲🇿
 
-*Vamos transformar a educação em Moçambique com tecnologia!*
+*Let's transform education in Mozambique with technology!*
