@@ -1,0 +1,20 @@
+MozDevz e Maputo Frontenders lançam o “Source Jam 2025” para impulsionar a inovação
+Outubro 16, 2025
+Source Jam_Moz Devz
+Para celebrar a cultura open source (código aberto, em português), as comunidades de desenvolvedores MozDevz e Maputo Frontenders realizam, nos dias 25 de Outubro e 15 de Novembro, o Source Jam 2025, em Maputo.
+
+Trata-se de uma iniciativa inspirada no evento global Hacktoberfest, que, nesta edição, ganha uma nova essência ao aliar-se ao objectivo de impulsionar o desenvolvimento de soluções tecnológicas que respondam à realidade local.
+
+O evento decorrerá em duas fases: no dia 25 do mês em curso terá lugar o lançamento, e no dia 15 de Novembro de 2025 realizar-se-á o HackDay.
+
+
+Durante o programa, equipas compostas por até cinco desenvolvedores irão colaborar na criação de projectos open source focados nas áreas de Educação, Mobilidade e Empregabilidade, pilares estratégicos para o desenvolvimento do país.
+
+Outras notícias para ler:
+MozDevz firma parceria com h2n para levar a programação às comunidades
+MozDevz e Maputo Frontenders lançam primeira edição do HackDay
+Segundo o comunicado partilhado, “o Source Jam será um espaço dedicado à criação de soluções que respondam às necessidades reais das pessoas, impulsionando a inovação, a colaboração e o impacto tecnológico em Moçambique”.
+
+A edição decorrerá sob o lema “Building Open Source Solutions Together”, em reforço da missão das comunidades de construírem um ecossistema tecnológico mais inclusivo, colaborativo e inovador, onde o código e o conhecimento são partilhados em prol do desenvolvimento de Moçambique.
+
+As inscrições para desenvolvedores decorrem de 15 a 20 de Outubro, e cada participante deve inscrever-se apenas numa das áreas temáticas que norteiam esta edição.
