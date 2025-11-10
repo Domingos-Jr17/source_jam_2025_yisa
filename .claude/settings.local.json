@@ -8,7 +8,8 @@
       "WebFetch(domain:dc.sourceafrica.net)",
       "WebFetch(domain:www.linkedin.com)",
       "WebFetch(domain:github.com)",
-      "WebFetch(domain:www.mozambique.technology)"
+      "WebFetch(domain:www.mozambique.technology)",
+      "Bash(gh:*)"
     ],
     "deny": [],
     "ask": []
