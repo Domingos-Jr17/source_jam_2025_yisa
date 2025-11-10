@@ -10,7 +10,8 @@
 Welcome to the **Team 1 - Education Pillar** repository for **Source Jam 2025**! This project is being developed as part of the competition organized by **MozDev** and **Maputo Frontenders** communities.
 
 ### 🎯 **Event**
-- **Name**: Source Jam 2025 - *"Building Open Source Solutions Together"*
+
+- **Name**: Source Jam 2025 - _"Building Open Source Solutions Together"_
 - **Organizers**: MozDev + Maputo Frontenders
 - **Dates**: October 25 (Launch) - November 15 (HackDay)
 - **Pillar**: Education
@@ -37,17 +38,19 @@ source_jam/
 
 ## 🎓 **Our Project: YISA**
 
-### **YISA** - *Your Interactive School Assistant*
+### **YISA** - _Digital School Documents Platform_
 
 YISA is an innovative **Progressive Web App (PWA)** for digitizing school documents in Mozambique, focused on solving the school transfer problem.
 
 #### 📊 **The Problem**
+
 - **25,000 students** transferred annually
 - **18-45 days** of bureaucracy for transfers
 - **360,000+ school days** lost annually
 - **60% of schools** without stable internet
 
 #### 💡 **The Solution**
+
 - **100% Offline**: Works without internet connection
 - **Cryptographic QR Codes**: ECDSA digital signature
 - **Mobile-First**: Optimized for Android smartphones
@@ -55,6 +58,7 @@ YISA is an innovative **Progressive Web App (PWA)** for digitizing school docume
 - **Multi-language**: Portuguese + local languages
 
 #### 🛠️ **Tech Stack**
+
 - **Frontend**: React 19 + TypeScript + Vite + Tailwind CSS
 - **Backend**: Firebase (Auth, Firestore, Storage)
 - **PWA**: Service Workers + offline-first architecture
@@ -63,6 +67,7 @@ YISA is an innovative **Progressive Web App (PWA)** for digitizing school docume
 ## 🚀 **Getting Started**
 
 ### Prerequisites
+
 - Node.js 18+
 - npm or yarn
 - Git
@@ -100,6 +105,7 @@ This is an open source collaborative project for Source Jam 2025.
 5. **Pull Request**: Open PR with detailed description
 
 ### Commit Standards
+
 ```
 Add: new functionality
 Fix: bug correction
@@ -111,6 +117,7 @@ Test: tests
 ```
 
 ### Branches
+
 - `main` : Main branch (production)
 - `develop` : Development branch
 - `feature/*` : Specific features
@@ -128,6 +135,7 @@ All project documentation is in the `docs/` folder:
 ## 🎯 **Source Jam Goals**
 
 ### MVP (November 15 Goal)
+
 - [ ] Complete user authentication
 - [ ] QR code generation and validation
 - [ ] 100% offline functionality
@@ -135,6 +143,7 @@ All project documentation is in the `docs/` folder:
 - [ ] Impactful presentation demo
 
 ### Success Criteria
+
 - **Social Impact**: Real solution for Mozambican problem
 - **Innovation**: Offline-first cryptographic PWA
 - **Execution**: Clean, documented, testable code
@@ -150,11 +159,13 @@ All project documentation is in the `docs/` folder:
 ## 🏆 **Source Jam Competition**
 
 ### Pillars
+
 - **🎓 Education** - Our pillar with YISA
 - **🚗 Mobility** - Transportation solutions
 - **💼 Employability** - Job opportunities
 
 ### Evaluation Criteria
+
 1. **Innovation** - Creativity and originality
 2. **Impact** - Real benefit for Mozambique
 3. **Execution** - Technical quality and implementation
@@ -192,4 +203,4 @@ This project is licensed under **MIT License** - see [LICENSE](LICENSE) file.
 
 **"Building Open Source Solutions Together"** 🇲🇿
 
-*Let's transform education in Mozambique with technology!*
+_Let's transform education in Mozambique with technology!_

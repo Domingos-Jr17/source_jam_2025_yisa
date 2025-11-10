@@ -1,4 +1,4 @@
-# YISA - Your Interactive School Assistant
+# YISA - Digital School Documents Platform
 
 ![React](https://img.shields.io/badge/React-19-blue)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)
@@ -9,9 +9,10 @@
 
 ## 🎯 **About YISA**
 
-**YISA** (*Your Interactive School Assistant*) is an innovative **Progressive Web App (PWA)** for digitizing school documents in Mozambique, developed as a solution for the school transfer problem.
+**YISA** is an innovative **Progressive Web App (PWA)** for digitizing school documents in Mozambique, developed as a solution for the school transfer problem.
 
 ### 🏆 **Context**
+
 - **Project**: Source Jam 2025 - Team 1 (Education Pillar)
 - **Organizers**: MozDev + Maputo Frontenders
 - **Focus**: Open source solution for Mozambican education
@@ -19,13 +20,13 @@
 
 ## 📊 **The Problem Solved**
 
-| Metric | Current Situation | With YISA |
-|---------|-------------------|-----------|
-| Students transferred/year | 25,000 | 25,000 (digital process) |
-| Transfer time | 18-45 days | <1 hour |
-| School days lost | 360,000-540,000 | ~0 |
-| Administrative cost | 64-210M MZN | ~80% reduction |
-| Schools without internet | 60% | Works offline |
+| Metric                    | Current Situation | With YISA                |
+| ------------------------- | ----------------- | ------------------------ |
+| Students transferred/year | 25,000            | 25,000 (digital process) |
+| Transfer time             | 18-45 days        | <1 hour                  |
+| School days lost          | 360,000-540,000   | ~0                       |
+| Administrative cost       | 64-210M MZN       | ~80% reduction           |
+| Schools without internet  | 60%               | Works offline            |
 
 ## 💡 **Our Solution**
 
@@ -54,6 +55,7 @@
 ## 🚀 **Getting Started**
 
 ### Prerequisites
+
 - Node.js 18+
 - npm or yarn
 - Firebase account (optional for local dev)
@@ -146,30 +148,35 @@ src/
 ## 🔧 **Core Features**
 
 ### 1. 🔐 **Authentication**
+
 - Email/password login
 - Password recovery
 - Profiles: Admin, Secretary, Parent/Student
 - Persistent offline session
 
 ### 2. 📱 **QR Code Management**
+
 - Cryptographic QR code generation
 - Instant offline validation
 - ECDSA digital signature
 - Integrity verification
 
 ### 3. 📊 **Digital Transfer**
+
 - Digital transfer form
 - Digitized attachments (documents)
 - Complete history
 - Real-time status tracking
 
 ### 4. 📈 **Dashboard Analytics**
+
 - Transfer statistics
 - Metrics by school/period
 - Interactive visualizations
 - Report export
 
 ### 5. 🔄 **Synchronization**
+
 - Automatic sync when online
 - Offline operation queue
 - Conflict resolution
@@ -212,18 +219,21 @@ npm run prepare
 ## 📱 **PWA Features**
 
 ### Service Worker
+
 - Cache strategy: Cache First, Network Fallback
 - Offline sync queue
 - Background updates
 - Push notifications
 
 ### App Manifest
+
 - Installable PWA
 - App icon set
 - Splash screens
 - Orientation: portrait
 
 ### Offline Support
+
 - Core functionality 100% offline
 - Data persistence (IndexedDB)
 - Conflict resolution on sync
@@ -232,12 +242,14 @@ npm run prepare
 ## 🔒 **Security**
 
 ### Cryptographic Implementation
+
 - ECDSA key pairs (secp256k1)
 - QR code content encryption
 - Digital signatures
 - Key rotation support
 
 ### Data Protection
+
 - End-to-end encryption
 - Local storage encryption
 - Secure key management
@@ -259,6 +271,7 @@ vercel --prod
 ```
 
 ### Environment Variables
+
 - Production: Configured in Vercel
 - Staging: `.env.production`
 - Development: `.env.local`
@@ -268,6 +281,7 @@ vercel --prod
 Complete backlog available in `../docs/yisa_product_backlog.md`. Main features by sprint:
 
 ### Sprint 1 (Current - Source Jam)
+
 - [x] Basic authentication
 - [x] QR code generation
 - [x] Offline foundation
@@ -275,12 +289,14 @@ Complete backlog available in `../docs/yisa_product_backlog.md`. Main features b
 - [ ] Basic dashboard
 
 ### Sprint 2 (Post-Competition)
+
 - [ ] Advanced analytics
 - [ ] Multi-language support
 - [ ] Admin panel
 - [ ] School management
 
 ### Sprint 3 (Future)
+
 - [ ] Mobile app (React Native)
 - [ ] API integration (MINEDH)
 - [ ] Advanced reporting
@@ -289,12 +305,14 @@ Complete backlog available in `../docs/yisa_product_backlog.md`. Main features b
 ## 🎯 **Performance Metrics**
 
 ### Core Web Vitals Targets
+
 - **LCP**: <2.5s
 - **FID**: <100ms
 - **CLS**: <0.1
 - **TTI**: <3.8s
 
 ### Offline Performance
+
 - **Cache Hit Rate**: >95%
 - **Sync Success Rate**: >99%
 - **Offline Load Time**: <1s
@@ -305,6 +323,7 @@ Complete backlog available in `../docs/yisa_product_backlog.md`. Main features b
 ### Development Workflow
 
 1. **Setup Environment**
+
    ```bash
    git checkout -b feature/your-feature
    npm install
@@ -312,12 +331,14 @@ Complete backlog available in `../docs/yisa_product_backlog.md`. Main features b
    ```
 
 2. **Development**
+
    ```bash
    npm run dev
    npm run test:watch
    ```
 
 3. **Code Quality**
+
    ```bash
    npm run lint
    npm run type-check
@@ -331,6 +352,7 @@ Complete backlog available in `../docs/yisa_product_backlog.md`. Main features b
    - Documentation: Updated
 
 ### Commit Standards
+
 ```bash
 # Feature
 git commit -m "feat(transfer): add digital form validation"
@@ -345,11 +367,13 @@ git commit -m "docs(readme): update setup instructions"
 ## 📞 **Support**
 
 ### Issues and Bugs
+
 - **GitHub Issues**: Report bugs and feature requests
 - **Discord**: Real-time support during Source Jam
 - **Documentation**: See `../docs/` folder
 
 ### Development Team
+
 - **Frontend Lead**: [Name] - React/TypeScript/PWA
 - **Backend Lead**: [Name] - Firebase/Security
 - **UI/UX Lead**: [Name] - Design/User Experience
@@ -370,6 +394,6 @@ This project is licensed under the **MIT License** - see [LICENSE](LICENSE) file
 
 ---
 
-**"YISA** - *To Carry, To Lead, To Bring* (Ronga/Changana)"
+**"YISA** - _To Carry, To Lead, To Bring_ (Ronga/Changana)"
 
-*Digitizing education in Mozambique, one transfer at a time.* 🇲🇿
+_Digitizing education in Mozambique, one transfer at a time._ 🇲🇿
