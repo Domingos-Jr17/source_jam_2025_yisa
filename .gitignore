@@ -86,3 +86,4 @@ docs/.cache/
 *.pdf
 
 .claude/
+IMPLEMENTATION_PROMPT.md
