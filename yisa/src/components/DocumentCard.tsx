@@ -12,6 +12,7 @@ import {
   ExclamationTriangleIcon
 } from '@heroicons/react/24/outline'
 import type { DocumentoEscolar } from '../types'
+import ShareButton from './ShareButton'
 
 interface DocumentCardProps {
   document: DocumentoEscolar
@@ -55,6 +56,24 @@ const DocumentCard: React.FC<DocumentCardProps> = ({
     e.stopPropagation()
     if (onShare) {
       await onShare(document.id)
+    }
+  }
+
+  // Generate QR code data for sharing
+  const getQRCodeData = () => {
+    if (document.qrCodeData) {
+      return document.qrCodeData
+    }
+
+    // Generate QR code data if not present
+    return {
+      documentoId: document.id,
+      tipoDocumento: document.tipo,
+      numeroDocumento: document.numeroDocumento,
+      nomeEstudante: document.estudante.nomeCompleto,
+      escolaOrigem: document.escolaOrigem,
+      dataEmissao: document.dataEmissao,
+      hashValidacao: document.hashValidacao
     }
   }
 
@@ -214,13 +233,15 @@ const DocumentCard: React.FC<DocumentCardProps> = ({
                 <ArrowDownTrayIcon className="w-4 h-4 mr-2" />
                 Baixar PDF
               </button>
-              <button
-                onClick={handleShare}
-                className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-              >
-                <ShareIcon className="w-4 h-4 mr-2" />
-                Partilhar
-              </button>
+              <div className="px-4 py-2">
+                <ShareButton
+                  document={document}
+                  qrCodeData={getQRCodeData()}
+                  size="sm"
+                  variant="ghost"
+                  className="w-full justify-start"
+                />
+              </div>
               <hr className="my-1" />
               <button
                 onClick={handleDelete}
@@ -346,13 +367,14 @@ const DocumentCard: React.FC<DocumentCardProps> = ({
                 Baixar
               </button>
             )}
-            <button
-              onClick={handleShare}
-              className="btn-ghost btn-sm text-gray-700"
-            >
-              <ShareIcon className="w-4 h-4 mr-1" />
-              Partilhar
-            </button>
+            <ShareButton
+              document={document}
+              qrCodeData={getQRCodeData()}
+              size="sm"
+              variant="ghost"
+              showText={true}
+              className="btn-ghost btn-sm text-gray-700 hover:bg-gray-100"
+            />
           </div>
           {onDelete && (
             <button

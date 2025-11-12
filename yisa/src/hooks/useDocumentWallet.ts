@@ -202,39 +202,21 @@ export const useDocumentWallet = (): UseDocumentWalletReturn => {
         throw new Error('Documento não encontrado')
       }
 
-      // Check if Web Share API is available
-      if (navigator.share) {
-        const shareData = {
-          title: `Documento YISA - ${document.tipo.replace('_', ' ').toUpperCase()}`,
-          text: `Documento de ${document.estudante.nomeCompleto} - ${document.numeroDocumento}`,
-          url: `${window.location.origin}/verificar/${documentId}`
-        }
+      // Use the new sharing service for smart sharing
+      const { SharingService } = await import('../services/sharing')
+      const sharingService = SharingService.getInstance()
 
-        await navigator.share(shareData)
-      } else {
-        // Fallback to copying URL to clipboard
-        const shareUrl = `${window.location.origin}/verificar/${documentId}`
-        await navigator.clipboard.writeText(shareUrl)
+      const result = await sharingService.smartShare(document)
 
-        // Show success message
-        alert('Link de partilha copiado para a área de transferência!')
+      if (!result.success) {
+        throw new Error(result.error || 'Erro ao partilhar documento')
       }
-
-      // Log sharing for audit
-      const db = DatabaseService.getInstance()
-      await db.addAuditEvent({
-        action: 'document_shared',
-        resource: 'document',
-        resourceId: documentId,
-        deviceId: '', // Will come from auth context
-        userAgent: navigator.userAgent,
-        success: true,
-        metadata: JSON.stringify({ shareMethod: navigator.share ? 'web_share' : 'clipboard' })
-      })
 
     } catch (error) {
       console.error('Error sharing document:', error)
-      setError('Erro ao partilhar documento')
+      const errorMessage = error instanceof Error ? error.message : 'Erro ao partilhar documento'
+      setError(errorMessage)
+      throw error
     }
   }
 

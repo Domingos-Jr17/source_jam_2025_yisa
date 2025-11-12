@@ -13,6 +13,7 @@ import HomePage from './pages/HomePage'
 import EmitirPage from './pages/EmitirPage'
 import VerificarPage from './pages/VerificarPage'
 import CarteiraPage from './pages/CarteiraPage'
+import PartilharPage from './pages/PartilharPage'
 import HistoricoPage from './pages/HistoricoPage'
 import DefinicoesPage from './pages/DefinicoesPage'
 import SobrePage from './pages/SobrePage'
@@ -202,6 +203,7 @@ const App: React.FC = () => {
               <>
                 <Route path={ROUTES.EMITIR} element={<EmitirPage />} />
                 <Route path={ROUTES.CARTEIRA} element={<CarteiraPage />} />
+                <Route path="/partilhar/:documentId" element={<PartilharPage />} />
                 <Route path={ROUTES.HISTORICO} element={<HistoricoPage />} />
                 <Route path={ROUTES.DEFINICOES} element={<DefinicoesPage />} />
               </>
