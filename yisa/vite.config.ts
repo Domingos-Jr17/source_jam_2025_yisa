@@ -74,7 +74,8 @@ export default defineConfig({
         ]
       },
       workbox: {
-        globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,json,wasm}'],
+        globIgnores: ['**/node_modules/**'],
         runtimeCaching: [
           {
             urlPattern: /^https:\/\/fonts\.googleapis\.com/,
@@ -88,17 +89,88 @@ export default defineConfig({
             }
           },
           {
-            urlPattern: /\.(?:png|jpg|jpeg|svg|gif|webp)$/,
+            urlPattern: /^https:\/\/fonts\.gstatic\.com/,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'google-fonts-static-cache',
+              expiration: {
+                maxEntries: 20,
+                maxAgeSeconds: 365 * 24 * 60 * 60 // 1 year
+              }
+            }
+          },
+          {
+            urlPattern: /\.(?:png|jpg|jpeg|svg|gif|webp|ico)$/,
             handler: 'CacheFirst',
             options: {
               cacheName: 'images-cache',
               expiration: {
-                maxEntries: 200,
+                maxEntries: 500,
+                maxAgeSeconds: 60 * 24 * 60 * 60 // 60 days
+              }
+            }
+          },
+          {
+            urlPattern: /\.(?:woff|woff2|eot|ttf)$/,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'fonts-cache',
+              expiration: {
+                maxEntries: 50,
+                maxAgeSeconds: 365 * 24 * 60 * 60 // 1 year
+              }
+            }
+          },
+          {
+            urlPattern: /\.(?:js|css)$/,
+            handler: 'StaleWhileRevalidate',
+            options: {
+              cacheName: 'static-resources-cache',
+              expiration: {
+                maxEntries: 100,
+                maxAgeSeconds: 24 * 60 * 60 // 24 hours
+              }
+            }
+          },
+          {
+            urlPattern: /\.(?:html)$/,
+            handler: 'StaleWhileRevalidate',
+            options: {
+              cacheName: 'html-cache',
+              expiration: {
+                maxEntries: 50,
+                maxAgeSeconds: 24 * 60 * 60 // 24 hours
+              }
+            }
+          },
+          {
+            urlPattern: /^https:\/\/api\./,
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'api-cache',
+              networkTimeoutSeconds: 3,
+              expiration: {
+                maxEntries: 100,
+                maxAgeSeconds: 5 * 60 // 5 minutes
+              }
+            }
+          },
+          {
+            urlPattern: /^https:\/\/cdnjs\.cloudflare\.com/,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'cdn-cache',
+              expiration: {
+                maxEntries: 30,
                 maxAgeSeconds: 30 * 24 * 60 * 60 // 30 days
               }
             }
           }
-        ]
+        ],
+        skipWaiting: true,
+        clientsClaim: true,
+        cleanupOutdatedCaches: true,
+        offlineGoogleAnalytics: false
       }
     })
   ],
