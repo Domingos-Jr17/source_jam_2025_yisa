@@ -4,7 +4,7 @@
 
 **Project:** YIsa-Digital School Documents Platform
 **Organizers:** MozDev + Maputo Frontenders
-**Version:** 2.0 (Final Alignment)
+**Version:** 2.0
 
 ---
 
@@ -17,21 +17,6 @@ YISA solves the school transfer bureaucracy problem in Mozambique where students
 ### **Core Solution**
 
 Digital school documents with **cryptographic QR codes** that work **100% offline**, enabling instant verification and eliminating paperwork, travel time, and corruption opportunities.
-
----
-
-## 📊 **FINAL IMPACT METRICS (Verified & Conservative)**
-
-| Metric                                | Value                       | Source                      | Notes                      |
-| ------------------------------------- | --------------------------- | --------------------------- | -------------------------- |
-| **Students transferred/year**         | **12,000**                  | Conservative estimate       | Based on MINEDH data       |
-| **Transfer time reduction**           | **18-30 days → 90 seconds** | Field research              | -99.7% time savings        |
-| **Cost per transfer eliminated**      | **350 MT**                  | Market research             | Zero cost with YISA        |
-| **Total economic impact/year**        | **64.2M MT**                | Calculation (12k × 350MT)   | Conservative impact        |
-| **School days saved/year**            | **180,000**                 | Calculation (12k × 15 days) | Educational impact         |
-| **Schools without reliable internet** | **60%**                     | UNESCO data                 | Critical for offline-first |
-
-**Total Impact:** 64.2M MT/year + 180,000 school days recovered
 
 ---
 
@@ -68,24 +53,24 @@ Digital school documents with **cryptographic QR codes** that work **100% offlin
 
 ### **CORE FEATURES (F1-F6) - Must Complete First**
 
-| ID     | Feature              | Description                              | Priority    | Implementation Time |
-| ------ | -------------------- | ---------------------------------------- | ----------- | ------------------- |
-| **F1** | Emission Form        | 4-field form (name, BI, classes, grades) | 🔴 Critical | 3h                  |
-| **F2** | PDF + QR Generation  | Create PDF with embedded QR code         | 🔴 Critical | 5h                  |
-| **F3** | WhatsApp Sharing     | Native sharing functionality             | 🔴 Critical | 2h                  |
-| **F4** | Offline Verification | QR scanner with local validation         | 🔴 Critical | 5h                  |
-| **F5** | Hash System          | SHA-256 document integrity               | 🔴 Critical | 3h                  |
-| **F6** | PIN Security         | 6-digit PIN protection                   | 🔴 Critical | 3h                  |
+| ID     | Feature              | Description                              | Priority    |
+| ------ | -------------------- | ---------------------------------------- | ----------- |
+| **F1** | Emission Form        | 4-field form (name, BI, classes, grades) | 🔴 Critical |
+| **F2** | PDF + QR Generation  | Create PDF with embedded QR code         | 🔴 Critical |
+| **F3** | WhatsApp Sharing     | Native sharing functionality             | 🔴 Critical |
+| **F4** | Offline Verification | QR scanner with local validation         | 🔴 Critical |
+| **F5** | Hash System          | SHA-256 document integrity               | 🔴 Critical |
+| **F6** | PIN Security         | 6-digit PIN protection                   | 🔴 Critical |
 
 **Total Core Time:** 21 hours
 
 ### **PLUS FEATURES (Optional)**
 
-| ID     | Feature           | Description                       | Priority  | Implementation Time |
-| ------ | ----------------- | --------------------------------- | --------- | ------------------- |
-| **F7** | Digital Wallet    | Document storage and retrieval    | 🟡 Plus   | 3h                  |
-| **F8** | Basic Dashboard   | Emission history list             | 🟡 Plus   | 3h                  |
-| **F9** | School Validation | Real school contacts and feedback | 🔴 Social | 8h                  |
+| ID     | Feature           | Description                       | Priority  |
+| ------ | ----------------- | --------------------------------- | --------- | --- |
+| **F7** | Digital Wallet    | Document storage and retrieval    | 🟡 Plus   |
+| **F8** | Basic Dashboard   | Emission history list             | 🟡 Plus   |
+| **F9** | School Validation | Real school contacts and feedback | 🔴 Social |     |
 
 ---
 
@@ -182,6 +167,7 @@ yisa/
 ### **Type Definitions to Create**
 
 **`src/types/student.ts`**
+
 ```typescript
 export interface Student {
   id: string;
@@ -201,6 +187,7 @@ export interface StudentFormData {
 ```
 
 **`src/types/document.ts`**
+
 ```typescript
 export interface SchoolDocument {
   id: string;
@@ -363,6 +350,6 @@ export interface DocumentVerification {
 
 ---
 
-**Document Status:** ✅ FINAL - Single Source of Truth
 **Next Steps:** Implementation following execution plan
 **Success Metrics:** 6 core features working offline
+
