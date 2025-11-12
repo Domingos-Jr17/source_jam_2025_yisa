@@ -1,13 +1,12 @@
-# 🚀 Source Jam 2025 - Team 1 (Education Pillar)
+# 🚀 YISA - Digital School Documents Platform
 
 ![MozDev](https://img.shields.io/badge/MozDev-Community-blue)
 ![Maputo Frontenders](https://img.shields.io/badge/Maputo%20Frontenders-Frontend-purple)
-![Source Jam](https://img.shields.io/badge/Source%20Jam-2025-green)
 ![License](https://img.shields.io/badge/License-MIT-green)
 
 ## 📋 **Overview**
 
-Welcome to the **Team 1 - Education Pillar** repository for **Source Jam 2025**! This project is being developed as part of the competition organized by **MozDev** and **Maputo Frontenders** communities.
+Welcome to the **YISA** project repository! YISA (_Your Interactive School Assistant_) is an innovative **Progressive Web App (PWA)** for digitizing school documents in Mozambique, solving the critical school transfer bureaucracy problem.
 
 ### 🎯 **Event**
 
@@ -17,62 +16,111 @@ Welcome to the **Team 1 - Education Pillar** repository for **Source Jam 2025**!
 - **Pillar**: Education
 - **Team**: Team 1
 
+### 🎯 **Project Vision**
+
+Digital school documents with **cryptographic QR codes** that work **100% offline**, enabling instant verification and eliminating paperwork, travel time, and corruption opportunities.
+
+---
+
 ## 🏗️ **Project Structure**
 
 ```
-source_jam/
+source_jam_2025_yisa/
 ├── README.md                 # This file
-├── .gitignore               # Git ignore file
-├── docs/                    # 📚 Project documentation
-│   ├── yisa_proposal.md     # Complete YISA proposal
-│   ├── yisa_final_proposal.md # Final proposal version
-│   ├── yisa_product_backlog.md # Product backlog
-│   ├── desafio.txt          # Source Jam challenge
+├── .gitignore               # Git configuration
+├── docs/                    # 📚 Complete documentation
+│   ├── YISA_MASTER_SPECIFICATION.md # ⭐ Technical specification
+│   ├── DECISION_LOG.md      # All project decisions & rationale
+│   ├── desafio.txt          # Challenge details
 │   └── Proposta_grupo_1_Pilar_1.docx # Official document
 └── yisa/                    # 💻 Application code
-    ├── README.md            # YISA-specific README
-    ├── package.json         # Dependencies and scripts
-    ├── src/                 # React source code
-    └── public/              # Static assets
+    ├── README.md            # Technical implementation guide
+    ├── [Implementation in progress]
 ```
 
-## 🎓 **Our Project: YISA**
+## 🎓 **Problem: School Transfer Bureaucracy**
 
-### **YISA** - _Digital School Documents Platform_
+### **The Current Situation in Mozambique**
 
-YISA is an innovative **Progressive Web App (PWA)** for digitizing school documents in Mozambique, focused on solving the school transfer problem.
+| Metric                        | Current Reality   | Economic Impact               |
+| ----------------------------- | ----------------- | ----------------------------- |
+| **Students transferred/year** | **12,000**        | Core of the problem           |
+| **Transfer time**             | **18-30 days**    | Educational disruption        |
+| **Cost per family**           | **350 MT**        | Financial burden              |
+| **Total economic impact**     | **64.2M MT/year** | National scale                |
+| **School days lost**          | **180,000/year**  | Learning opportunities        |
+| **Schools without internet**  | **60%**           | Critical for offline solution |
 
-#### 📊 **The Problem**
+### **Real Impact: Student's Story**
 
-- **25,000 students** transferred annually
-- **18-45 days** of bureaucracy for transfers
-- **360,000+ school days** lost annually
-- **60% of schools** without stable internet
+> A student moving from Nampula to Maputo faced **25 days** of transfer time, **1,200 MT** in costs, and **15 days of classes** missed. This happens to **12,000 families every year** in Mozambique.
 
-#### 💡 **The Solution**
+## 💡 **Solution: YISA Digital Documents**
 
-- **100% Offline**: Works without internet connection
-- **Cryptographic QR Codes**: ECDSA digital signature
-- **Mobile-First**: Optimized for Android smartphones
-- **Dashboard Analytics**: Real-time statistics
-- **Multi-language**: Portuguese + local languages
+YISA transforms school transfers from **25-day bureaucratic nightmare** into **90-second digital process** using QR code-protected documents that work completely offline.
 
-#### 🛠️ **Tech Stack**
+### **Core Workflow (3 Steps, 2 Minutes)**
 
-- **Frontend**: React 19 + TypeScript + Vite + Tailwind CSS
-- **Backend**: Firebase (Auth, Firestore, Storage)
-- **PWA**: Service Workers + offline-first architecture
-- **Deploy**: Vercel + GitHub open source
+#### **Step 1: School Emits Document (90 seconds)**
+
+1. Director opens YISA PWA in browser
+2. Enters 6-digit PIN for security
+3. Fills form: student name, BI, classes, grades
+4. System generates PDF with cryptographic QR code
+5. Shares instantly via WhatsApp or saves locally
+
+#### **Step 2: School Verifies Document (3 seconds)**
+
+1. New school scans QR code with camera
+2. System validates **offline**:
+   - ✅ Document is authentic (SHA-256 hash valid)
+   - ✅ Not tampered with or altered
+   - ✅ Issuing school is verified
+3. Accepts student **immediately**
+
+#### **Step 3: Document Management**
+
+1. Documents stored in digital wallet
+2. History tracked in basic dashboard
+3. Works completely offline after first load
+
+### **Key Differentiators**
+
+- 🔐 **100% Offline**: Works without any internet connection
+- 🛡️ **Impossible to Forge**: SHA-256 cryptographic protection
+- 📱 **Mobile-First**: Optimized for Android smartphones (90% MZ market)
+- 💰 **Zero Cost**: No infrastructure or software costs
+- ⚡ **Instant Sharing**: Native WhatsApp integration
+- 🏫 **No Central System**: Each school operates independently
+
+## 🛠️ **Technical Stack (Simplified for Implementation)**
+
+### **Simplified Architecture for Success**
+
+- **Frontend**: React 19 + JSX (no TypeScript for speed)
+- **Build Tool**: Vite 6 for fast development
+- **Routing**: React Router DOM (3 core routes)
+- **Styling**: Tailwind CSS (via CDN for simplicity)
+- **PWA**: Service Worker + Manifest for offline functionality
+- **Storage**: localStorage (guaranteed offline, no backend needed)
+- **Security**: 6-digit PIN + SHA-256 hashing
+
+### **Why This Stack?**
+
+- **Speed**: Minimal setup, maximum development velocity
+- **Reliability**: No backend dependencies, guaranteed offline
+- **Demo-Ready**: Focus on working functionality over complexity
+- **Realistic**: Achievable implementation timeline
 
 ## 🚀 **Getting Started**
 
-### Prerequisites
+### **Prerequisites**
 
 - Node.js 18+
 - npm or yarn
 - Git
 
-### Initial Setup
+### **Quick Start**
 
 ```bash
 # 1. Clone repository
@@ -85,12 +133,43 @@ cd yisa
 # 3. Install dependencies
 npm install
 
-# 4. Start development
+# 4. Start development server
 npm run dev
 
 # 5. Open in browser
 # http://localhost:5173
 ```
+
+### **Quick Demo**
+
+1. Open http://localhost:5173/emitir
+2. Enter PIN: 123456 (default)
+3. Fill sample form and generate PDF
+4. Test verification at /verificar
+
+## 📋 **Project Specifications**
+
+### **Master Documentation**
+
+- ⭐ **[`YISA_MASTER_SPECIFICATION.md`](docs/YISA_MASTER_SPECIFICATION.md)** - Complete technical specifications (single source of truth)
+- 📊 **[`DECISION_LOG.md`](docs/DECISION_LOG.md)** - All project decisions and rationale
+
+### **Implementation Plan**
+
+- **Core Features**: F1-F6 (must complete first)
+- **Plus Features**: F7-F8 (if time permits)
+- **Demo Focus**: Offline functionality with WiFi disabled
+
+### **Core Features (F1-F6)**
+
+| Feature                      | Description                      | Priority    | Status     |
+| ---------------------------- | -------------------------------- | ----------- | ---------- |
+| **F1**: Emission Form        | 4-field form for student data    | 🔴 Critical | 📋 Planned |
+| **F2**: PDF + QR Generation  | Create secure document with QR   | 🔴 Critical | 📋 Planned |
+| **F3**: WhatsApp Sharing     | Native mobile sharing            | 🔴 Critical | 📋 Planned |
+| **F4**: Offline Verification | QR scanner with local validation | 🔴 Critical | 📋 Planned |
+| **F5**: Hash System          | SHA-256 document integrity       | 🔴 Critical | 📋 Planned |
+| **F6**: PIN Security         | 6-digit access protection        | 🔴 Critical | 📋 Planned |
 
 ## 👥 **How to Contribute**
 
@@ -104,7 +183,7 @@ This is an open source collaborative project for Source Jam 2025.
 4. **Push**: `git push origin feature/your-feature`
 5. **Pull Request**: Open PR with detailed description
 
-### Commit Standards
+### **Commit Standards**
 
 ```
 Add: new functionality
@@ -116,79 +195,65 @@ Refactor: refactoring
 Test: tests
 ```
 
-### Branches
+## 📊 **Impact & Success Metrics**
 
-- `main` : Main branch (production)
-- `develop` : Development branch
-- `feature/*` : Specific features
-- `hotfix/*` : Urgent fixes
+### **Verified Impact**
 
-## 📋 **Documentation**
+- **Students Helped**: 12,000 transfers per year
+- **Time Saved**: 18-30 days → 90 seconds (99.7% reduction)
+- **Money Saved**: 350 MT per family (4.2M MT total)
+- **Education Recovered**: 180,000 school days per year
+- **Schools Served**: Works without internet (60% of schools)
 
-All project documentation is in the `docs/` folder:
+### **Success Criteria**
 
-- [`yisa_proposal.md`](docs/yisa_proposal.md) - Complete proposal
-- [`yisa_product_backlog.md`](docs/yisa_product_backlog.md) - Detailed backlog
-- [`yisa_final_proposal.md`](docs/yisa_final_proposal.md) - Final version
-- [`desafio.txt`](docs/desafio.txt) - Source Jam 2025 challenge
+- ✅ Working offline demo (WiFi disabled)
+- ✅ Complete emission → verification flow
+- ✅ Real school validation testimonials
+- ✅ Cross-device compatibility
+- ✅ Clear impact presentation
 
-## 🎯 **Source Jam Goals**
+## 🎯 **Project Goals**
 
-### MVP (November 15 Goal)
+### **Implementation Success**
 
-- [ ] Complete user authentication
-- [ ] QR code generation and validation
-- [ ] 100% offline functionality
-- [ ] Basic admin dashboard
-- [ ] Impactful presentation demo
+- All 6 core features (F1-F6) working offline
+- Demo runs successfully with WiFi disabled
+- QR codes scan and verify correctly
+- PDFs generate and share properly
+- PIN security implemented
 
-### Success Criteria
+### **Long-term Vision**
 
-- **Social Impact**: Real solution for Mozambican problem
-- **Innovation**: Offline-first cryptographic PWA
-- **Execution**: Clean, documented, testable code
-- **Presentation**: Memorable technical demo
+- School adoption throughout Mozambique
+- Expansion to other document types
+- Integration with educational systems
+- Foundation for digital education infrastructure
 
-## 📊 **Impact Metrics**
+## 📞 **Team & Resources**
 
-- **Education**: 540,000 school days recovered/year
-- **Economic**: 210 million MZN saved/year
-- **Technological**: First educational PWA in Mozambique
-- **Scalability**: 1,200 schools in 2 years
+### **Project Leadership**
 
-## 🏆 **Source Jam Competition**
+- **Repository**: https://github.com/Domingos-Jr17/source_jam_2025_yisa
+- **Community**: MozDev + Maputo Frontenders
+- **Documentation**: Complete specs in `docs/` folder
 
-### Pillars
+### **Key Documents**
 
-- **🎓 Education** - Our pillar with YISA
-- **🚗 Mobility** - Transportation solutions
-- **💼 Employability** - Job opportunities
+- **Technical Specification**: [`YISA_MASTER_SPECIFICATION.md`](docs/YISA_MASTER_SPECIFICATION.md) ⭐
+- **Decision Log**: [`DECISION_LOG.md`](docs/DECISION_LOG.md)
+- **Execution Plan**: [`yisa_update.md`](yisa_update.md) 📋
 
-### Evaluation Criteria
+### **Development Focus**
 
-1. **Innovation** - Creativity and originality
-2. **Impact** - Real benefit for Mozambique
-3. **Execution** - Technical quality and implementation
-4. **Presentation** - Clarity and impact of demo
-5. **Open Source** - Documentation and collaboration quality
-
-## 🔗 **Important Links**
-
-- **Source Jam 2025**: [Event information](docs/desafio.txt)
-- **MozDev**: [MozDev Community](https://mozdev.org)
-- **Maputo Frontenders**: [Frontend Community](https://maputofrontenders.org)
-- **YISA Project**: See `yisa/` folder and its specific README
-
-## 📞 **Team Contact**
-
-- **Communication Channel**: Source Jam 2025 Discord
-- **GitHub Issues**: For technical bugs and suggestions
-- **Email**: [team-email]
-- **Documentation**: See `docs/` folder
+- **Tech Lead**: React/JavaScript development
+- **Security Focus**: SHA-256 implementation
+- **UX Lead**: Mobile-first design
+- **QA Focus**: Cross-device testing
 
 ## 📄 **License**
 
-This project is licensed under **MIT License** - see [LICENSE](LICENSE) file.
+This project is licensed under the **MIT License** - see [LICENSE](LICENSE) file.
 
 ---
 

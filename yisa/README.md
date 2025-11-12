@@ -3,7 +3,6 @@
 ![React](https://img.shields.io/badge/React-19-blue)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)
 ![Vite](https://img.shields.io/badge/Vite-6.0-purple)
-![Firebase](https://img.shields.io/badge/Firebase-yellow)
 ![PWA](https://img.shields.io/badge/PWA-Offline%20Ready-green)
 ![License](https://img.shields.io/badge/License-MIT-green)
 
@@ -13,19 +12,19 @@
 
 ### 🏆 **Context**
 
-- **Project**: Source Jam 2025 - Team 1 (Education Pillar)
-- **Organizers**: MozDev + Maputo Frontenders
-- **Focus**: Open source solution for Mozambican education
+- **Project**: Open source solution for Mozambican education
+- **Communities**: MozDev + Maputo Frontenders
+- **Focus**: Digital school transfer documentation
 - **Differentiator**: Works 100% offline
 
 ## 📊 **The Problem Solved**
 
 | Metric                    | Current Situation | With YISA                |
 | ------------------------- | ----------------- | ------------------------ |
-| Students transferred/year | 25,000            | 25,000 (digital process) |
-| Transfer time             | 18-45 days        | <1 hour                  |
-| School days lost          | 360,000-540,000   | ~0                       |
-| Administrative cost       | 64-210M MZN       | ~80% reduction           |
+| Students transferred/year | 12,000            | 12,000 (digital process) |
+| Transfer time             | 18-30 days        | 90 seconds               |
+| School days lost          | 180,000           | ~0                       |
+| Administrative cost       | 64.2M MT/year     | 100% reduction           |
 | Schools without internet  | 60%               | Works offline            |
 
 ## 💡 **Our Solution**
@@ -33,7 +32,7 @@
 ### ✨ **Key Features**
 
 - 📱 **100% Offline**: Works without internet connection
-- 🔐 **Cryptographic QR Codes**: ECDSA digital signature (Bitcoin level)
+- 🔐 **Cryptographic QR Codes**: SHA-256 hash validation
 - 📊 **Dashboard Analytics**: Real-time statistics
 - 📱 **Mobile-First**: Optimized for Android (90% MZ market)
 - 🌍 **Multi-language**: Portuguese + Ronga/Changana
@@ -43,12 +42,12 @@
 
 ```
 ┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
-│   Frontend      │    │    Service       │    │   Firebase      │
+│   Frontend      │    │    Service       │    │   Local Storage │
 │                 │    │    Worker        │    │                 │
-│ React 19        │◄──►│  (Offline Cache) │◄──►│   Backend       │
+│ React 19        │◄──►│  (Offline Cache) │◄──►│   localStorage  │
 │ TypeScript      │    │                  │    │                 │
-│ Tailwind CSS    │    │ QR Validation    │    │ Auth + Firestore│
-│ shadcn/ui       │    │ Offline Storage  │    │   Storage       │
+│ Tailwind CSS    │    │ QR Validation    │    │   Document      │
+│ PWA             │    │ Offline Storage  │    │   Storage       │
 └─────────────────┘    └──────────────────┘    └─────────────────┘
 ```
 
@@ -58,21 +57,16 @@
 
 - Node.js 18+
 - npm or yarn
-- Firebase account (optional for local dev)
 
 ### Installation
 
 ```bash
-# Clone main repository
-git clone https://github.com/Domingos-Jr17/source_jam_2025_yisa.git
-cd source_jam_2025_yisa/yisa
+# Clone repository
+git clone [repository-url]
+cd yisa
 
 # Install dependencies
 npm install
-
-# Configure environment variables
-cp .env.example .env
-# Edit .env with your Firebase keys
 
 # Start development
 npm run dev
@@ -81,17 +75,6 @@ npm run dev
 # http://localhost:5173
 ```
 
-### Environment Variables
-
-```bash
-# .env
-VITE_FIREBASE_API_KEY=your_api_key
-VITE_FIREBASE_AUTH_DOMAIN=your_domain
-VITE_FIREBASE_PROJECT_ID=your_project_id
-VITE_FIREBASE_STORAGE_BUCKET=your_bucket
-VITE_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
-VITE_FIREBASE_APP_ID=your_app_id
-```
 
 ## 📦 **Available Scripts**
 
@@ -111,76 +94,66 @@ npm run pwa-build    # Optimized PWA build
 
 ```
 src/
-├── components/          # Reusable React components
-│   ├── ui/             # shadcn/ui components
-│   ├── forms/          # Reusable forms
-│   └── common/         # Generic components
 ├── pages/              # Main pages
-│   ├── auth/           # Authentication
-│   ├── dashboard/      # Main dashboard
-│   ├── transfer/       # Transfers
-│   └── qr/             # QR Code generation/scan
-├── hooks/              # Custom hooks
-│   ├── useAuth.ts      # Authentication
-│   ├── useOffline.ts   # Offline functionality
-│   └── useQR.ts        # QR Code operations
-├── services/           # External services
-│   ├── firebase.ts     # Firebase configuration
-│   ├── qr.ts           # QR Code generation/validation
-│   └── storage.ts      # Local storage management
+│   ├── Emitir.tsx      # Document emission (F1, F2, F3, F6)
+│   ├── Verificar.tsx   # Document verification (F4, F5)
+│   └── Carteira.tsx    # Digital wallet (F7, F8)
 ├── utils/              # Utility functions
-│   ├── crypto.ts       # ECDSA cryptography
-│   ├── validation.ts   # Data validation
-│   └── offline.ts      # Offline helpers
-├── types/              # TypeScript definitions
-│   ├── auth.ts         # Authentication types
-│   ├── school.ts       # School/student types
-│   └── qr.ts           # QR Code types
+│   ├── hash.ts         # SHA-256 implementation (F5)
+│   ├── pdf.ts          # PDF + QR generation (F2)
+│   └── storage.ts      # localStorage wrapper
+├── types/              # TypeScript type definitions
+│   ├── student.ts      # Student data types
+│   ├── document.ts     # Document types
+│   └── common.ts       # Common utility types
+├── data/               # Static data
+│   └── schools.json    # School data (10 schools)
 ├── assets/             # Static assets
-│   ├── images/         # Images
 │   ├── icons/          # PWA icons
-│   └── fonts/          # Local fonts
-└── styles/             # Global styles
-    ├── globals.css     # Global CSS
-    └── components.css  # Specific styles
+│   └── styles/         # CSS files
+├── App.tsx             # Main application component
+├── main.tsx            # Application entry point
+├── vite-env.d.ts       # Vite type declarations
+└── worker.ts           # Service worker for PWA
 ```
 
-## 🔧 **Core Features**
+## 🔧 **Core Features (F1-F6)**
 
-### 1. 🔐 **Authentication**
+### **F1: Emission Form**
+- 4-field form (name, BI, classes, grades)
+- Auto-save in localStorage
+- Form validation
+- Mobile-optimized interface
 
-- Email/password login
-- Password recovery
-- Profiles: Admin, Secretary, Parent/Student
-- Persistent offline session
+### **F2: PDF + QR Generation**
+- PDF creation using pdf-lib
+- QR code generation with shortId
+- SHA-256 hash embedding
+- Document formatting
 
-### 2. 📱 **QR Code Management**
+### **F3: WhatsApp Sharing**
+- Native mobile sharing via navigator.share()
+- WhatsApp integration
+- Download fallback
+- Cross-device compatibility
 
-- Cryptographic QR code generation
-- Instant offline validation
-- ECDSA digital signature
-- Integrity verification
+### **F4: Offline Verification**
+- QR code scanner (html5-qrcode)
+- Manual input fallback
+- Local hash validation
+- Instant verification (<3 seconds)
 
-### 3. 📊 **Digital Transfer**
+### **F5: Hash System**
+- SHA-256 document integrity
+- Timestamp inclusion
+- ShortId lookup system
+- Tamper detection
 
-- Digital transfer form
-- Digitized attachments (documents)
-- Complete history
-- Real-time status tracking
-
-### 4. 📈 **Dashboard Analytics**
-
-- Transfer statistics
-- Metrics by school/period
-- Interactive visualizations
-- Report export
-
-### 5. 🔄 **Synchronization**
-
-- Automatic sync when online
-- Offline operation queue
-- Conflict resolution
-- Cloud backup
+### **F6: PIN Security**
+- 6-digit PIN setup
+- localStorage storage
+- Pre-emission validation
+- Simple but effective
 
 ## 🧪 **Development and Testing**
 
@@ -276,31 +249,32 @@ vercel --prod
 - Staging: `.env.production`
 - Development: `.env.local`
 
-## 📋 **Product Backlog**
+## 📋 **Feature Categories**
 
-Complete backlog available in `../docs/yisa_product_backlog.md`. Main features by sprint:
+Complete implementation details available in `../docs/YISA_MASTER_SPECIFICATION.md`. Features organized by development phase:
 
-### Sprint 1 (Current - Source Jam)
+### **Core Features (F1-F6) - Priority Implementation**
 
-- [x] Basic authentication
-- [x] QR code generation
-- [x] Offline foundation
-- [ ] Transfer form
-- [ ] Basic dashboard
+- [x] **F1**: Emission Form (4-field student data entry)
+- [x] **F2**: PDF + QR Generation (document creation)
+- [x] **F3**: WhatsApp Sharing (native mobile integration)
+- [x] **F4**: Offline Verification (QR scanner + validation)
+- [x] **F5**: Hash System (SHA-256 document integrity)
+- [x] **F6**: PIN Security (6-digit access protection)
 
-### Sprint 2 (Post-Competition)
+### **Advanced Features (F7-F8) - Optional Enhancements**
 
-- [ ] Advanced analytics
-- [ ] Multi-language support
-- [ ] Admin panel
-- [ ] School management
+- [ ] **F7**: Digital Wallet (document storage and retrieval)
+- [ ] **F8**: Basic Dashboard (emission history and statistics)
 
-### Sprint 3 (Future)
+### **Future Enhancements - Long-term Vision**
 
+- [ ] Advanced analytics and reporting
+- [ ] Multi-language support (Ronga/Changana)
+- [ ] MINEDH API integration
+- [ ] Administrative panel for schools
 - [ ] Mobile app (React Native)
-- [ ] API integration (MINEDH)
-- [ ] Advanced reporting
-- [ ] Parent portal
+- [ ] Parent portal functionality
 
 ## 🎯 **Performance Metrics**
 
@@ -369,15 +343,14 @@ git commit -m "docs(readme): update setup instructions"
 ### Issues and Bugs
 
 - **GitHub Issues**: Report bugs and feature requests
-- **Discord**: Real-time support during Source Jam
-- **Documentation**: See `../docs/` folder
+- **Documentation**: See `../docs/` folder for complete specifications
 
-### Development Team
+### How to Contribute
 
-- **Frontend Lead**: [Name] - React/TypeScript/PWA
-- **Backend Lead**: [Name] - Firebase/Security
-- **UI/UX Lead**: [Name] - Design/User Experience
-- **QA Lead**: [Name] - Testing/Accessibility
+- **Frontend Development**: React 19 + JSX, Tailwind CSS, PWA features
+- **Security Implementation**: SHA-256 hashing, PIN authentication
+- **Testing**: Cross-device compatibility, offline functionality
+- **Documentation**: Technical specifications and user guides
 
 ## 📄 **License**
 
@@ -387,10 +360,10 @@ This project is licensed under the **MIT License** - see [LICENSE](LICENSE) file
 
 ## 🙏 **Acknowledgments**
 
-- **Source Jam 2025** organizers and mentors
-- **MozDev** and **Maputo Frontenders** communities
-- **Firebase team** for the generous free tier
-- **Open source contributors** to React, Vite, and shadcn/ui
+- **MozDev** and **Maputo Frontenders** communities for leadership and support
+- **Open source contributors** to React, Vite, PDF-lib, and QR code libraries
+- **Education community** in Mozambique for problem validation and feedback
+- **Technology partners** providing tools that enable this solution
 
 ---
 
