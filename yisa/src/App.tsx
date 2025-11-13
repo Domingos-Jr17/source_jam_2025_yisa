@@ -7,6 +7,7 @@ import Header from './components/Header'
 import Navigation from './components/Navigation'
 import LoadingScreen from './components/LoadingScreen'
 import ErrorBoundary from './components/ErrorBoundary'
+import SkipLink from './components/accessibility/SkipLink'
 
 // Pages
 import HomePage from './pages/HomePage'
@@ -23,6 +24,7 @@ import OfflinePage from './pages/OfflinePage'
 import { useAuth } from './hooks/useAuth'
 import { useNetworkStatus } from './hooks/useNetworkStatus'
 import { useAppInstall } from './hooks/useAppInstall'
+import { useAccessibility } from './hooks/useAccessibility'
 
 // Stores
 import { useAuthStore } from './stores/authStore'
@@ -85,11 +87,16 @@ const App: React.FC = () => {
   const { isOnline } = useNetworkStatus()
   const { showInstallPrompt, installApp } = useAppInstall()
   const { isAuthenticated, isLoading } = useAuthStore()
+  const {
+    settings,
+    getAccessibilityClasses,
+    announcePageChange
+  } = useAccessibility()
 
   // Show install banner if PWA install is available
   const showInstallBanner = showInstallPrompt && !isAuthenticated
 
-  // Handle keyboard shortcuts
+  // Handle keyboard shortcuts and announce page changes
   useEffect(() => {
     const handleKeyboardShortcuts = (event: KeyboardEvent) => {
       // Ctrl/Cmd + K for search (future feature)
@@ -114,6 +121,60 @@ const App: React.FC = () => {
     return () => document.removeEventListener('keydown', handleKeyboardShortcuts)
   }, [])
 
+  // Announce page changes for screen readers
+  useEffect(() => {
+    const handleRouteChange = () => {
+      const pageName = getPageNameFromPath(location.pathname)
+      announcePageChange(pageName, `Navigated to ${pageName}`)
+    }
+
+    // Initial page announcement
+    handleRouteChange()
+
+    // Listen for route changes
+    const originalPushState = history.pushState
+    const originalReplaceState = history.replaceState
+
+    history.pushState = function(...args) {
+      originalPushState.apply(history, args)
+      setTimeout(handleRouteChange, 0)
+    }
+
+    history.replaceState = function(...args) {
+      originalReplaceState.apply(history, args)
+      setTimeout(handleRouteChange, 0)
+    }
+
+    window.addEventListener('popstate', handleRouteChange)
+
+    return () => {
+      history.pushState = originalPushState
+      history.replaceState = originalReplaceState
+      window.removeEventListener('popstate', handleRouteChange)
+    }
+  }, [announcePageChange])
+
+  // Helper function to get page name from path
+  const getPageNameFromPath = (path: string): string => {
+    const pageMap: Record<string, string> = {
+      [ROUTES.HOME]: 'Página Inicial',
+      [ROUTES.EMITIR]: 'Emitir Documento',
+      [ROUTES.VERIFICAR]: 'Verificar Documento',
+      [ROUTES.CARTEIRA]: 'Minha Carteira',
+      [ROUTES.HISTORICO]: 'Histórico',
+      [ROUTES.DEFINICOES]: 'Definições',
+      [ROUTES.SOBRE]: 'Sobre YISA'
+    }
+
+    for (const [route, name] of Object.entries(pageMap)) {
+      if (path.startsWith(route)) {
+        return name
+      }
+    }
+
+    return 'Página Desconhecida'
+  }
+
   // Show offline page if no network
   if (!isOnline) {
     return <OfflinePage />
@@ -126,7 +187,7 @@ const App: React.FC = () => {
 
   return (
     <ErrorBoundary>
-      <div className="relative">
+      <div className={`relative ${getAccessibilityClasses()}`}>
         {/* Install Banner */}
         <AnimatePresence>
           {showInstallBanner && (
@@ -192,6 +253,20 @@ const App: React.FC = () => {
 
         {/* App Routes */}
         <AppLayout>
+          {/* Screen reader announcements */}
+          <div
+            className="sr-only aria-live-polite"
+            aria-live="polite"
+            aria-atomic="true"
+            id="page-announcements"
+          />
+          <div
+            className="sr-only aria-live-assertive"
+            aria-live="assertive"
+            aria-atomic="true"
+            id="urgent-announcements"
+          />
+
           <Routes>
             {/* Public Routes */}
             <Route path={ROUTES.HOME} element={<HomePage />} />

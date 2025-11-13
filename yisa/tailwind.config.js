@@ -94,6 +94,168 @@ export default {
   plugins: [
     // require('@tailwindcss/forms'),
     // require('@tailwindcss/typography'),
+    // Accessibility utilities
+    function({ addUtilities, theme }) {
+      const newUtilities = {
+        '.sr-only': {
+          position: 'absolute',
+          width: '1px',
+          height: '1px',
+          padding: '0',
+          margin: '-1px',
+          overflow: 'hidden',
+          clip: 'rect(0, 0, 0, 0)',
+          whiteSpace: 'nowrap',
+          borderWidth: '0',
+        },
+        '.not-sr-only': {
+          position: 'static',
+          width: 'auto',
+          height: 'auto',
+          padding: '0',
+          margin: '0',
+          overflow: 'visible',
+          clip: 'auto',
+          whiteSpace: 'normal',
+        },
+        // Focus visible for keyboard navigation
+        '.focus-visible': {
+          'outline': '2px solid currentColor',
+          'outline-offset': '2px',
+        },
+        // Reduced motion
+        '.reduce-motion *': {
+          'animation-duration': '0.01ms !important',
+          'animation-iteration-count': '1 !important',
+          'transition-duration': '0.01ms !important',
+        },
+        '.reduce-motion': {
+          'animation-duration': '0.01ms !important',
+          'animation-iteration-count': '1 !important',
+          'transition-duration': '0.01ms !important',
+        },
+        // High contrast mode
+        '.high-contrast': {
+          '--tw-bg-opacity': '1',
+        },
+        '.high-contrast button': {
+          'border-width': '2px',
+        },
+        '.high-contrast a': {
+          'text-decoration': 'underline',
+          'font-weight': '600',
+        },
+        // Large text mode
+        '.large-text': {
+          'font-size': '120%',
+          'lineHeight': '1.5',
+        },
+        '.large-text p': {
+          'font-size': 'inherit',
+        },
+        // Skip links
+        '.skip-link': {
+          'position': 'absolute',
+          'top': '-40px',
+          'left': '6px',
+          'background': theme('colors.primary.600'),
+          'color': 'white',
+          'padding': '8px',
+          'text-decoration': 'none',
+          'z-index': '100',
+          'borderRadius': '0 0 4px 0',
+        },
+        '.skip-link:focus': {
+          'top': '6px',
+        },
+        // Screen reader only text
+        '.sr-only-text': {
+          'position': 'absolute',
+          'left': '-10000px',
+          'top': 'auto',
+          'width': '1px',
+          'height': '1px',
+          'overflow': 'hidden',
+        },
+        // ARIA live regions
+        '.aria-live': {
+          'position': 'absolute',
+          'left': '-10000px',
+          'width': '1px',
+          'height': '1px',
+          'overflow': 'hidden',
+        },
+        '.aria-live-polite': {
+          'aria-live': 'polite',
+          'aria-atomic': 'true',
+        },
+        '.aria-live-assertive': {
+          'aria-live': 'assertive',
+          'aria-atomic': 'true',
+        },
+        // Focus indicators
+        '.focus-ring': {
+          'boxShadow': `0 0 0 3px ${theme('colors.primary.500')}`,
+        },
+        '.focus-ring-offset': {
+          'boxShadow': `0 0 0 3px ${theme('colors.primary.500')}, 0 0 0 6px rgba(59, 130, 246, 0.1)`,
+        },
+        // Touch targets (minimum 44px)
+        '.touch-target-min': {
+          'minWidth': '44px',
+          'minHeight': '44px',
+        },
+        '.touch-target-lg': {
+          'minWidth': '48px',
+          'minHeight': '48px',
+        },
+        // Link states for accessibility
+        '.link-accessible': {
+          'textDecoration': 'underline',
+          'textUnderlineOffset': '2px',
+          'transition': 'textDecorationColor 0.2s',
+        },
+        '.link-accessible:hover': {
+          'textDecorationThickness': '2px',
+        },
+        '.link-accessible:focus': {
+          'outline': '2px solid currentColor',
+          'outlineOffset': '2px',
+          'borderRadius': '4px',
+        },
+        // Error and validation states
+        '.error-state': {
+          'borderColor': theme('colors.error.500'),
+          'outline': '2px solid transparent',
+          'outlineColor': theme('colors.error.500'),
+        },
+        '.success-state': {
+          'borderColor': theme('colors.success.500'),
+          'outline': '2px solid transparent',
+          'outlineColor': theme('colors.success.500'),
+        },
+        '.warning-state': {
+          'borderColor': theme('colors.warning.500'),
+          'outline': '2px solid transparent',
+          'outlineColor': theme('colors.warning.500'),
+        },
+        // Navigation indicators
+        '.nav-indicator': {
+          'position': 'relative',
+        },
+        '.nav-indicator::after': {
+          'content': '',
+          'position': 'absolute',
+          'bottom': '-2px',
+          'left': '0',
+          'right': '0',
+          'height': '2px',
+          'background': 'currentColor',
+        },
+      }
+
+      addUtilities(newUtilities)
+    },
   ],
   darkMode: 'class',
 }

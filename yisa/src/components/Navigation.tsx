@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import { NavLink } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
@@ -12,6 +12,7 @@ import {
   XMarkIcon
 } from '@heroicons/react/24/outline'
 import { useAuth } from '../hooks/useAuth'
+import { useAccessibility } from '../hooks/useAccessibility'
 import { ROUTES } from '../utils/constants'
 
 interface NavigationProps {
@@ -70,10 +71,56 @@ const navigationItems = [
 
 const Navigation: React.FC<NavigationProps> = ({ isOpen, onClose }) => {
   const { isAuthenticated } = useAuth()
+  const { announce, isNavigatingWithKeyboard } = useAccessibility()
+  const navigationRef = useRef<HTMLElement>(null)
 
   const filteredNavItems = navigationItems.filter(item =>
     !item.requiresAuth || isAuthenticated
   )
+
+  // Handle keyboard navigation within sidebar
+  useEffect(() => {
+    if (!isOpen || !isNavigatingWithKeyboard) return
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        onClose()
+        announce('Navigation menu closed', 'polite')
+        return
+      }
+
+      // Arrow key navigation
+      if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+        event.preventDefault()
+        const navItems = navigationRef.current?.querySelectorAll('a') || []
+        const currentIndex = Array.from(navItems).findIndex(item => item === document.activeElement)
+
+        let nextIndex = currentIndex
+        if (event.key === 'ArrowDown') {
+          nextIndex = (currentIndex + 1) % navItems.length
+        } else {
+          nextIndex = currentIndex <= 0 ? navItems.length - 1 : currentIndex - 1
+        }
+
+        const nextItem = navItems[nextIndex] as HTMLElement
+        if (nextItem) {
+          nextItem.focus()
+          const itemName = nextItem.textContent?.trim()
+          if (itemName) {
+            announce(`Focused on ${itemName}`, 'polite')
+          }
+        }
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [isOpen, isNavigatingWithKeyboard, onClose, announce])
+
+  // Handle navigation announcements
+  const handleNavigationClick = (itemName: string) => {
+    announce(`Navigating to ${itemName}`, 'polite')
+  }
 
   return (
     <>
@@ -93,6 +140,7 @@ const Navigation: React.FC<NavigationProps> = ({ isOpen, onClose }) => {
 
       {/* Sidebar */}
       <motion.aside
+        ref={navigationRef}
         initial={{ x: -300 }}
         animate={{ x: isOpen ? 0 : -300 }}
         exit={{ x: -300 }}
@@ -103,6 +151,9 @@ const Navigation: React.FC<NavigationProps> = ({ isOpen, onClose }) => {
           ${isOpen ? 'translate-x-0' : '-translate-x-full'}
           transition-transform duration-300 ease-in-out
         `}
+        role="navigation"
+        aria-label="Main navigation"
+        aria-hidden={!isOpen}
       >
         <div className="flex flex-col h-full">
           {/* Header */}
@@ -124,8 +175,12 @@ const Navigation: React.FC<NavigationProps> = ({ isOpen, onClose }) => {
           </div>
 
           {/* Navigation */}
-          <nav className="flex-1 px-3 py-6 space-y-1 overflow-y-auto">
-            {filteredNavItems.map((item) => {
+          <nav
+            className="flex-1 px-3 py-6 space-y-1 overflow-y-auto"
+            role="menu"
+            aria-label="Navigation menu"
+          >
+            {filteredNavItems.map((item, index) => {
               const Icon = item.icon
 
               return (
@@ -133,24 +188,30 @@ const Navigation: React.FC<NavigationProps> = ({ isOpen, onClose }) => {
                   key={item.name}
                   to={item.href}
                   onClick={() => {
+                    handleNavigationClick(item.name)
                     if (window.innerWidth < 1024) {
                       onClose()
                     }
                   }}
                   className={({ isActive }) => `
                     group flex items-center px-3 py-3 text-sm font-medium rounded-lg transition-all duration-200
+                    focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2
                     ${isActive
                       ? 'bg-primary-50 text-primary-700 border-r-2 border-primary-600'
                       : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
                     }
                   `}
-                  aria-label={item.description}
+                  aria-label={`${item.name} - ${item.description}`}
+                  role="menuitem"
+                  aria-current={location.pathname === item.href ? 'page' : undefined}
+                  data-index={index}
                 >
                   <Icon
                     className={`
                       mr-3 h-5 w-5 flex-shrink-0
                       ${({ isActive }) => isActive ? 'text-primary-600' : 'text-gray-400 group-hover:text-gray-500'}
                     `}
+                    aria-hidden="true"
                   />
                   <div className="flex-1">
                     <div className="font-medium">{item.name}</div>
@@ -158,6 +219,10 @@ const Navigation: React.FC<NavigationProps> = ({ isOpen, onClose }) => {
                       <div className="text-xs text-gray-500 mt-0.5">{item.description}</div>
                     )}
                   </div>
+                  {/* Screen reader only status indicator */}
+                  {location.pathname === item.href && (
+                    <span className="sr-only">Current page</span>
+                  )}
                 </NavLink>
               )
             })}
