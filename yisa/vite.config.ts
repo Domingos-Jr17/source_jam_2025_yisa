@@ -240,12 +240,7 @@ export default defineConfig({
   },
   // CSS optimizations
   css: {
-    devSourcemap: false,
-    postcss: {
-      plugins: [
-        // Add autoprefixer and other CSS optimizations
-      ]
-    }
+    devSourcemap: false
   },
   // Experimental features for better performance
   experimental: {
