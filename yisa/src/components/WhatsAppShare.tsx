@@ -51,7 +51,7 @@ const WhatsAppShare: React.FC<WhatsAppShareProps> = ({
       name: 'Pais/Encarregados',
       phone: '',
       type: 'parent',
-      icon: <UserGroupIcon className=\"w-5 h-5\" />,
+      icon: <UserGroupIcon className="w-5 h-5" />,
       description: 'Partilhar com os pais ou encarregados de educação'
     },
     {
@@ -59,7 +59,7 @@ const WhatsAppShare: React.FC<WhatsAppShareProps> = ({
       name: 'Escola Destino',
       phone: '',
       type: 'school',
-      icon: <BuildingOfficeIcon className=\"w-5 h-5\" />,
+      icon: <BuildingOfficeIcon className="w-5 h-5" />,
       description: 'Partilhar com a escola de destino'
     },
     {
@@ -67,7 +67,7 @@ const WhatsAppShare: React.FC<WhatsAppShareProps> = ({
       name: 'Ministério da Educação',
       phone: '',
       type: 'ministry',
-      icon: <BuildingOfficeIcon className=\"w-5 h-5\" />,
+      icon: <BuildingOfficeIcon className="w-5 h-5" />,
       description: 'Partilhar com autoridades educativas'
     },
     {
@@ -75,7 +75,7 @@ const WhatsAppShare: React.FC<WhatsAppShareProps> = ({
       name: 'Contacto Personalizado',
       phone: '',
       type: 'other',
-      icon: <ChatBubbleLeftRightIcon className=\"w-5 h-5\" />,
+      icon: <ChatBubbleLeftRightIcon className="w-5 h-5" />,
       description: 'Inserir número personalizado'
     }
   ]
@@ -153,30 +153,30 @@ const WhatsAppShare: React.FC<WhatsAppShareProps> = ({
         disabled={isSharing}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
-        className=\"flex items-center space-x-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors disabled:opacity-50\"
+        className="flex items-center space-x-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors disabled:opacity-50"
       >
-        <ChatBubbleLeftRightIcon className=\"w-4 h-4\" />
+        <ChatBubbleLeftRightIcon className="w-4 h-4" />
         <span>WhatsApp</span>
-        {isSharing && <div className=\"spinner spinner-sm\" />}
+        {isSharing && <div className="spinner spinner-sm" />}
       </motion.button>
     )
   }
 
   return (
-    <div className=\"space-y-4\">
+    <div className="space-y-4">
       {/* Header */}
-      <div className=\"text-center\">
-        <div className=\"w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4\">
-          <ChatBubbleLeftRightIcon className=\"w-8 h-8 text-green-600\" />
+      <div className="text-center">
+        <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <ChatBubbleLeftRightIcon className="w-8 h-8 text-green-600" />
         </div>
-        <h3 className=\"text-lg font-semibold text-gray-900 mb-2\">Partilhar via WhatsApp</h3>
-        <p className=\"text-sm text-gray-600\">
+        <h3 className="text-lg font-semibold text-gray-900 mb-2">Partilhar via WhatsApp</h3>
+        <p className="text-sm text-gray-600">
           Partilhe o documento diretamente no WhatsApp com o destinatário pretendido
         </p>
       </div>
 
       {/* Quick Contact Templates */}
-      <div className=\"grid grid-cols-1 sm:grid-cols-2 gap-3\">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         {contactTemplates.slice(0, 3).map((template) => (
           <motion.button
             key={template.id}
@@ -190,7 +190,7 @@ const WhatsAppShare: React.FC<WhatsAppShareProps> = ({
                 : 'border-gray-200 bg-white hover:border-green-300 hover:bg-gray-50'
             } disabled:opacity-50 disabled:cursor-not-allowed`}
           >
-            <div className=\"flex items-center space-x-3\">
+            <div className="flex items-center space-x-3">
               <div className={`p-2 rounded-lg ${
                 selectedContact === template.id
                   ? 'bg-green-100 text-green-600'
@@ -198,9 +198,9 @@ const WhatsAppShare: React.FC<WhatsAppShareProps> = ({
               }`}>
                 {template.icon}
               </div>
-              <div className=\"text-left\">
-                <h4 className=\"font-medium text-gray-900 text-sm\">{template.name}</h4>
-                <p className=\"text-xs text-gray-500\">{template.description}</p>
+              <div className="text-left">
+                <h4 className="font-medium text-gray-900 text-sm">{template.name}</h4>
+                <p className="text-xs text-gray-500">{template.description}</p>
               </div>
             </div>
           </motion.button>
@@ -208,50 +208,50 @@ const WhatsAppShare: React.FC<WhatsAppShareProps> = ({
       </div>
 
       {/* Custom Message */}
-      <div className=\"space-y-2\">
-        <label className=\"block text-sm font-medium text-gray-700\">
+      <div className="space-y-2">
+        <label className="block text-sm font-medium text-gray-700">
           Mensagem Personalizada (opcional)
         </label>
         <textarea
           value={customMessage}
           onChange={(e) => setCustomMessage(e.target.value)}
-          placeholder=\"Deixe em branco para usar a mensagem padrão...\"
+          placeholder="Deixe em branco para usar a mensagem padrão..."
           rows={4}
-          className=\"w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 resize-none\"
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 resize-none"
           disabled={isSharing}
         />
-        <p className=\"text-xs text-gray-500\">
+        <p className="text-xs text-gray-500">
           {customMessage.length}/500 caracteres
         </p>
       </div>
 
       {/* Document Preview */}
-      <div className=\"bg-gray-50 p-4 rounded-lg border border-gray-200\">
-        <h4 className=\"font-medium text-gray-900 mb-3 flex items-center\">
-          <DocumentTextIcon className=\"w-4 h-4 mr-2\" />
+      <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+        <h4 className="font-medium text-gray-900 mb-3 flex items-center">
+          <DocumentTextIcon className="w-4 h-4 mr-2" />
           Documento a ser Partilhado
         </h4>
-        <div className=\"space-y-2 text-sm\">
-          <div className=\"flex justify-between\">
-            <span className=\"text-gray-500\">Tipo:</span>
-            <span className=\"font-medium\">{getDocumentTypeLabel(document.tipo)}</span>
+        <div className="space-y-2 text-sm">
+          <div className="flex justify-between">
+            <span className="text-gray-500">Tipo:</span>
+            <span className="font-medium">{getDocumentTypeLabel(document.tipo)}</span>
           </div>
-          <div className=\"flex justify-between\">
-            <span className=\"text-gray-500\">Estudante:</span>
-            <span className=\"font-medium\">{document.estudante.nomeCompleto}</span>
+          <div className="flex justify-between">
+            <span className="text-gray-500">Estudante:</span>
+            <span className="font-medium">{document.estudante.nomeCompleto}</span>
           </div>
-          <div className=\"flex justify-between\">
-            <span className=\"text-gray-500\">Número:</span>
-            <span className=\"font-medium\">{document.numeroDocumento}</span>
+          <div className="flex justify-between">
+            <span className="text-gray-500">Número:</span>
+            <span className="font-medium">{document.numeroDocumento}</span>
           </div>
-          <div className=\"flex justify-between\">
-            <span className=\"text-gray-500\">Escola:</span>
-            <span className=\"font-medium\">{document.escolaOrigem}</span>
+          <div className="flex justify-between">
+            <span className="text-gray-500">Escola:</span>
+            <span className="font-medium">{document.escolaOrigem}</span>
           </div>
-          <div className=\"flex items-center justify-between\">
-            <span className=\"text-gray-500\">Status:</span>
-            <span className=\"inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700\">
-              <CheckCircleIcon className=\"w-3 h-3 mr-1\" />
+          <div className="flex items-center justify-between">
+            <span className="text-gray-500">Status:</span>
+            <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700">
+              <CheckCircleIcon className="w-3 h-3 mr-1" />
               Válido
             </span>
           </div>
@@ -264,16 +264,16 @@ const WhatsAppShare: React.FC<WhatsAppShareProps> = ({
         disabled={isSharing}
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
-        className=\"w-full flex items-center justify-center space-x-2 px-4 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed\"
+        className="w-full flex items-center justify-center space-x-2 px-4 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {isSharing ? (
           <>
-            <div className=\"spinner spinner-sm\" />
+            <div className="spinner spinner-sm" />
             <span>A partilhar...</span>
           </>
         ) : (
           <>
-            <ChatBubbleLeftRightIcon className=\"w-5 h-5\" />
+            <ChatBubbleLeftRightIcon className="w-5 h-5" />
             <span>Partilhar no WhatsApp</span>
           </>
         )}
@@ -290,11 +290,11 @@ const WhatsAppShare: React.FC<WhatsAppShareProps> = ({
               : 'bg-red-50 text-red-700 border border-red-200'
           }`}
         >
-          <div className=\"flex items-center\">
+          <div className="flex items-center">
             {shareResult.success ? (
-              <CheckCircleIcon className=\"w-4 h-4 mr-2\" />
+              <CheckCircleIcon className="w-4 h-4 mr-2" />
             ) : (
-              <ExclamationTriangleIcon className=\"w-4 h-4 mr-2\" />
+              <ExclamationTriangleIcon className="w-4 h-4 mr-2" />
             )}
             <span>{shareResult.message}</span>
           </div>
@@ -302,8 +302,8 @@ const WhatsAppShare: React.FC<WhatsAppShareProps> = ({
       )}
 
       {/* Security Notice */}
-      <div className=\"text-xs text-gray-500 text-center\">
-        <ClockIcon className=\"w-3 h-3 inline mr-1\" />
+      <div className="text-xs text-gray-500 text-center">
+        <ClockIcon className="w-3 h-3 inline mr-1" />
         A partilha é segura e o documento pode ser verificado pelo destinatário
       </div>
     </div>

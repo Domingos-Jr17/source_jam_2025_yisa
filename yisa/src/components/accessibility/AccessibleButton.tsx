@@ -146,9 +146,9 @@ const AccessibleButton = forwardRef<HTMLButtonElement, AccessibleButtonProps>(
       >
         {/* Left Icon */}
         {leftIcon && (
-          <span className=\"mr-2 flex-shrink-0\" aria-hidden=\"true\">
+          <span className="mr-2 flex-shrink-0" aria-hidden="true">
             {loading ? (
-              <div className=\"animate-spin w-4 h-4\" />
+              <div className="animate-spin w-4 h-4" />
             ) : (
               leftIcon
             )}
@@ -157,26 +157,26 @@ const AccessibleButton = forwardRef<HTMLButtonElement, AccessibleButtonProps>(
 
         {/* Loading State */}
         {loading && (
-          <span className=\"mr-2\" aria-hidden=\"true\">
-            <div className=\"animate-spin w-4 h-4 border-2 border-current border-t-transparent rounded-full\" />
+          <span className="mr-2" aria-hidden="true">
+            <div className="animate-spin w-4 h-4 border-2 border-current border-t-transparent rounded-full" />
           </span>
         )}
 
         {/* Button Content */}
-        <span className=\"text-center whitespace-nowrap\">
+        <span className="text-center whitespace-nowrap">
           {children}
         </span>
 
         {/* Right Icon */}
         {rightIcon && !loading && (
-          <span className=\"ml-2 flex-shrink-0\" aria-hidden=\"true\">
+          <span className="ml-2 flex-shrink-0" aria-hidden="true">
             {rightIcon}
           </span>
         )}
 
         {/* Screen reader only text for loading state */}
         {loading && (
-          <span className=\"sr-only\">
+          <span className="sr-only">
             Loading, please wait
           </span>
         )}

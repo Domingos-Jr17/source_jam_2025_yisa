@@ -119,12 +119,12 @@ const ShareButton: React.FC<ShareButtonProps> = ({
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           className={`p-2 rounded-lg ${getVariantClasses()} ${baseClasses} ${className}`}
-          title=\"Partilhar documento\"
+          title="Partilhar documento"
         >
           {isSharing ? (
-            <div className=\"spinner spinner-sm\" />
+            <div className="spinner spinner-sm" />
           ) : (
-            <ShareIcon className=\"w-4 h-4\" />
+            <ShareIcon className="w-4 h-4" />
           )}
         </motion.button>
 
@@ -140,7 +140,7 @@ const ShareButton: React.FC<ShareButtonProps> = ({
 
   return (
     <>
-      <div className=\"flex items-center gap-2\">
+      <div className="flex items-center gap-2">
         {/* Main Share Button */}
         <motion.button
           onClick={() => setIsModalOpen(true)}
@@ -150,26 +150,26 @@ const ShareButton: React.FC<ShareButtonProps> = ({
           className={`${baseClasses} ${getSizeClasses()} ${getVariantClasses()} ${className}`}
         >
           {isSharing ? (
-            <div className=\"spinner spinner-sm mr-2\" />
+            <div className="spinner spinner-sm mr-2" />
           ) : (
-            <ShareIcon className=\"w-4 h-4 mr-2\" />
+            <ShareIcon className="w-4 h-4 mr-2" />
           )}
           {showText && 'Partilhar'}
         </motion.button>
 
         {/* Quick Actions */}
         {!compact && (
-          <div className=\"flex items-center gap-1\">
+          <div className="flex items-center gap-1">
             {/* WhatsApp Quick Share */}
             <motion.button
               onClick={handleWhatsAppShare}
               disabled={isSharing}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className=\"p-2 rounded-lg bg-green-500 text-white hover:bg-green-600 transition-colors\"
-              title=\"Partilhar via WhatsApp\"
+              className="p-2 rounded-lg bg-green-500 text-white hover:bg-green-600 transition-colors"
+              title="Partilhar via WhatsApp"
             >
-              <ChatBubbleLeftRightIcon className=\"w-4 h-4\" />
+              <ChatBubbleLeftRightIcon className="w-4 h-4" />
             </motion.button>
 
             {/* Copy Link Quick Share */}
@@ -184,10 +184,10 @@ const ShareButton: React.FC<ShareButtonProps> = ({
               disabled={isSharing}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className=\"p-2 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors\"
-              title=\"Copiar link\"
+              className="p-2 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors"
+              title="Copiar link"
             >
-              <LinkIcon className=\"w-4 h-4\" />
+              <LinkIcon className="w-4 h-4" />
             </motion.button>
 
             {/* More Options */}
@@ -196,10 +196,10 @@ const ShareButton: React.FC<ShareButtonProps> = ({
               disabled={isSharing}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className=\"p-2 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors\"
-              title=\"Mais opções\"
+              className="p-2 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors"
+              title="Mais opções"
             >
-              <EllipsisHorizontalIcon className=\"w-4 h-4\" />
+              <EllipsisHorizontalIcon className="w-4 h-4" />
             </motion.button>
           </div>
         )}

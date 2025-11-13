@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
+import { createLazyComponent } from './utils/lazyLoad'
 
 // Components
 import Header from './components/Header'
@@ -9,16 +10,16 @@ import LoadingScreen from './components/LoadingScreen'
 import ErrorBoundary from './components/ErrorBoundary'
 import SkipLink from './components/accessibility/SkipLink'
 
-// Pages
-import HomePage from './pages/HomePage'
-import EmitirPage from './pages/EmitirPage'
-import VerificarPage from './pages/VerificarPage'
-import CarteiraPage from './pages/CarteiraPage'
-import PartilharPage from './pages/PartilharPage'
-import HistoricoPage from './pages/HistoricoPage'
-import DefinicoesPage from './pages/DefinicoesPage'
-import SobrePage from './pages/SobrePage'
-import OfflinePage from './pages/OfflinePage'
+// Lazy-loaded pages for performance optimization
+const HomePage = createLazyComponent(() => import('./pages/HomePage'), { preload: true })
+const EmitirPage = createLazyComponent(() => import('./pages/EmitirPage'))
+const VerificarPage = createLazyComponent(() => import('./pages/VerificarPage'))
+const CarteiraPage = createLazyComponent(() => import('./pages/CarteiraPage'))
+const PartilharPage = createLazyComponent(() => import('./pages/PartilharPage'))
+const HistoricoPage = createLazyComponent(() => import('./pages/HistoricoPage'))
+const DefinicoesPage = createLazyComponent(() => import('./pages/DefinicoesPage'))
+const SobrePage = createLazyComponent(() => import('./pages/SobrePage'), { preload: true })
+const OfflinePage = createLazyComponent(() => import('./pages/OfflinePage'), { preload: true })
 
 // Hooks
 import { useAuth } from './hooks/useAuth'

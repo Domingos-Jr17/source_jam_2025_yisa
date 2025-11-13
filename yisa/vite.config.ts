@@ -2,6 +2,7 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 import path from 'path'
+import { visualizer } from 'rollup-plugin-visualizer'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -189,7 +190,8 @@ export default defineConfig({
   build: {
     target: 'esnext',
     minify: 'terser',
-    sourcemap: true,
+    sourcemap: false, // Disable sourcemaps for production build size
+    cssCodeSplit: true,
     rollupOptions: {
       output: {
         manualChunks: {
@@ -197,10 +199,46 @@ export default defineConfig({
           state: ['zustand'],
           crypto: ['qrcode', 'html5-qrcode'],
           pdf: ['pdf-lib'],
-          ui: ['@headlessui/react', '@heroicons/react', 'framer-motion']
+          ui: ['@headlessui/react', '@heroicons/react', 'framer-motion'],
+          utils: ['date-fns', 'lodash-es']
+        },
+        // Optimize chunk naming for better caching
+        chunkFileNames: (chunkInfo) => {
+          const facadeModuleId = chunkInfo.facadeModuleId ? chunkInfo.facadeModuleId.split('/').pop() : 'chunk'
+          return `assets/[name]-[hash].js`
+        },
+        entryFileNames: 'assets/[name]-[hash].js',
+        assetFileNames: (assetInfo) => {
+          const info = assetInfo.name?.split('.') || []
+          const ext = info[info.length - 1] || 'asset'
+
+          if (/\.(mp4|webm|ogg|mp3|wav|flac|aac)(\?.*)?$/i.test(assetInfo.name || '')) {
+            return 'assets/media/[name]-[hash].[ext]'
+          }
+          if (/\.(png|jpe?g|gif|svg|webp|avif)(\?.*)?$/i.test(assetInfo.name || '')) {
+            return 'assets/images/[name]-[hash].[ext]'
+          }
+          if (/\.(woff2?|eot|ttf|otf)(\?.*)?$/i.test(assetInfo.name || '')) {
+            return 'assets/fonts/[name]-[hash].[ext]'
+          }
+          return `assets/${ext}/[name]-[hash].[ext]`
         }
       }
-    }
+    },
+    terserOptions: {
+      compress: {
+        drop_console: true, // Remove console.log in production
+        drop_debugger: true,
+        pure_funcs: ['console.log', 'console.info', 'console.debug', 'console.warn']
+      },
+      mangle: {
+        safari10: true
+      }
+    },
+    // Optimize chunk size
+    chunkSizeWarningLimit: 1000,
+    // Report compressed size
+    reportCompressedSize: true
   },
   server: {
     port: 3000,
@@ -210,5 +248,39 @@ export default defineConfig({
   preview: {
     port: 4173,
     host: true
+  },
+  // Optimize dependencies
+  optimizeDeps: {
+    include: [
+      'react',
+      'react-dom',
+      'react-router-dom',
+      'zustand',
+      'qrcode',
+      'html5-qrcode',
+      'pdf-lib',
+      'date-fns',
+      'framer-motion'
+    ],
+    exclude: ['@vite/client', '@vite/env']
+  },
+  // CSS optimizations
+  css: {
+    devSourcemap: false,
+    postcss: {
+      plugins: [
+        // Add autoprefixer and other CSS optimizations
+      ]
+    }
+  },
+  // Experimental features for better performance
+  experimental: {
+    renderBuiltUrl(filename, { hostType }) {
+      if (hostType === 'js') {
+        return { js: `/${filename}` }
+      } else {
+        return { relative: true }
+      }
+    }
   }
 })

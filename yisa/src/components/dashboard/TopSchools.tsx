@@ -20,13 +20,13 @@ const TopSchools: React.FC<TopSchoolsProps> = ({
   const getRankIcon = (rank: number) => {
     switch (rank) {
       case 1:
-        return <TrophyIcon className=\"w-5 h-5 text-yellow-500\" />
+        return <TrophyIcon className="w-5 h-5 text-yellow-500" />
       case 2:
-        return <TrophyIcon className=\"w-5 h-5 text-gray-400\" />
+        return <TrophyIcon className="w-5 h-5 text-gray-400" />
       case 3:
-        return <TrophyIcon className=\"w-5 h-5 text-orange-600\" />
+        return <TrophyIcon className="w-5 h-5 text-orange-600" />
       default:
-        return <div className=\"w-5 h-5 rounded-full bg-gray-100 text-gray-600 text-xs flex items-center justify-center font-medium\">
+        return <div className="w-5 h-5 rounded-full bg-gray-100 text-gray-600 text-xs flex items-center justify-center font-medium">
           {rank}
         </div>
     }
@@ -74,22 +74,22 @@ const TopSchools: React.FC<TopSchoolsProps> = ({
 
   if (loading) {
     return (
-      <div className=\"bg-white rounded-xl shadow-sm border border-gray-200 p-6\">
-        <h3 className=\"text-lg font-semibold text-gray-900 mb-4\">Escolas em Destaque</h3>
-        <div className=\"space-y-4\">
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">Escolas em Destaque</h3>
+        <div className="space-y-4">
           {[...Array(5)].map((_, i) => (
-            <div key={i} className=\"animate-pulse space-y-3\">
-              <div className=\"flex items-center justify-between\">
-                <div className=\"flex items-center space-x-3\">
-                  <div className=\"w-8 h-8 bg-gray-200 rounded-full\"></div>
-                  <div className=\"space-y-2\">
-                    <div className=\"h-4 bg-gray-200 rounded w-32\"></div>
-                    <div className=\"h-3 bg-gray-200 rounded w-24\"></div>
+            <div key={i} className="animate-pulse space-y-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  <div className="w-8 h-8 bg-gray-200 rounded-full"></div>
+                  <div className="space-y-2">
+                    <div className="h-4 bg-gray-200 rounded w-32"></div>
+                    <div className="h-3 bg-gray-200 rounded w-24"></div>
                   </div>
                 </div>
-                <div className=\"text-right space-y-2\">
-                  <div className=\"h-4 bg-gray-200 rounded w-16\"></div>
-                  <div className=\"h-3 bg-gray-200 rounded w-20\"></div>
+                <div className="text-right space-y-2">
+                  <div className="h-4 bg-gray-200 rounded w-16"></div>
+                  <div className="h-3 bg-gray-200 rounded w-20"></div>
                 </div>
               </div>
             </div>
@@ -101,27 +101,27 @@ const TopSchools: React.FC<TopSchoolsProps> = ({
 
   if (schools.length === 0) {
     return (
-      <div className=\"bg-white rounded-xl shadow-sm border border-gray-200 p-6\">
-        <h3 className=\"text-lg font-semibold text-gray-900 mb-4\">Escolas em Destaque</h3>
-        <div className=\"text-center py-8\">
-          <BuildingOfficeIcon className=\"w-12 h-12 text-gray-400 mx-auto mb-3\" />
-          <p className=\"text-gray-500\">Nenhuma escola encontrada</p>
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">Escolas em Destaque</h3>
+        <div className="text-center py-8">
+          <BuildingOfficeIcon className="w-12 h-12 text-gray-400 mx-auto mb-3" />
+          <p className="text-gray-500">Nenhuma escola encontrada</p>
         </div>
       </div>
     )
   }
 
   return (
-    <div className=\"bg-white rounded-xl shadow-sm border border-gray-200 p-6\">
-      <div className=\"flex items-center justify-between mb-4\">
-        <h3 className=\"text-lg font-semibold text-gray-900\">Escolas em Destaque</h3>
-        <div className=\"flex items-center text-sm text-gray-500\">
-          <AcademicCapIcon className=\"w-4 h-4 mr-1\" />
+    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-lg font-semibold text-gray-900">Escolas em Destaque</h3>
+        <div className="flex items-center text-sm text-gray-500">
+          <AcademicCapIcon className="w-4 h-4 mr-1" />
           {schools.length} escolas
         </div>
       </div>
 
-      <div className=\"space-y-3\">
+      <div className="space-y-3">
         {schools.map((school, index) => (
           <motion.div
             key={school.schoolName}
@@ -130,23 +130,23 @@ const TopSchools: React.FC<TopSchoolsProps> = ({
             transition={{ duration: 0.3, delay: index * 0.05 }}
             className={`p-4 rounded-lg border-2 transition-all duration-200 hover:shadow-md ${getRankBorderColor(index + 1)}`}
           >
-            <div className=\"flex items-center justify-between\">
+            <div className="flex items-center justify-between">
               {/* School Info */}
-              <div className=\"flex items-center space-x-3 flex-1 min-w-0\">
-                <div className=\"flex-shrink-0\">
+              <div className="flex items-center space-x-3 flex-1 min-w-0">
+                <div className="flex-shrink-0">
                   {getRankIcon(index + 1)}
                 </div>
-                <div className=\"flex-1 min-w-0\">
-                  <h4 className=\"font-medium text-gray-900 truncate\">
+                <div className="flex-1 min-w-0">
+                  <h4 className="font-medium text-gray-900 truncate">
                     {school.schoolName}
                   </h4>
-                  <div className=\"flex items-center space-x-4 text-sm text-gray-500 mt-1\">
-                    <span className=\"flex items-center\">
-                      <CalendarIcon className=\"w-3 h-3 mr-1\" />
+                  <div className="flex items-center space-x-4 text-sm text-gray-500 mt-1">
+                    <span className="flex items-center">
+                      <CalendarIcon className="w-3 h-3 mr-1" />
                       {formatDate(school.lastActivity)}
                     </span>
                     {school.mostCommonType && (
-                      <span className=\"truncate\" title={getDocumentTypeLabel(school.mostCommonType)}>
+                      <span className="truncate" title={getDocumentTypeLabel(school.mostCommonType)}>
                         {getDocumentTypeLabel(school.mostCommonType)}
                       </span>
                     )}
@@ -155,21 +155,21 @@ const TopSchools: React.FC<TopSchoolsProps> = ({
               </div>
 
               {/* Document Count */}
-              <div className=\"text-right ml-4\">
-                <div className=\"text-2xl font-bold text-gray-900\">
+              <div className="text-right ml-4">
+                <div className="text-2xl font-bold text-gray-900">
                   {school.documentCount.toLocaleString('pt-MZ')}
                 </div>
-                <div className=\"text-xs text-gray-500\">documentos</div>
+                <div className="text-xs text-gray-500">documentos</div>
               </div>
             </div>
 
             {/* Progress Bar */}
-            <div className=\"mt-3\">
-              <div className=\"flex items-center justify-between text-xs text-gray-500 mb-1\">
+            <div className="mt-3">
+              <div className="flex items-center justify-between text-xs text-gray-500 mb-1">
                 <span>Pontuação</span>
                 <span>{Math.round((school.documentCount / schools[0].documentCount) * 100)}%</span>
               </div>
-              <div className=\"w-full bg-gray-200 rounded-full h-2\">
+              <div className="w-full bg-gray-200 rounded-full h-2">
                 <motion.div
                   initial={{ width: 0 }}
                   animate={{ width: `${(school.documentCount / schools[0].documentCount) * 100}%` }}
@@ -188,8 +188,8 @@ const TopSchools: React.FC<TopSchoolsProps> = ({
       </div>
 
       {schools.length > 0 && (
-        <div className=\"mt-4 pt-4 border-t border-gray-100 text-center\">
-          <button className=\"text-sm text-primary-600 hover:text-primary-700 font-medium\">
+        <div className="mt-4 pt-4 border-t border-gray-100 text-center">
+          <button className="text-sm text-primary-600 hover:text-primary-700 font-medium">
             Ver todas as escolas
           </button>
         </div>
