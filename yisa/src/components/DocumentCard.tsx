@@ -62,7 +62,13 @@ const DocumentCard: React.FC<DocumentCardProps> = ({
   // Generate QR code data for sharing
   const getQRCodeData = () => {
     if (document.qrCodeData) {
-      return document.qrCodeData
+      try {
+        // Try to parse as JSON first
+        return JSON.parse(document.qrCodeData)
+      } catch {
+        // If it's not valid JSON, return as string
+        return document.qrCodeData
+      }
     }
 
     // Generate QR code data if not present

@@ -11,7 +11,7 @@ interface FormField {
   label?: string
 }
 
-interface AccessibleFormProps extends Omit<FormHTMLAttributes<HTMLFormElement>, 'onSubmit'> {
+export interface AccessibleFormProps extends Omit<FormHTMLAttributes<HTMLFormElement>, 'onSubmit'> {
   onSubmit: (data: Record<string, any>, isValid: boolean) => void | Promise<void>
   onValidationError?: (errors: Record<string, string>) => void
   fields?: FormField[]
@@ -66,16 +66,22 @@ const AccessibleForm = forwardRef<HTMLFormElement, AccessibleFormProps>(
     const statusId = generateId('form-status')
     const descriptionId = generateId('form-description')
 
-    // Combine refs
+    const internalRef = useRef<HTMLFormElement>(null)
+
+    // Combine refs properly
     const setRefs = (element: HTMLFormElement | null) => {
+      internalRef.current = element
       if (ref) {
         if (typeof ref === 'function') {
           ref(element)
-        } else {
-          ref.current = element
+        } else if ('current' in ref) {
+          try {
+            (ref as React.MutableRefObject<HTMLFormElement | null>).current = element
+          } catch {
+            // Ignore readonly ref errors
+          }
         }
       }
-      formRef.current = element
     }
 
     // Initialize form data from fields
@@ -207,7 +213,7 @@ const AccessibleForm = forwardRef<HTMLFormElement, AccessibleFormProps>(
         // Focus first error field
         const firstErrorField = Object.keys(formErrors)[0]
         if (firstErrorField) {
-          const errorElement = formRef.current?.querySelector(`[name="${firstErrorField}"]`) as HTMLElement
+          const errorElement = internalRef.current?.querySelector(`[name="${firstErrorField}"]`) as HTMLElement
           errorElement?.focus()
         }
 
@@ -257,7 +263,7 @@ const AccessibleForm = forwardRef<HTMLFormElement, AccessibleFormProps>(
       // Ctrl/Cmd + Enter to submit
       if ((event.ctrlKey || event.metaKey) && event.key === 'Enter' && isValid && !isSubmitting) {
         event.preventDefault()
-        formRef.current?.dispatchEvent(new Event('submit', { cancelable: true }))
+        internalRef.current?.dispatchEvent(new Event('submit', { cancelable: true }))
       }
 
       // Escape to reset form
@@ -352,7 +358,7 @@ const AccessibleForm = forwardRef<HTMLFormElement, AccessibleFormProps>(
                       type="button"
                       className="text-sm text-error-600 hover:text-error-800 underline text-left"
                       onClick={() => {
-                        const fieldElement = formRef.current?.querySelector(`[name="${fieldName}"]`) as HTMLElement
+                        const fieldElement = internalRef.current?.querySelector(`[name="${fieldName}"]`) as HTMLElement
                         fieldElement?.focus()
                       }}
                     >

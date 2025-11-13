@@ -209,7 +209,7 @@ const Navigation: React.FC<NavigationProps> = ({ isOpen, onClose }) => {
                   <Icon
                     className={`
                       mr-3 h-5 w-5 flex-shrink-0
-                      ${({ isActive }) => isActive ? 'text-primary-600' : 'text-gray-400 group-hover:text-gray-500'}
+                      ${({ isActive }: { isActive: boolean }) => isActive ? 'text-primary-600' : 'text-gray-400 group-hover:text-gray-500'}
                     `}
                     aria-hidden="true"
                   />

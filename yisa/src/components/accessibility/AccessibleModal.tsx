@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { createPortal } from 'react-dom'
 import { useAccessibility } from '../../hooks/useAccessibility'
 
-interface AccessibleModalProps {
+export interface AccessibleModalProps {
   isOpen: boolean
   onClose: () => void
   title?: string

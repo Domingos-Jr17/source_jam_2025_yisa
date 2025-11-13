@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useAccessibility } from '../../hooks/useAccessibility'
 
-interface SkipLinkProps {
+export interface SkipLinkProps {
   href?: string
   targetId?: string
   label?: string

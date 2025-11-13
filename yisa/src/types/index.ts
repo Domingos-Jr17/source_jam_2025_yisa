@@ -4,16 +4,72 @@
  */
 
 // Student types
-export * from './student';
+export type {
+  StudentData,
+  DocumentValidation,
+  ValidationError,
+  ValidationWarning,
+  School,
+  StudentClass,
+  StudentGrade,
+  TransferRequest,
+  DocumentoTransferencia
+} from './student';
 
 // Document types
-export * from './document';
+export type {
+  DocumentoEscolar,
+  DocumentType,
+  DocumentStatus,
+  StudentInfo,
+  SchoolData,
+  ClasseInfo,
+  DocumentSearchFilters,
+  DocumentShareOptions,
+  DocumentStats
+} from './document';
 
 // Security types
-export * from './security';
+export type {
+  SecurityConfig,
+  AuthCredentials,
+  BiometricData,
+  EncryptedData,
+  HashedData,
+  DeviceFingerprint,
+  ScreenInfo,
+  SecuritySession,
+  SecurityLevel,
+  SecurityEvent,
+  SecurityEventType,
+  SecuritySeverity,
+  RateLimitConfig,
+  RateLimitStatus,
+  SecurityAudit,
+  SecurityMetrics,
+  EncryptionKey,
+  SecurityPolicy
+} from './security';
 
 // Database types
 export * from './database';
+
+// Additional types that may be missing
+export interface QRCodeData {
+  documentoId: string;
+  tipoDocumento: DocumentType;
+  numeroDocumento: string;
+  nomeEstudante: string;
+  escolaOrigem: string;
+  dataEmissao: Date;
+  hashValidacao: string;
+}
+
+export interface ValidationResult {
+  isValid: boolean;
+  errors: DocumentValidationError[];
+  warnings: DocumentValidationWarning[];
+}
 
 // Common utility types
 export interface ApiResponse<T = any> {

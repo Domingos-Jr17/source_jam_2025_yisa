@@ -10,7 +10,7 @@ import {
   DocumentTextIcon
 } from '@heroicons/react/24/outline'
 import type { DocumentoEscolar, QRCodeData } from '../types'
-import { SharingService } from '../services/sharing'
+import { SharingService, type ShareResult } from '../services/sharing'
 
 interface WhatsAppShareProps {
   document: DocumentoEscolar
@@ -41,6 +41,13 @@ const WhatsAppShare: React.FC<WhatsAppShareProps> = ({
     success: boolean
     message: string
   } | null>(null)
+
+  const handleShareResult = (result: ShareResult) => {
+    setShareResult({
+      success: result.success,
+      message: result.message || result.error || 'Operação concluída'
+    })
+  }
 
   const sharingService = SharingService.getInstance()
 
@@ -124,7 +131,7 @@ const WhatsAppShare: React.FC<WhatsAppShareProps> = ({
         recipient: recipient
       })
 
-      setShareResult(result)
+      handleShareResult(result)
 
       if (result.success && onClose) {
         setTimeout(() => onClose(), 2000)

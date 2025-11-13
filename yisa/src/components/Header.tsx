@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import { Bars3Icon, XMarkIcon, BellIcon, UserCircleIcon } from '@heroicons/react/24/outline'
 import { useAuth } from '../hooks/useAuth'
 import { useNetworkStatus } from '../hooks/useNetworkStatus'
+import { useAuthStore } from '../stores/authStore'
+import LoginModal from './LoginModal'
 
 interface HeaderProps {
   onMenuToggle: () => void
@@ -10,7 +12,9 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ onMenuToggle }) => {
   const { isAuthenticated, user } = useAuth()
   const { isOnline } = useNetworkStatus()
+  const { logout } = useAuthStore()
   const [showUserMenu, setShowUserMenu] = useState(false)
+  const [showLoginModal, setShowLoginModal] = useState(false)
 
   return (
     <header className="bg-white shadow-sm border-b border-gray-200 fixed top-0 left-0 right-0 z-30">
@@ -91,8 +95,8 @@ const Header: React.FC<HeaderProps> = ({ onMenuToggle }) => {
                     </button>
                     <button
                       className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                      onClick={() => {
-                        // TODO: Handle logout
+                      onClick={async () => {
+                        await logout()
                         setShowUserMenu(false)
                       }}
                     >
@@ -105,10 +109,7 @@ const Header: React.FC<HeaderProps> = ({ onMenuToggle }) => {
               /* Login button (if not authenticated) */
               <button
                 className="bg-primary-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
-                onClick={() => {
-                  // TODO: Navigate to login
-                  console.log('Navigate to login')
-                }}
+                onClick={() => setShowLoginModal(true)}
               >
                 Entrar
               </button>
@@ -145,6 +146,12 @@ const Header: React.FC<HeaderProps> = ({ onMenuToggle }) => {
           </div>
         </div>
       </div>
+
+      {/* Login Modal */}
+      <LoginModal
+        isOpen={showLoginModal}
+        onClose={() => setShowLoginModal(false)}
+      />
     </header>
   )
 }

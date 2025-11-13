@@ -7,7 +7,7 @@ import {
   EllipsisHorizontalIcon
 } from '@heroicons/react/24/outline'
 import type { DocumentoEscolar, QRCodeData } from '../types'
-import { SharingService } from '../services/sharing'
+import { SharingService, type ShareResult } from '../services/sharing'
 import ShareModal from './ShareModal'
 
 interface ShareButtonProps {
@@ -37,6 +37,14 @@ const ShareButton: React.FC<ShareButtonProps> = ({
     method?: string
   } | null>(null)
 
+  const handleShareResult = (result: ShareResult) => {
+    setShareResult({
+      success: result.success,
+      message: result.message || result.error || 'Operação concluída',
+      method: result.method
+    })
+  }
+
   const sharingService = SharingService.getInstance()
 
   const handleQuickShare = async () => {
@@ -45,7 +53,7 @@ const ShareButton: React.FC<ShareButtonProps> = ({
 
     try {
       const result = await sharingService.smartShare(document, qrCodeData)
-      setShareResult(result)
+      handleShareResult(result)
 
       // Auto-hide success message after 3 seconds
       if (result.success) {
@@ -69,7 +77,7 @@ const ShareButton: React.FC<ShareButtonProps> = ({
 
     try {
       const result = await sharingService.shareViaWhatsApp(document, qrCodeData)
-      setShareResult(result)
+      handleShareResult(result)
 
       if (result.success) {
         setTimeout(() => setShareResult(null), 3000)
@@ -176,7 +184,7 @@ const ShareButton: React.FC<ShareButtonProps> = ({
             <motion.button
               onClick={async () => {
                 const result = await sharingService.shareViaClipboard(document)
-                setShareResult(result)
+                handleShareResult(result)
                 if (result.success) {
                   setTimeout(() => setShareResult(null), 3000)
                 }

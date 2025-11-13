@@ -3,7 +3,7 @@ import { motion } from 'framer-motion'
 import type { ButtonHTMLAttributes } from 'react'
 import { useAccessibility } from '../../hooks/useAccessibility'
 
-interface AccessibleButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'type'> {
+export interface AccessibleButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'type'> {
   variant?: 'primary' | 'secondary' | 'ghost' | 'danger'
   size?: 'sm' | 'md' | 'lg'
   loading?: boolean
@@ -67,7 +67,7 @@ const AccessibleButton = forwardRef<HTMLButtonElement, AccessibleButtonProps>(
       // Handle Space and Enter keys
       if ((event.key === ' ' || event.key === 'Spacebar' || event.key === 'Enter') && !disabled && !loading) {
         event.preventDefault()
-        buttonRef.current?.click()
+        ;(event.target as HTMLButtonElement).click()
       }
     }
 

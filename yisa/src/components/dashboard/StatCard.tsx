@@ -3,7 +3,7 @@ import { motion } from 'framer-motion'
 import {
   DocumentTextIcon,
   CalendarIcon,
-  TrendingUpIcon,
+  ArrowTrendingUpIcon,
   ClockIcon
 } from '@heroicons/react/24/outline'
 

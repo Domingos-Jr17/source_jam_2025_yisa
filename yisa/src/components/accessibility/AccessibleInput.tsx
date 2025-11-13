@@ -3,7 +3,7 @@ import { motion } from 'framer-motion'
 import type { InputHTMLAttributes } from 'react'
 import { useAccessibility } from '../../hooks/useAccessibility'
 
-interface AccessibleInputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> {
+export interface AccessibleInputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> {
   label?: string
   type?: 'text' | 'email' | 'tel' | 'password' | 'number' | 'search' | 'url'
   error?: string
@@ -48,7 +48,7 @@ const AccessibleInput = forwardRef<HTMLInputElement, AccessibleInputProps>(
     ref
   ) => {
     const { announce, generateId } = useAccessibility()
-    const inputRef = useRef<HTMLInputElement>(null)
+    const internalRef = useRef<HTMLInputElement>(null)
     const [inputType, setInputType] = useState(type)
     const [isFocused, setIsFocused] = useState(false)
     const [internalValue, setInternalValue] = useState(value || '')
@@ -61,16 +61,20 @@ const AccessibleInput = forwardRef<HTMLInputElement, AccessibleInputProps>(
     const helperId = helperText ? generateId('helper') : undefined
     const descriptionId = [errorId, helperId].filter(Boolean).join(' ') || undefined
 
-    // Combine refs
+    // Combine refs properly
     const setRefs = (element: HTMLInputElement | null) => {
+      internalRef.current = element
       if (ref) {
         if (typeof ref === 'function') {
           ref(element)
-        } else {
-          ref.current = element
+        } else if ('current' in ref) {
+          try {
+            (ref as React.MutableRefObject<HTMLInputElement | null>).current = element
+          } catch {
+            // Ignore readonly ref errors
+          }
         }
       }
-      inputRef.current = element
     }
 
     // Update internal value when prop changes
@@ -188,7 +192,7 @@ const AccessibleInput = forwardRef<HTMLInputElement, AccessibleInputProps>(
     const getCharacterCount = () => {
       if (!maxLength) return null
 
-      const count = internalValue.length
+      const count = String(internalValue).length
       const percentage = (count / maxLength) * 100
 
       let colorClass = 'text-gray-500'
@@ -247,7 +251,7 @@ const AccessibleInput = forwardRef<HTMLInputElement, AccessibleInputProps>(
             onBlur={handleBlur}
             whileTap={{ scale: disabled ? 1 : 0.98 }}
             transition={{ duration: 0.1 }}
-            {...props}
+            {...Object.fromEntries(Object.entries(props).filter(([key]) => !['onAnimationStart', 'onAnimationEnd'].includes(key)))}
           />
 
           {/* Right Icon or Password Toggle */}

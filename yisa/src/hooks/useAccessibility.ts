@@ -24,6 +24,13 @@ interface UseAccessibilityReturn {
   setFocusManagement: (enabled: boolean) => void
   isNavigatingWithKeyboard: boolean
   currentFocusElement: HTMLElement | null
+  announcePageChange: (title: string, description?: string) => void
+  getAccessibilityClasses: () => string
+  validateElement: (element: HTMLElement) => {
+    errors: string[]
+    warnings: string[]
+    passed: boolean
+  }
 }
 
 export const useAccessibility = (): UseAccessibilityReturn => {

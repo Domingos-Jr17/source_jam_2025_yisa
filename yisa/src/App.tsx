@@ -38,7 +38,8 @@ interface AppLayoutProps {
 
 const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
   const { isLoading } = useAuth()
-  const [sidebarOpen, setSidebarOpen] = useState(false)
+  // Start with sidebar open on desktop by default
+  const [sidebarOpen, setSidebarOpen] = useState(true)
 
   if (isLoading) {
     return <LoadingScreen />
