@@ -40,7 +40,7 @@ const OfflinePage: React.FC = () => {
           hasDocuments,
           canEmit: true, // Can emit but will sync later
           canVerify: true, // QR verification works offline
-          hasCache,
+          hasCache: Boolean(hasCache),
           cachedResources
         })
       } catch (error) {

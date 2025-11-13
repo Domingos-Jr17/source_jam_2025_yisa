@@ -1,7 +1,7 @@
 import QRCode from 'qrcode'
 import { CryptoService } from './crypto'
 import { SECURITY_CONFIG } from '../utils/constants'
-import type { QRCodeData, DocumentoEscolar } from '../types'
+import type { QRCodeData, DocumentoEscolar, DocumentType } from '../types'
 
 /**
  * QR Code service for document verification
@@ -25,7 +25,7 @@ export class QRService {
   public async generateQRCodeData(document: DocumentoEscolar): Promise<QRCodeData> {
     const qrData: QRCodeData = {
       documentoId: document.id,
-      tipoDocumento: document.tipo,
+      tipoDocumento: document.tipo as any,
       numeroDocumento: document.numeroDocumento,
       estudanteBI: document.estudante.numeroBI,
       dataEmissao: document.dataEmissao.toISOString(),
@@ -37,7 +37,8 @@ export class QRService {
 
     // Generate checksum for integrity verification
     const dataString = JSON.stringify(qrData)
-    const checksum = await CryptoService.hashData(dataString)
+    const cryptoService = CryptoService.getInstance()
+    const checksum = await cryptoService.hashData(dataString)
     qrData.checksum = checksum
 
     return qrData
@@ -75,7 +76,8 @@ export class QRService {
       // Create checksum from the data (excluding the checksum field)
       const { checksum, ...dataWithoutChecksum } = qrData
       const dataString = JSON.stringify(dataWithoutChecksum)
-      const calculatedChecksum = await CryptoService.hashData(dataString)
+      const cryptoService = CryptoService.getInstance()
+      const calculatedChecksum = await cryptoService.hashData(dataString)
 
       // Compare checksums
       return checksum === calculatedChecksum
@@ -215,7 +217,7 @@ export class QRService {
   } {
     return {
       documentId: qrData.documentoId,
-      documentType: qrData.tipoDocumento,
+      documentType: String(qrData.tipoDocumento),
       issueDate: new Date(qrData.dataEmissao),
       school: qrData.escolaOrigem,
       isValid: qrData.checksum.length > 0

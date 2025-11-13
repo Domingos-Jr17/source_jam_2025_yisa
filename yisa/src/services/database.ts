@@ -83,54 +83,60 @@ export class DatabaseService extends Dexie {
    * Create default application settings
    */
   private async createDefaultSettings(): Promise<void> {
-    const defaultSettings = [
+    const defaultSettings: SettingsEntity[] = [
       {
         id: 'app_version',
         key: 'app_version',
         value: '1.0.0',
-        type: 'string' as const,
+        type: 'string',
         category: 'app',
-        description: 'Versão atual da aplicação'
+        description: 'Versão atual da aplicação',
+        updatedAt: new Date()
       },
       {
         id: 'theme',
         key: 'theme',
         value: 'auto',
-        type: 'string' as const,
+        type: 'string',
         category: 'ui',
-        description: 'Tema da interface'
+        description: 'Tema da interface',
+        updatedAt: new Date()
       },
       {
         id: 'language',
         key: 'language',
         value: 'pt-MZ',
-        type: 'string' as const,
+        type: 'string',
         category: 'ui',
-        description: 'Idioma da aplicação'
+        description: 'Idioma da aplicação',
+        updatedAt: new Date()
       },
       {
         id: 'auto_backup',
         key: 'auto_backup',
         value: 'true',
-        type: 'boolean' as const,
+        type: 'boolean',
         category: 'backup',
-        description: 'Backup automático ativado'
+        description: 'Backup automático ativado',
+        updatedAt: new Date()
       },
       {
         id: 'session_timeout',
         key: 'session_timeout',
         value: '30',
-        type: 'number' as const,
+        type: 'number',
         category: 'security',
-        description: 'Timeout da sessão em minutos'
+        description: 'Timeout da sessão em minutos',
+        updatedAt: new Date()
       },
       {
         id: 'max_failed_attempts',
         key: 'max_failed_attempts',
         value: '5',
-        type: 'number' as const,
+        type: 'number',
         category: 'security',
-        description: 'Máximo de tentativas falhadas'
+        description: 'Máximo de tentativas falhadas',
+        updatedAt: new Date()
       }
     ]
 
@@ -216,7 +222,7 @@ export class DatabaseService extends Dexie {
   }
 
   public async getAllStudents(): Promise<StudentEntity[]> {
-    return await this.students.where('isActive').equals(true).toArray()
+    return await this.students.filter(student => student.isActive).toArray()
   }
 
   // DOCUMENT OPERATIONS
@@ -291,7 +297,7 @@ export class DatabaseService extends Dexie {
 
   // SCHOOL OPERATIONS
   public async getAllSchools(): Promise<SchoolEntity[]> {
-    return await this.schools.where('isActive').equals(true).toArray()
+    return await this.schools.filter(school => school.isActive).toArray()
   }
 
   public async getSchool(id: string): Promise<SchoolEntity | undefined> {
@@ -445,7 +451,7 @@ export class DatabaseService extends Dexie {
 
   public async getSyncStatus(): Promise<SyncStatus> {
     const lastSyncSetting = await this.getSetting('last_sync')
-    const pendingUploads = await this.audit.where('success').equals(false).count()
+    const pendingUploads = await this.audit.filter(event => !event.success).count()
 
     return {
       lastSync: lastSyncSetting ? new Date(lastSyncSetting.value) : new Date(0),

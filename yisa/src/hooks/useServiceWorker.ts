@@ -41,10 +41,10 @@ export const useServiceWorker = () => {
     return supported
   }, [])
 
-  const registerServiceWorker = useCallback(async () => {
+  const registerServiceWorker = useCallback(async (): Promise<boolean> => {
     if (!('serviceWorker' in navigator)) {
       console.warn('Service Worker is not supported')
-      return
+      return false
     }
 
     try {
@@ -53,8 +53,8 @@ export const useServiceWorker = () => {
       // Only register service worker in production
       if (!import.meta.env.PROD) {
         setStatus(prev => ({ ...prev, enabled: false }))
-        setUpdateStatus(prev => ({ ...prev, checking: false }))
-        return
+        setUpdateStatus(prev => ({ ...prev, checking: false, available: false, installing: false, activated: false }))
+        return false
       }
 
       // Register the service worker
@@ -111,14 +111,19 @@ export const useServiceWorker = () => {
       }, 60 * 60 * 1000) // Check every hour
 
       // Cleanup interval on unmount
-      return () => clearInterval(checkInterval)
+      const cleanup = () => clearInterval(checkInterval)
+
+      // Return true for successful registration
+      return true
 
     } catch (error) {
       console.error('Service Worker registration failed:', error)
       setUpdateStatus(prev => ({
+        ...prev,
         checking: false,
         error: error instanceof Error ? error.message : 'Registration failed'
       }))
+      return false
     }
   }, [])
 
@@ -138,6 +143,7 @@ export const useServiceWorker = () => {
     } catch (error) {
       console.error('Failed to apply update:', error)
       setUpdateStatus(prev => ({
+        ...prev,
         installing: false,
         error: error instanceof Error ? error.message : 'Update failed'
       }))

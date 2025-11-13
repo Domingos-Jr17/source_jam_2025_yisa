@@ -158,8 +158,8 @@ const HistoricoPage: React.FC = () => {
         <StatCard
           title="Emitidos Hoje"
           value={stats?.documentsToday || 0}
-          change={stats?.documentsToday ? getPercentageChange(stats.documentsToday, stats.documentsThisWeek / 7) : 0}
-          changeType={stats?.documentsToday > 0 ? 'increase' : 'neutral'}
+          change={stats?.documentsToday ? getPercentageChange(stats.documentsToday, (stats.documentsThisWeek || 0) / 7) : 0}
+          changeType={(stats?.documentsToday || 0) > 0 ? 'increase' : 'neutral'}
           icon={<CalendarIcon className="w-6 h-6" />}
           color="green"
           loading={isLoading}
@@ -168,8 +168,8 @@ const HistoricoPage: React.FC = () => {
         <StatCard
           title="Partilhas Esta Semana"
           value={stats?.sharingStats.sharesThisWeek || 0}
-          change={stats?.sharingStats.totalShares ? getPercentageChange(stats.sharingStats.sharesThisWeek, stats.sharingStats.totalShares / 4) : 0}
-          changeType={stats?.sharingStats.sharesThisWeek > 0 ? 'increase' : 'neutral'}
+          change={stats?.sharingStats.totalShares ? getPercentageChange(stats.sharingStats.sharesThisWeek || 0, stats.sharingStats.totalShares / 4) : 0}
+          changeType={(stats?.sharingStats.sharesThisWeek || 0) > 0 ? 'increase' : 'neutral'}
           icon={<ShareIcon className="w-6 h-6" />}
           color="purple"
           loading={isLoading}
@@ -180,7 +180,7 @@ const HistoricoPage: React.FC = () => {
           value={stats?.verificationStats.totalVerifications || 0}
           change={stats?.verificationStats.successfulVerifications ?
             getPercentageChange(stats.verificationStats.successfulVerifications, stats.verificationStats.totalVerifications) : 0}
-          changeType={stats?.verificationStats.successfulVerifications > 0 ? 'increase' : 'neutral'}
+          changeType={(stats?.verificationStats.successfulVerifications || 0) > 0 ? 'increase' : 'neutral'}
           icon={<EyeIcon className="w-6 h-6" />}
           color="yellow"
           loading={isLoading}

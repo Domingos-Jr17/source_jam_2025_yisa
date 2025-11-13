@@ -80,7 +80,7 @@ export class AccessibilityValidator {
           type: 'error',
           rule: 'WCAG 1.1.1 - Non-text Content',
           description: 'Image missing alt attribute',
-          element: img,
+          element: img as HTMLElement,
           suggestion: 'Add descriptive alt text or alt="" for decorative images'
         })
       }
@@ -101,12 +101,12 @@ export class AccessibilityValidator {
                       input.hasAttribute('aria-labelledby') ||
                       input.id && document.querySelector(`label[for="${input.id}"]`)
 
-      if (!hasLabel && input.type !== 'hidden') {
+      if (!hasLabel && (input as HTMLInputElement).type !== 'hidden') {
         issues.push({
           type: 'error',
           rule: 'WCAG 3.3.2 - Labels or Instructions',
           description: 'Form input missing associated label',
-          element: input,
+          element: input as HTMLElement,
           suggestion: 'Add a label element or aria-label/aria-labelledby attribute'
         })
       }
@@ -158,7 +158,7 @@ export class AccessibilityValidator {
           type: 'warning',
           rule: 'WCAG 1.3.1 - Info and Relationships',
           description: 'Page should start with h1 heading',
-          element: heading,
+          element: heading as HTMLElement,
           suggestion: 'Use h1 for the main page heading'
         })
       }
@@ -168,7 +168,7 @@ export class AccessibilityValidator {
           type: 'warning',
           rule: 'WCAG 1.3.1 - Info and Relationships',
           description: `Heading level skipped (h${previousLevel} to h${currentLevel})`,
-          element: heading,
+          element: heading as HTMLElement,
           suggestion: 'Maintain proper heading hierarchy without skipping levels'
         })
       }
@@ -199,7 +199,7 @@ export class AccessibilityValidator {
           type: 'warning',
           rule: 'WCAG 1.4.3 - Contrast (Minimum)',
           description: 'Low contrast text detected',
-          element: element,
+          element: element as HTMLElement,
           suggestion: 'Increase text color contrast ratio to at least 4.5:1'
         })
       }
@@ -224,7 +224,7 @@ export class AccessibilityValidator {
           type: 'warning',
           rule: 'WCAG 2.4.3 - Focus Order',
           description: 'Positive tabindex value may disrupt focus order',
-          element: element,
+          element: element as HTMLElement,
           suggestion: 'Use tabindex="0" for focusable elements or tabindex="-1" for programmatic focus'
         })
       }
@@ -273,7 +273,7 @@ export class AccessibilityValidator {
   private checkLanguageAttributes(): ValidationIssue[] {
     const issues: ValidationIssue[] = []
 
-    if (!document.documentElement.hasAttribute('lang')) {
+    if (typeof document !== 'undefined' && !document.documentElement.hasAttribute('lang')) {
       issues.push({
         type: 'warning',
         rule: 'WCAG 3.1.1 - Language of Page',
@@ -301,7 +301,7 @@ export class AccessibilityValidator {
           type: 'warning',
           rule: 'WCAG 2.4.4 - Link Purpose (In Context)',
           description: 'Non-descriptive link text',
-          element: link,
+          element: link as HTMLElement,
           suggestion: 'Use more descriptive link text that indicates the link destination'
         })
       }
@@ -332,7 +332,7 @@ export class AccessibilityValidator {
           type: 'warning',
           rule: 'WCAG 2.1.1 - Keyboard',
           description: 'Interactive element may not be keyboard accessible',
-          element: element,
+          element: element as HTMLElement,
           suggestion: 'Add tabindex="0" to make element focusable, or use natively focusable elements'
         })
       }
@@ -390,7 +390,7 @@ export class AccessibilityValidator {
   /**
    * Run validation and log results to console
    */
-  public audit(): void {
+  public audit(): ValidationResult {
     const result = this.validatePage()
 
     console.group('🔍 Accessibility Audit Results')

@@ -1,3 +1,6 @@
+import type { DocumentType, DocumentStatus, StudentInfo, SchoolData } from './document'
+import type { SecurityEvent, BiometricData } from './security'
+
 /**
  * Tipos de dados para o banco de dados IndexedDB do YISA
  * Database types for the YISA IndexedDB system
@@ -227,6 +230,3 @@ export interface MigrationState {
   error?: string;
 }
 
-// Import existing types from other files
-import { StudentInfo, SchoolData } from './document';
-import { BiometricData } from './security';

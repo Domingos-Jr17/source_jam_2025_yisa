@@ -1,11 +1,5 @@
 import { useState, useEffect } from 'react'
 
-declare global {
-  interface Window {
-    deferredPrompt?: any
-  }
-}
-
 export const useAppInstall = () => {
   const [showInstallPrompt, setShowInstallPrompt] = useState(false)
   const [isInstalled, setIsInstalled] = useState(false)
@@ -39,7 +33,7 @@ export const useAppInstall = () => {
     // Listen for install prompt
     const handleBeforeInstallPrompt = (e: Event) => {
       e.preventDefault()
-      window.deferredPrompt = e
+      window.deferredPrompt = e as BeforeInstallPromptEvent
       setIsInstallable(true)
 
       const dismissed = localStorage.getItem('yisa_install_dismissed')
@@ -74,10 +68,10 @@ export const useAppInstall = () => {
 
     try {
       // Show the install prompt
-      (window.deferredPrompt as any).prompt()
+      await window.deferredPrompt?.prompt()
 
       // Wait for the user to respond to the prompt
-      const choiceResult = await (window.deferredPrompt as any).userChoice
+      const choiceResult = await window.deferredPrompt?.userChoice
 
       if (choiceResult.outcome === 'accepted') {
         console.log('User accepted the install prompt')

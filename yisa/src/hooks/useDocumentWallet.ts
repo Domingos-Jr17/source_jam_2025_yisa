@@ -222,13 +222,13 @@ export const useDocumentWallet = (): UseDocumentWalletReturn => {
 
   const downloadDocument = async (documentId: string): Promise<void> => {
     try {
-      const document = getDocumentById(documentId)
-      if (!document || !document.pdfBase64) {
+      const doc = getDocumentById(documentId)
+      if (!doc || !doc.pdfBase64) {
         throw new Error('PDF não encontrado para este documento')
       }
 
       // Convert base64 to blob
-      const byteCharacters = atob(document.pdfBase64)
+      const byteCharacters = atob(doc.pdfBase64)
       const byteNumbers = new Array(byteCharacters.length)
       for (let i = 0; i < byteCharacters.length; i++) {
         byteNumbers[i] = byteCharacters.charCodeAt(i)
@@ -238,14 +238,14 @@ export const useDocumentWallet = (): UseDocumentWalletReturn => {
 
       // Create download link
       const url = URL.createObjectURL(blob)
-      const link = document.createElement('a')
+      const link = window.document.createElement('a')
       link.href = url
-      link.download = `YISA-${document.numeroDocumento}.pdf`
-
+      link.download = `YISA-${doc.numeroDocumento}.pdf`
+      
       // Trigger download
-      document.body.appendChild(link)
+      window.document.body.appendChild(link)
       link.click()
-      document.body.removeChild(link)
+      window.document.body.removeChild(link)
 
       // Cleanup
       URL.revokeObjectURL(url)
@@ -259,7 +259,7 @@ export const useDocumentWallet = (): UseDocumentWalletReturn => {
         deviceId: '', // Will come from auth context
         userAgent: navigator.userAgent,
         success: true,
-        metadata: JSON.stringify({ filename: `YISA-${document.numeroDocumento}.pdf` })
+        metadata: JSON.stringify({ filename: `YISA-${doc.numeroDocumento}.pdf` })
       })
 
     } catch (error) {

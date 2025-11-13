@@ -1,7 +1,15 @@
 /// <reference types="vite/client" />
 
+interface BeforeInstallPromptEvent extends Event {
+  prompt: () => Promise<void>;
+  userChoice: Promise<{
+    outcome: 'accepted' | 'dismissed';
+    platform: string;
+  }>;
+}
+
 interface Window {
-  deferredPrompt?: Event | null;
+  deferredPrompt?: BeforeInstallPromptEvent | null;
 }
 
 declare module '*.svg' {

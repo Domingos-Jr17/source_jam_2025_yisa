@@ -51,6 +51,7 @@ export type {
 
 // Database types
 export * from './database';
+export type { AuditEntity as AuditEvent } from './database';
 
 // Export validation types from document module
 export type { ValidationError, ValidationWarning, ValidationResult } from './document';
@@ -59,10 +60,15 @@ export interface QRCodeData {
   documentoId: string;
   tipoDocumento: DocumentType;
   numeroDocumento: string;
-  nomeEstudante: string;
+  estudanteBI: string;
+  nomeEstudante?: string;
   escolaOrigem: string;
-  dataEmissao: Date;
+  dataEmissao: string;
   hashValidacao: string;
+  urlVerificacao: string;
+  checksum: string;
+  watermark?: string;
+  timestamp?: number;
 }
 
 // Common utility types

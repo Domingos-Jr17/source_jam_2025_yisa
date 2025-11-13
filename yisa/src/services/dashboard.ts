@@ -148,7 +148,7 @@ export class DashboardService {
         {
           label: 'Documentos Emitidos',
           data: monthlyData.data,
-          backgroundColor: 'rgba(59, 130, 246, 0.5)',
+          backgroundColor: ['rgba(59, 130, 246, 0.5)'],
           borderColor: 'rgb(59, 130, 246)',
           borderWidth: 2
         }
@@ -205,7 +205,7 @@ export class DashboardService {
         {
           label: 'Partilhas por Semana',
           data: weeklyData.data,
-          backgroundColor: 'rgba(34, 197, 94, 0.5)',
+          backgroundColor: ['rgba(34, 197, 94, 0.5)'],
           borderColor: 'rgb(34, 197, 94)',
           borderWidth: 2
         }

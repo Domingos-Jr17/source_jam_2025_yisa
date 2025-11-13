@@ -126,18 +126,21 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 // Make install prompt available globally for custom install UI
 (window as any).deferredPrompt = deferredPrompt;
 
-// Performance monitoring
-if (process.env.NODE_ENV === 'production') {
+// Performance monitoring - commented out due to web-vitals API changes
+// TODO: Update when web-vitals package is updated to compatible version
+/*
+if (import.meta.env.PROD) {
   // Report web vitals
   const reportWebVitals = async (onPerfEntry?: (metric: any) => void) => {
     if (onPerfEntry && onPerfEntry instanceof Function) {
       try {
-        const { getCLS, getFID, getFCP, getLCP, getTTFB } = await import('web-vitals');
-        getCLS(onPerfEntry);
-        getFID(onPerfEntry);
-        getFCP(onPerfEntry);
-        getLCP(onPerfEntry);
-        getTTFB(onPerfEntry);
+        const webVitals = await import('web-vitals');
+        // Use the available functions, with fallbacks for different versions
+        if (webVitals.getCLS) webVitals.getCLS(onPerfEntry);
+        if (webVitals.getINP) webVitals.getINP(onPerfEntry);
+        if (webVitals.getFCP) webVitals.getFCP(onPerfEntry);
+        if (webVitals.getLCP) webVitals.getLCP(onPerfEntry);
+        if (webVitals.getTTFB) webVitals.getTTFB(onPerfEntry);
       } catch (error) {
         console.warn('Failed to load web vitals:', error);
       }
@@ -149,5 +152,6 @@ if (process.env.NODE_ENV === 'production') {
     // Send to analytics service here
   });
 }
+*/
 
 export type AppDispatch = typeof queryClient;

@@ -161,7 +161,7 @@ export const useDocumentForm = (): UseDocumentFormReturn => {
       // Create the transfer document object first
       const documentObject = {
         id: crypto.randomUUID(),
-        tipo: 'declaracao_transferencia',
+        tipo: 'declaracao_transferencia' as const,
         estudanteId: studentId,
         dataEmissao: new Date(),
         numeroDocumento: `YISA-${Date.now()}`,
@@ -198,13 +198,13 @@ export const useDocumentForm = (): UseDocumentFormReturn => {
             classe: parseInt(formData.classe),
             turma: formData.turma,
             ano: new Date().getFullYear(),
-            regime: 'diurno'
+            regime: formData.turma.includes('noturno') ? 'noturno' as const : 'diurno' as const
           },
           disciplina: formData.disciplina
         },
         qrCodeData: '', // Will be populated after QR generation
         hashValidacao: hash,
-        status: 'emitido',
+        status: 'emitido' as const,
         versao: '1.0',
         criadoEm: new Date(),
         atualizadoEm: new Date()

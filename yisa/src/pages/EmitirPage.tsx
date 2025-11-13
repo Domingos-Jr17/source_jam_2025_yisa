@@ -227,7 +227,7 @@ const EmitirPage: React.FC = () => {
               <FormInput
                 label="Disciplina (opcional)"
                 name="disciplina"
-                value={formData.disciplina}
+                value={formData.disciplina || ''}
                 onChange={(value) => handleInputChange('disciplina', value)}
                 placeholder="Ex: Matemática"
                 helper="Preencha apenas para transferências específicas"

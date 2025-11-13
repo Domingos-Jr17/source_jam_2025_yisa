@@ -68,7 +68,7 @@ export class AccessibilityManager {
     if (!this.liveRegion || this.isAnnouncing) return
 
     this.isAnnouncing = true
-    this.liveRegion.setAttribute('aria-live', announcement.politeneness)
+    this.liveRegion.setAttribute('aria-live', announcement.politeness || 'polite')
     this.liveRegion.textContent = announcement.message
 
     // Clear announcement after delay to allow screen readers to process

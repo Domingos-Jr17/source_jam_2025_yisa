@@ -1,5 +1,26 @@
 import { useState, useEffect } from 'react'
 
+// Network Information API types
+interface NetworkConnection {
+  type: string
+  effectiveType: string
+  downlink?: number
+  rtt?: number
+  saveData?: boolean
+}
+
+interface NavigatorWithConnection extends Navigator {
+  connection?: NetworkConnection;
+}
+
+interface NetworkConnection extends EventTarget {
+  type: string;
+  effectiveType: string;
+  downlink?: number;
+  rtt?: number;
+  saveData?: boolean;
+}
+
 export interface NetworkStatus {
   isOnline: boolean
   isOffline: boolean
@@ -20,14 +41,16 @@ export const useNetworkStatus = (): NetworkStatus => {
     // Update connection info if Network Information API is available
     const updateConnectionInfo = () => {
       if ('connection' in navigator) {
-        const connection = (navigator as any).connection
-        setConnectionInfo({
-          connectionType: connection.type,
-          effectiveType: connection.effectiveType,
-          downlink: connection.downlink,
-          rtt: connection.rtt,
-          saveData: connection.saveData
-        })
+        const connection = (navigator as NavigatorWithConnection).connection
+        if (connection) {
+          setConnectionInfo({
+            connectionType: connection.type,
+            effectiveType: connection.effectiveType,
+            downlink: connection.downlink,
+            rtt: connection.rtt,
+            saveData: connection.saveData
+          })
+        }
       }
     }
 
@@ -49,8 +72,10 @@ export const useNetworkStatus = (): NetworkStatus => {
     window.addEventListener('offline', handleOffline)
 
     if ('connection' in navigator) {
-      const connection = (navigator as any).connection
-      connection.addEventListener('change', handleConnectionChange)
+      const connection = (navigator as NavigatorWithConnection).connection
+      if (connection) {
+        connection.addEventListener('change', handleConnectionChange)
+      }
     }
 
     // Initial connection info
@@ -61,8 +86,10 @@ export const useNetworkStatus = (): NetworkStatus => {
       window.removeEventListener('offline', handleOffline)
 
       if ('connection' in navigator) {
-        const connection = (navigator as any).connection
-        connection.removeEventListener('change', handleConnectionChange)
+        const connection = (navigator as NavigatorWithConnection).connection
+        if (connection) {
+          connection.removeEventListener('change', handleConnectionChange)
+        }
       }
     }
   }, [])

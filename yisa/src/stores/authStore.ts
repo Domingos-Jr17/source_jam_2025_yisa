@@ -5,10 +5,12 @@ import { CryptoService } from '../services/crypto'
 import { DatabaseService } from '../services/database'
 import type {
   AuthCredentials,
-  SecuritySession,
   DeviceFingerprint,
-  SecurityEvent
+  SecurityEvent,
+  SecurityEventType,
+  SecuritySeverity
 } from '../types'
+import type { SessionEntity } from '../types/database'
 
 interface AuthState {
   // Authentication state
@@ -22,7 +24,7 @@ interface AuthState {
   }
 
   // Session management
-  session: SecuritySession | null
+  session: SessionEntity | null
   deviceId: string
   pinAttempts: number
   lockedUntil: Date | null
@@ -40,9 +42,9 @@ interface AuthState {
   checkSessionStatus: () => Promise<void>
   clearSecurityEvents: () => void
   addSecurityEvent: (event: Omit<SecurityEvent, 'id' | 'timestamp'>) => void
-  _initializeDevice: () => Promise<void>
-  _createSession: (deviceId: string) => Promise<SecuritySession>
-  _validateSession: (session: SecuritySession) => Promise<boolean>
+  _initializeDevice: () => Promise<string>
+  _createSession: (deviceId: string) => Promise<SessionEntity>
+  _validateSession: (session: SessionEntity) => Promise<boolean>
   _recordSecurityEvent: (type: string, description: string, metadata?: any) => Promise<void>
 }
 
@@ -98,7 +100,8 @@ export const useAuthStore = create<AuthState>()(
           const session = sessions[0]
 
           // Verify PIN
-          const pinValid = await CryptoService.verifyPin(
+          const cryptoService = CryptoService.getInstance()
+          const pinValid = await cryptoService.verifyPin(
             credentials.pin,
             session.pinHash,
             session.pinSalt
@@ -138,7 +141,7 @@ export const useAuthStore = create<AuthState>()(
           await db.updateSession(session.id, {
             lastLoginAt: new Date(),
             failedAttempts: 0,
-            lockedUntil: null
+            lockedUntil: undefined
           })
 
           await get()._recordSecurityEvent(
@@ -204,7 +207,8 @@ export const useAuthStore = create<AuthState>()(
             return false
           }
 
-          return await CryptoService.verifyPin(
+          const cryptoService = CryptoService.getInstance()
+          return await cryptoService.verifyPin(
             pin,
             state.session.pinHash,
             state.session.pinSalt
@@ -224,7 +228,8 @@ export const useAuthStore = create<AuthState>()(
           }
 
           // Verify old PIN
-          const oldPinValid = await CryptoService.verifyPin(
+          const cryptoService = CryptoService.getInstance()
+          const oldPinValid = await cryptoService.verifyPin(
             oldPin,
             state.session.pinHash,
             state.session.pinSalt
@@ -240,7 +245,7 @@ export const useAuthStore = create<AuthState>()(
           }
 
           // Hash new PIN
-          const { hash: newPinHash, salt: newPinSalt } = await CryptoService.hashPin(newPin)
+          const { hash: newPinHash, salt: newPinSalt } = await cryptoService.hashPin(newPin)
 
           // Update session in database
           const db = DatabaseService.getInstance()
@@ -366,7 +371,8 @@ export const useAuthStore = create<AuthState>()(
 
           if (!deviceId) {
             // Generate device fingerprint
-            const fingerprint = await CryptoService.generateDeviceFingerprint()
+            const cryptoService = CryptoService.getInstance()
+            const fingerprint = await cryptoService.generateDeviceFingerprint()
 
             set(state => {
               state.deviceId = fingerprint.canvas.slice(0, 32) // Use canvas hash as device ID
@@ -390,7 +396,7 @@ export const useAuthStore = create<AuthState>()(
 
       _createSession: async (deviceId: string) => {
         const sessionId = crypto.randomUUID()
-        const session: SecuritySession = {
+        const session: SessionEntity = {
           id: sessionId,
           deviceId,
           pinHash: '', // Will be set during PIN setup
@@ -408,7 +414,7 @@ export const useAuthStore = create<AuthState>()(
         return session
       },
 
-      _validateSession: async (session: SecuritySession) => {
+      _validateSession: async (session: SessionEntity) => {
         try {
           // Check if session is active
           if (!session.isActive) {
@@ -435,12 +441,12 @@ export const useAuthStore = create<AuthState>()(
       _recordSecurityEvent: async (type: string, description: string, metadata?: any) => {
         try {
           const event = {
-            type,
-            severity: type.includes('failure') ? 'medium' : 'low',
+            type: type as SecurityEventType,
+            severity: (type.includes('failure') ? 'medium' : 'low') as SecuritySeverity,
             deviceId: get().deviceId,
             sessionId: get().session?.id,
             description,
-            metadata: JSON.stringify(metadata || {}),
+            metadata: metadata || {},
             resolved: false
           }
 

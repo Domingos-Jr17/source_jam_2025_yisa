@@ -117,7 +117,7 @@ export class CryptoService {
       const derivedBits = await crypto.subtle.deriveBits(
         {
           name: 'PBKDF2',
-          salt: salt as BufferSource,
+          salt: salt as unknown as BufferSource,
           iterations,
           hash: 'SHA-256'
         },
@@ -139,42 +139,7 @@ export class CryptoService {
     }
   }
 
-  /**
-   * Verify PIN against hash
-   */
-  public async verifyPin(pin: string, storedHash: string, storedSalt: string): Promise<boolean> {
-    try {
-      const salt = this.base64ToArrayBuffer(storedSalt)
-      const iterations = SECURITY_CONFIG.PBKDF2.ITERATIONS
-
-      const passwordKey = await crypto.subtle.importKey(
-        'raw',
-        this.stringToArrayBuffer(pin) as BufferSource,
-        { name: 'PBKDF2' },
-        false,
-        ['deriveBits']
-      )
-
-      const derivedBits = await crypto.subtle.deriveBits(
-        {
-          name: 'PBKDF2',
-          salt: salt as BufferSource,
-          iterations,
-          hash: 'SHA-256'
-        },
-        passwordKey,
-        SECURITY_CONFIG.PBKDF2.KEY_LENGTH * 8
-      )
-
-      const computedHash = this.arrayBufferToBase64(new Uint8Array(derivedBits))
-      return computedHash === storedHash
-
-    } catch (error) {
-      console.error('PIN verification error:', error)
-      return false
-    }
-  }
-
+  
   /**
    * Encrypt data using AES-256-GCM
    */
@@ -190,11 +155,11 @@ export class CryptoService {
       const encrypted = await crypto.subtle.encrypt(
         {
           name: 'AES-GCM',
-          iv: iv as BufferSource,
-          additionalData: additionalData ? this.stringToArrayBuffer(additionalData) as BufferSource : undefined
+          iv: iv as any,
+          additionalData: additionalData ? this.stringToArrayBuffer(additionalData) as any : undefined
         },
         key,
-        encodedData
+        encodedData as any
       )
 
       const encryptedArray = new Uint8Array(encrypted)
@@ -231,11 +196,11 @@ export class CryptoService {
       const decrypted = await crypto.subtle.decrypt(
         {
           name: 'AES-GCM',
-          iv: iv as BufferSource,
-          additionalData: additionalData ? this.stringToArrayBuffer(additionalData) as BufferSource : undefined
+          iv: iv as any,
+          additionalData: additionalData ? this.stringToArrayBuffer(additionalData) as any : undefined
         },
         key,
-        encrypted
+        encrypted as any
       )
 
       return this.arrayBufferToString(decrypted)
@@ -250,7 +215,7 @@ export class CryptoService {
    */
   public async hashData(data: string): Promise<string> {
     try {
-      const encodedData = this.stringToArrayBuffer(data)
+      const encodedData = this.stringToArrayBuffer(data) as BufferSource
       const hashBuffer = await crypto.subtle.digest('SHA-256', encodedData)
       const hashArray = new Uint8Array(hashBuffer)
       return this.arrayBufferToBase64(hashArray)
@@ -278,7 +243,7 @@ export class CryptoService {
    */
   public async generateHMAC(data: string, key: CryptoKey): Promise<string> {
     try {
-      const encodedData = this.stringToArrayBuffer(data)
+      const encodedData = this.stringToArrayBuffer(data) as BufferSource
       const signature = await crypto.subtle.sign('HMAC', key, encodedData)
       const signatureArray = new Uint8Array(signature)
       return this.arrayBufferToBase64(signatureArray)
@@ -293,8 +258,8 @@ export class CryptoService {
    */
   public async verifyHMAC(data: string, signature: string, key: CryptoKey): Promise<boolean> {
     try {
-      const encodedData = this.stringToArrayBuffer(data)
-      const signatureArray = this.base64ToArrayBuffer(signature)
+      const encodedData = this.stringToArrayBuffer(data) as BufferSource
+      const signatureArray = this.base64ToArrayBuffer(signature) as BufferSource
       return await crypto.subtle.verify('HMAC', key, signatureArray, encodedData)
     } catch (error) {
       console.error('HMAC verification error:', error)
@@ -325,7 +290,7 @@ export class CryptoService {
 
       // Get WebGL fingerprint
       const webglCanvas = document.createElement('canvas')
-      const gl = webglCanvas.getContext('webgl') || webglCanvas.getContext('experimental-webgl')
+      const gl = webglCanvas.getContext('webgl') || webglCanvas.getContext('experimental-webgl') as WebGLRenderingContext | null
       let webglData = ''
 
       if (gl) {
@@ -460,26 +425,11 @@ export class CryptoService {
    */
   public async verifyPin(pin: string, hash: string, salt: string): Promise<boolean> {
     try {
-      const hashedPin = await this.hashPin(pin, salt)
-      return hashedPin.hash === hash
+      const saltBuffer = this.base64ToArrayBuffer(salt)
+      const hashedPin = await this.hashPin(pin)
+      return hashedPin.hash === hash && hashedPin.salt === salt
     } catch {
       return false
-    }
-  }
-
-  /**
-   * Hash data for integrity verification
-   */
-  public async hashData(data: string): Promise<string> {
-    try {
-      const encoder = new TextEncoder()
-      const dataBuffer = encoder.encode(data) as BufferSource
-      const hashBuffer = await crypto.subtle.digest('SHA-256', dataBuffer)
-      return Array.from(new Uint8Array(hashBuffer))
-        .map(b => b.toString(16).padStart(2, '0'))
-        .join('')
-    } catch {
-      return ''
     }
   }
 

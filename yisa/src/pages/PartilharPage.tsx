@@ -79,12 +79,16 @@ const PartilharPage: React.FC = () => {
 
     return {
       documentoId: document.id,
-      tipoDocumento: document.tipo,
+      tipoDocumento: document.tipo as unknown as DocumentType,
       numeroDocumento: document.numeroDocumento,
+      estudanteBI: document.estudante.numeroBI,
       nomeEstudante: document.estudante.nomeCompleto,
       escolaOrigem: document.escolaOrigem,
-      dataEmissao: document.dataEmissao,
-      hashValidacao: document.hashValidacao
+      dataEmissao: document.dataEmissao.toISOString(),
+      hashValidacao: document.hashValidacao,
+      urlVerificacao: `${window.location.origin}/verificar/${document.id}`,
+      checksum: document.hashValidacao.substring(0, 8),
+      timestamp: document.dataEmissao.getTime()
     }
   }
 

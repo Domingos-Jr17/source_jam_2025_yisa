@@ -30,7 +30,6 @@ export const useAuth = () => {
     isLoading,
     user,
     sessionId,
-    deviceId,
     login,
     logout,
     verifyPin,

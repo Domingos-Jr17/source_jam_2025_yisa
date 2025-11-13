@@ -287,6 +287,7 @@ export const useResourceMonitoring = () => {
       const interval = setInterval(updateMetrics, 5000)
       return () => clearInterval(interval)
     }
+    return undefined
   }, [])
 
   return metrics
