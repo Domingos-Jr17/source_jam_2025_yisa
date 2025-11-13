@@ -7,8 +7,6 @@
 export type {
   StudentData,
   DocumentValidation,
-  ValidationError,
-  ValidationWarning,
   School,
   StudentClass,
   StudentGrade,
@@ -54,7 +52,9 @@ export type {
 // Database types
 export * from './database';
 
-// Additional types that may be missing
+// Export validation types from document module
+export type { ValidationError, ValidationWarning, ValidationResult } from './document';
+
 export interface QRCodeData {
   documentoId: string;
   tipoDocumento: DocumentType;
@@ -63,12 +63,6 @@ export interface QRCodeData {
   escolaOrigem: string;
   dataEmissao: Date;
   hashValidacao: string;
-}
-
-export interface ValidationResult {
-  isValid: boolean;
-  errors: DocumentValidationError[];
-  warnings: DocumentValidationWarning[];
 }
 
 // Common utility types

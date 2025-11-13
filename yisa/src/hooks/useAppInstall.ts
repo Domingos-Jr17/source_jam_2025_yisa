@@ -1,5 +1,11 @@
 import { useState, useEffect } from 'react'
 
+declare global {
+  interface Window {
+    deferredPrompt?: any
+  }
+}
+
 export const useAppInstall = () => {
   const [showInstallPrompt, setShowInstallPrompt] = useState(false)
   const [isInstalled, setIsInstalled] = useState(false)

@@ -139,7 +139,7 @@ const ShareButton: React.FC<ShareButtonProps> = ({
         <ShareModal
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
-          document={document}
+          documentData={document}
           qrCodeData={qrCodeData}
         />
       </>
@@ -232,7 +232,7 @@ const ShareButton: React.FC<ShareButtonProps> = ({
       <ShareModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        document={document}
+        documentData={document}
         qrCodeData={qrCodeData}
       />
     </>

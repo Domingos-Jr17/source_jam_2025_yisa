@@ -194,7 +194,7 @@ export const useAccessibility = (): UseAccessibilityReturn => {
 
   // Create skip to content functionality
   const skipToContent = useCallback(() => {
-    const mainContent = document.querySelector('main, [role="main"], #main')
+    const mainContent = document.querySelector('main, [role="main"], #main') as HTMLElement
     if (mainContent) {
       mainContent.setAttribute('tabindex', '-1')
       mainContent.focus()
@@ -346,7 +346,7 @@ export const useAccessibility = (): UseAccessibilityReturn => {
 
 // Hook for managing focus within components
 export const useFocusManagement = (enabled: boolean = true) => {
-  const elementRef = useRef<HTMLElement>(null)
+  const elementRef = useRef<HTMLElement | null>(null)
   const previousFocusRef = useRef<HTMLElement | null>(null)
 
   const trapFocus = useCallback(() => {
@@ -365,7 +365,11 @@ export const useFocusManagement = (enabled: boolean = true) => {
   }, [])
 
   const setFocusElement = useCallback((element: HTMLElement | null) => {
-    elementRef.current = element
+    try {
+      elementRef.current = element
+    } catch {
+      // Ignore readonly ref errors
+    }
   }, [])
 
   return {
@@ -398,7 +402,6 @@ export const useAnnouncer = () => {
     announce,
     announceSuccess,
     announceError,
-    announceLoading,
-    announcePageChange
+    announceLoading
   }
 }

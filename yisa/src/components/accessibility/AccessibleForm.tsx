@@ -66,17 +66,14 @@ const AccessibleForm = forwardRef<HTMLFormElement, AccessibleFormProps>(
     const statusId = generateId('form-status')
     const descriptionId = generateId('form-description')
 
-    const internalRef = useRef<HTMLFormElement>(null)
-
     // Combine refs properly
     const setRefs = (element: HTMLFormElement | null) => {
-      internalRef.current = element
-      if (ref) {
+            if (ref) {
         if (typeof ref === 'function') {
           ref(element)
-        } else if ('current' in ref) {
+        } else if (ref.current !== undefined) {
           try {
-            (ref as React.MutableRefObject<HTMLFormElement | null>).current = element
+            ref.current = element
           } catch {
             // Ignore readonly ref errors
           }
@@ -213,7 +210,7 @@ const AccessibleForm = forwardRef<HTMLFormElement, AccessibleFormProps>(
         // Focus first error field
         const firstErrorField = Object.keys(formErrors)[0]
         if (firstErrorField) {
-          const errorElement = internalRef.current?.querySelector(`[name="${firstErrorField}"]`) as HTMLElement
+          const errorElement = formRef.current?.querySelector(`[name="${firstErrorField}"]`) as HTMLElement
           errorElement?.focus()
         }
 
@@ -263,7 +260,7 @@ const AccessibleForm = forwardRef<HTMLFormElement, AccessibleFormProps>(
       // Ctrl/Cmd + Enter to submit
       if ((event.ctrlKey || event.metaKey) && event.key === 'Enter' && isValid && !isSubmitting) {
         event.preventDefault()
-        internalRef.current?.dispatchEvent(new Event('submit', { cancelable: true }))
+        formRef.current?.dispatchEvent(new Event('submit', { cancelable: true }))
       }
 
       // Escape to reset form
@@ -358,7 +355,7 @@ const AccessibleForm = forwardRef<HTMLFormElement, AccessibleFormProps>(
                       type="button"
                       className="text-sm text-error-600 hover:text-error-800 underline text-left"
                       onClick={() => {
-                        const fieldElement = internalRef.current?.querySelector(`[name="${fieldName}"]`) as HTMLElement
+                        const fieldElement = formRef.current?.querySelector(`[name="${fieldName}"]`) as HTMLElement
                         fieldElement?.focus()
                       }}
                     >

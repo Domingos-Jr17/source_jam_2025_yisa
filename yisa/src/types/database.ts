@@ -31,7 +31,7 @@ export interface StudentEntity {
 
 export interface DocumentEntity {
   id: string;
-  tipo: string;
+  tipo: DocumentType;
   estudanteId: string;
   dataEmissao: Date;
   numeroDocumento: string;
@@ -42,7 +42,7 @@ export interface DocumentEntity {
   pdfBase64?: string;
   qrCodeData: string;
   hashValidacao: string;
-  status: string;
+  status: DocumentStatus;
   versao: string;
   criadoEm: Date;
   atualizadoEm: Date;
@@ -228,11 +228,5 @@ export interface MigrationState {
 }
 
 // Import existing types from other files
-import { StudentInfo, SchoolData, BiometricData } from './student';
-import { StudentInfo as DocumentStudentInfo, SchoolData as DocumentSchoolData } from './document';
-import { BiometricData as SecurityBiometricData } from './security';
-
-// Type aliases for consistency
-export type StudentInfo = DocumentStudentInfo;
-export type SchoolData = DocumentSchoolData;
-export type BiometricData = SecurityBiometricData;
+import { StudentInfo, SchoolData } from './document';
+import { BiometricData } from './security';

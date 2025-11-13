@@ -6,8 +6,6 @@ export const useAuth = () => {
     isAuthenticated,
     isLoading,
     user,
-    sessionId,
-    deviceId,
     login,
     logout,
     verifyPin,
@@ -15,6 +13,8 @@ export const useAuth = () => {
     lockSession,
     checkSessionStatus
   } = useAuthStore()
+
+  const sessionId = user?.sessionId
 
   useEffect(() => {
     // Initialize authentication on mount

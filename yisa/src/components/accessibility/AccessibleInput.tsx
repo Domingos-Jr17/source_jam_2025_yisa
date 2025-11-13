@@ -63,13 +63,12 @@ const AccessibleInput = forwardRef<HTMLInputElement, AccessibleInputProps>(
 
     // Combine refs properly
     const setRefs = (element: HTMLInputElement | null) => {
-      internalRef.current = element
-      if (ref) {
+            if (ref) {
         if (typeof ref === 'function') {
           ref(element)
-        } else if ('current' in ref) {
+        } else if (ref.current !== undefined) {
           try {
-            (ref as React.MutableRefObject<HTMLInputElement | null>).current = element
+            ref.current = element
           } catch {
             // Ignore readonly ref errors
           }

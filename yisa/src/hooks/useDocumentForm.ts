@@ -132,12 +132,7 @@ export const useDocumentForm = (): UseDocumentFormReturn => {
         // Update existing student
         studentId = existingStudent.id
         await db.updateStudent(studentId, {
-          nomeCompleto: formData.nomeCompleto,
-          nomeEscolaOrigem: formData.nomeEscolaOrigem,
-          nomeEscolaDestino: formData.nomeEscolaDestino,
-          classe: formData.classe,
-          turma: formData.turma,
-          disciplina: formData.disciplina
+          nomeCompleto: formData.nomeCompleto
         })
       } else {
         // Create new student
@@ -149,7 +144,8 @@ export const useDocumentForm = (): UseDocumentFormReturn => {
           nomePai: '',
           nomeMae: '',
           responsavel: '',
-          contactoResponsavel: ''
+          contactoResponsavel: '',
+          documents: [] // Initialize with empty documents array
         })
       }
 
@@ -160,7 +156,7 @@ export const useDocumentForm = (): UseDocumentFormReturn => {
         timestamp: new Date().toISOString()
       })
 
-      const hash = await CryptoService.hashData(documentData)
+      const hash = await CryptoService.getInstance().hashData(documentData)
 
       // Create the transfer document object first
       const documentObject = {
@@ -206,6 +202,7 @@ export const useDocumentForm = (): UseDocumentFormReturn => {
           },
           disciplina: formData.disciplina
         },
+        qrCodeData: '', // Will be populated after QR generation
         hashValidacao: hash,
         status: 'emitido',
         versao: '1.0',

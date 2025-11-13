@@ -78,7 +78,7 @@ export class CryptoService {
   ): Promise<CryptoKey> {
     const passwordKey = await crypto.subtle.importKey(
       'raw',
-      this.stringToArrayBuffer(password),
+      this.stringToArrayBuffer(password) as BufferSource,
       { name: 'PBKDF2' },
       false,
       ['deriveKey']
@@ -87,7 +87,7 @@ export class CryptoService {
     return crypto.subtle.deriveKey(
       {
         name: 'PBKDF2',
-        salt,
+        salt: salt as BufferSource,
         iterations,
         hash: 'SHA-256'
       },
@@ -108,7 +108,7 @@ export class CryptoService {
 
       const passwordKey = await crypto.subtle.importKey(
         'raw',
-        this.stringToArrayBuffer(pin),
+        this.stringToArrayBuffer(pin) as BufferSource,
         { name: 'PBKDF2' },
         false,
         ['deriveBits']
@@ -117,7 +117,7 @@ export class CryptoService {
       const derivedBits = await crypto.subtle.deriveBits(
         {
           name: 'PBKDF2',
-          salt,
+          salt: salt as BufferSource,
           iterations,
           hash: 'SHA-256'
         },
@@ -149,7 +149,7 @@ export class CryptoService {
 
       const passwordKey = await crypto.subtle.importKey(
         'raw',
-        this.stringToArrayBuffer(pin),
+        this.stringToArrayBuffer(pin) as BufferSource,
         { name: 'PBKDF2' },
         false,
         ['deriveBits']
@@ -158,7 +158,7 @@ export class CryptoService {
       const derivedBits = await crypto.subtle.deriveBits(
         {
           name: 'PBKDF2',
-          salt,
+          salt: salt as BufferSource,
           iterations,
           hash: 'SHA-256'
         },
@@ -190,8 +190,8 @@ export class CryptoService {
       const encrypted = await crypto.subtle.encrypt(
         {
           name: 'AES-GCM',
-          iv,
-          additionalData: additionalData ? this.stringToArrayBuffer(additionalData) : undefined
+          iv: iv as BufferSource,
+          additionalData: additionalData ? this.stringToArrayBuffer(additionalData) as BufferSource : undefined
         },
         key,
         encodedData
@@ -231,8 +231,8 @@ export class CryptoService {
       const decrypted = await crypto.subtle.decrypt(
         {
           name: 'AES-GCM',
-          iv,
-          additionalData: additionalData ? this.stringToArrayBuffer(additionalData) : undefined
+          iv: iv as BufferSource,
+          additionalData: additionalData ? this.stringToArrayBuffer(additionalData) as BufferSource : undefined
         },
         key,
         encrypted
@@ -453,5 +453,40 @@ export class CryptoService {
     for (let i = 0; i < data.length; i++) {
       data[i] = 0
     }
+  }
+
+  /**
+   * Verify PIN against hash
+   */
+  public async verifyPin(pin: string, hash: string, salt: string): Promise<boolean> {
+    try {
+      const hashedPin = await this.hashPin(pin, salt)
+      return hashedPin.hash === hash
+    } catch {
+      return false
+    }
+  }
+
+  /**
+   * Hash data for integrity verification
+   */
+  public async hashData(data: string): Promise<string> {
+    try {
+      const encoder = new TextEncoder()
+      const dataBuffer = encoder.encode(data) as BufferSource
+      const hashBuffer = await crypto.subtle.digest('SHA-256', dataBuffer)
+      return Array.from(new Uint8Array(hashBuffer))
+        .map(b => b.toString(16).padStart(2, '0'))
+        .join('')
+    } catch {
+      return ''
+    }
+  }
+
+  /**
+   * Generate checksum for QR codes
+   */
+  public async checksum(data: string): Promise<string> {
+    return this.hashData(data)
   }
 }

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
-import { Html5QrcodeScanner } from 'html5-qrcode'
+import { Html5QrcodeScanner, Html5Qrcode } from 'html5-qrcode'
 import { QRService } from '../services/qr'
 import { DatabaseService } from '../services/database'
 import {
@@ -10,7 +10,8 @@ import {
   ExclamationTriangleIcon,
   XMarkIcon
 } from '@heroicons/react/24/outline'
-import type { QRCodeData, ValidationResult, ValidationErrorDocument, ValidationWarningDocument } from '../types'
+import type { QRCodeData } from '../types'
+import type { ValidationResult, ValidationError, ValidationWarning } from '../types/document'
 
 interface QRScannerProps {
   onScanComplete?: (data: QRCodeData) => void
@@ -61,7 +62,7 @@ const QRScanner: React.FC<QRScannerProps> = ({
         {
           fps: 10,
           qrbox: { width: 250, height: 250 },
-          supportedScanTypes: [0, 1, 2], // QR_CODE, AZTEC, CODABAR
+          supportedScanTypes: [0, 1, 2] as any, // QR_CODE, AZTEC, CODABAR
         },
         false
       )
@@ -140,16 +141,16 @@ const QRScanner: React.FC<QRScannerProps> = ({
       setScanResult(qrData)
       setLastScannedDocument(document)
       setValidationResult({
-        isValid: true,
-        validationDate: now,
-        errors: [],
-        warnings: daysSinceEmission > 25 ? [{
+        valido: true,
+        dataValidacao: now,
+        erros: [],
+        avisos: daysSinceEmission > 25 ? [{
           campo: 'validade',
           mensagem: 'O documento está próximo de expirar',
           codigo: 'EXPIRING_SOON',
-          gravidade: 'erro'
+          gravidade: 'aviso'
         }] : [],
-        documentoVerificado: document
+        documentoVerificado: document as any
       })
 
       onScanComplete?.(qrData)
@@ -161,15 +162,15 @@ const QRScanner: React.FC<QRScannerProps> = ({
 
       const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido'
       setValidationResult({
-        isValid: false,
-        validationDate: new Date(),
-        errors: [{
+        valido: false,
+        dataValidacao: new Date(),
+        erros: [{
           campo: 'qrcode',
-          message: errorMessage,
-          code: 'VALIDATION_ERROR',
+          mensagem: errorMessage,
+          codigo: 'VALIDATION_ERROR',
           gravidade: 'erro'
         }],
-        warnings: []
+        avisos: []
       })
 
       onError?.(errorMessage)
@@ -204,8 +205,8 @@ const QRScanner: React.FC<QRScannerProps> = ({
     try {
       setIsValidating(true)
 
-      const scanner = new Html5QrcodeScanner('qr-reader')
-      const result = await scanner.scanFile(file, true)
+      const html5QrCode = new Html5Qrcode('qr-reader')
+      const result = await html5QrCode.scanFile(file, true)
 
       if (result) {
         await handleScanSuccess(result)
@@ -310,33 +311,33 @@ const QRScanner: React.FC<QRScannerProps> = ({
           className="space-y-6"
         >
           {/* Validation Status */}
-          <div className={`card ${validationResult.isValid ? 'border-green-200 bg-green-50' : 'border-red-200 bg-red-50'}`}>
+          <div className={`card ${validationResult.valido ? 'border-green-200 bg-green-50' : 'border-red-200 bg-red-50'}`}>
             <div className="flex items-start">
-              {validationResult.isValid ? (
+              {validationResult.valido ? (
                 <CheckCircleIcon className="w-6 h-6 text-green-600 mr-3 flex-shrink-0" />
               ) : (
                 <ExclamationTriangleIcon className="w-6 h-6 text-red-600 mr-3 flex-shrink-0" />
               )}
               <div>
-                <h3 className={`font-medium ${validationResult.isValid ? 'text-green-800' : 'text-red-800'}`}>
-                  {validationResult.isValid ? 'Documento Válido' : 'Documento Inválido'}
+                <h3 className={`font-medium ${validationResult.valido ? 'text-green-800' : 'text-red-800'}`}>
+                  {validationResult.valido ? 'Documento Válido' : 'Documento Inválido'}
                 </h3>
-                <p className={`text-sm mt-1 ${validationResult.isValid ? 'text-green-700' : 'text-red-700'}`}>
-                  Data da verificação: {validationResult.validationDate.toLocaleString('pt-MZ')}
+                <p className={`text-sm mt-1 ${validationResult.valido ? 'text-green-700' : 'text-red-700'}`}>
+                  Data da verificação: {validationResult.dataValidacao.toLocaleString('pt-MZ')}
                 </p>
               </div>
             </div>
           </div>
 
           {/* Document Details */}
-          {validationResult.isValid && scanResult && lastScannedDocument && (
+          {validationResult.valido && scanResult && lastScannedDocument && (
             <div className="space-y-4">
               <div className="card">
                 <h4 className="font-semibold text-gray-900 mb-3">Informações do Documento</h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                   <div>
                     <span className="text-gray-500">Tipo:</span>
-                    <p className="font-medium">{scanResult.tipoDocumento.replace('_', ' ').toUpperCase()}</p>
+                    <p className="font-medium">{String(scanResult.tipoDocumento)}</p>
                   </div>
                   <div>
                     <span className="text-gray-500">Número:</span>
@@ -382,22 +383,22 @@ const QRScanner: React.FC<QRScannerProps> = ({
           )}
 
           {/* Errors */}
-          {!validationResult.isValid && validationResult.errors.length > 0 && (
+          {!validationResult.valido && validationResult.erros.length > 0 && (
             <div className="alert alert-error">
               <ul className="list-disc list-inside">
-                {validationResult.errors.map((error: ValidationErrorDocument, index: number) => (
-                  <li key={index}>{error.message}</li>
+                {validationResult.erros.map((error: ValidationError, index: number) => (
+                  <li key={index}>{error.mensagem}</li>
                 ))}
               </ul>
             </div>
           )}
 
           {/* Warnings */}
-          {validationResult.warnings.length > 0 && (
+          {validationResult.avisos.length > 0 && (
             <div className="alert alert-warning">
               <ul className="list-disc list-inside">
-                {validationResult.warnings.map((warning: ValidationWarningDocument, index: number) => (
-                  <li key={index}>{warning.message}</li>
+                {validationResult.avisos.map((warning: ValidationWarning, index: number) => (
+                  <li key={index}>{warning.mensagem}</li>
                 ))}
               </ul>
             </div>

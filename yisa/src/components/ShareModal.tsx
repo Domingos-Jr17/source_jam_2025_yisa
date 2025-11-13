@@ -19,7 +19,7 @@ import WhatsAppShare from './WhatsAppShare'
 interface ShareModalProps {
   isOpen: boolean
   onClose: () => void
-  document: DocumentoEscolar
+  documentData: DocumentoEscolar
   qrCodeData?: QRCodeData
 }
 
@@ -35,7 +35,7 @@ interface ShareMethod {
 const ShareModal: React.FC<ShareModalProps> = ({
   isOpen,
   onClose,
-  document,
+  documentData,
   qrCodeData
 }) => {
   const [isSharing, setIsSharing] = useState(false)
@@ -107,11 +107,11 @@ const ShareModal: React.FC<ShareModalProps> = ({
 
       switch (methodId) {
         case 'web_share':
-          result = await sharingService.shareViaWebShare(document, qrCodeData)
+          result = await sharingService.shareViaWebShare(documentData, qrCodeData)
           break
 
         case 'clipboard':
-          result = await sharingService.shareViaClipboard(document)
+          result = await sharingService.shareViaClipboard(documentData)
           if (result.success) {
             setCopiedText(true)
             setTimeout(() => setCopiedText(false), 3000)
@@ -119,7 +119,7 @@ const ShareModal: React.FC<ShareModalProps> = ({
           break
 
         case 'email':
-          result = await sharingService.shareViaEmail(document, qrCodeData)
+          result = await sharingService.shareViaEmail(documentData, qrCodeData)
           break
 
         default:
@@ -145,7 +145,7 @@ const ShareModal: React.FC<ShareModalProps> = ({
     setShareResult(null)
 
     try {
-      const result = await sharingService.smartShare(document, qrCodeData)
+      const result = await sharingService.smartShare(documentData, qrCodeData)
       handleShareResult(result)
 
       if (result.success) {
@@ -218,7 +218,7 @@ const ShareModal: React.FC<ShareModalProps> = ({
   }
 
   const generateQRCode = () => {
-    return sharingService.generateShareQRCode(document)
+    return sharingService.generateShareQRCode(documentData)
   }
 
   return (
@@ -260,10 +260,10 @@ const ShareModal: React.FC<ShareModalProps> = ({
                 </div>
                 <div className="flex-1 min-w-0">
                   <h3 className="font-medium text-gray-900 truncate">
-                    {getDocumentTypeLabel(document.tipo)}
+                    {getDocumentTypeLabel(documentData.tipo)}
                   </h3>
                   <p className="text-sm text-gray-500 truncate">
-                    {document.estudante.nomeCompleto} • {document.numeroDocumento}
+                    {documentData.estudante.nomeCompleto} • {documentData.numeroDocumento}
                   </p>
                 </div>
                 <div className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">
@@ -276,7 +276,7 @@ const ShareModal: React.FC<ShareModalProps> = ({
             <div className="px-6 py-4 max-h-96 overflow-y-auto">
               {showWhatsAppDetail ? (
                 <WhatsAppShare
-                  document={document}
+                  document={documentData}
                   qrCodeData={qrCodeData}
                   onClose={() => {
                     setShowWhatsAppDetail(false)

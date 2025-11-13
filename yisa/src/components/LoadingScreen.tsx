@@ -12,8 +12,12 @@ const LoadingScreen: React.FC = () => {
           className="mb-8"
         >
           {/* YISA Logo */}
-          <div className="w-32 h-32 mx-auto mb-6 bg-primary-600 rounded-2xl flex items-center justify-center shadow-2xl">
-            <span className="text-white text-4xl font-bold">YISA</span>
+          <div className="w-32 h-32 mx-auto mb-6 flex items-center justify-center shadow-2xl">
+            <img
+              src="/yisa-logo.png"
+              alt="YISA Logo"
+              className="w-full h-full object-contain"
+            />
           </div>
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
             YISA - Gestão de Documentos Escolares
