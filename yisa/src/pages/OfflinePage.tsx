@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
-  WifiOffIcon,
+  SignalSlashIcon,
   ArrowPathIcon,
   DocumentTextIcon,
   ShieldCheckIcon,
@@ -95,7 +95,7 @@ const OfflinePage: React.FC = () => {
               transition={{ delay: 0.2, type: "spring" }}
               className="w-24 h-24 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-6"
             >
-              <WifiOffIcon className="w-12 h-12 text-yellow-600" />
+              <SignalSlashIcon className="w-12 h-12 text-yellow-600" />
             </motion.div>
 
             <h1 className="text-3xl font-bold text-gray-900 mb-4 text-center">

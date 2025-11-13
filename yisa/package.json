@@ -27,6 +27,8 @@
     "dexie-react-hooks": "^1.1.7",
     "framer-motion": "^10.16.16",
     "html5-qrcode": "^2.3.8",
+    "immer": "^10.2.0",
+    "lodash-es": "^4.17.21",
     "pdf-lib": "^1.17.1",
     "qrcode": "^1.5.3",
     "react": "^18.2.0",

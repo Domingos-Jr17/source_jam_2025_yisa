@@ -8,7 +8,6 @@ import Header from './components/Header'
 import Navigation from './components/Navigation'
 import LoadingScreen from './components/LoadingScreen'
 import ErrorBoundary from './components/ErrorBoundary'
-import SkipLink from './components/accessibility/SkipLink'
 
 // Lazy-loaded pages for performance optimization
 const HomePage = createLazyComponent(() => import('./pages/HomePage'), { preload: true })
@@ -88,11 +87,7 @@ const App: React.FC = () => {
   const { isOnline } = useNetworkStatus()
   const { showInstallPrompt, installApp } = useAppInstall()
   const { isAuthenticated, isLoading } = useAuthStore()
-  const {
-    settings,
-    getAccessibilityClasses,
-    announcePageChange
-  } = useAccessibility()
+  const { announce, announcePageChange, getAccessibilityClasses } = useAccessibility()
 
   // Show install banner if PWA install is available
   const showInstallBanner = showInstallPrompt && !isAuthenticated

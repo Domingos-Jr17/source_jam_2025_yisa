@@ -316,11 +316,16 @@ export const useAccessibility = (): UseAccessibilityReturn => {
     }
   }, [])
 
+  const announcePageChange = useCallback((title: string, description?: string) => {
+    a11y.announcePageChange(title, description)
+  }, [])
+
   // Return comprehensive accessibility interface
   return {
     settings,
     updateSetting,
     announce,
+    announcePageChange,
     generateId,
     trapFocus,
     skipToContent,
@@ -380,10 +385,6 @@ export const useAnnouncer = () => {
 
   const announceLoading = useCallback((action: string) => {
     a11y.announceLoading(action)
-  }, [])
-
-  const announcePageChange = useCallback((title: string, description?: string) => {
-    a11y.announcePageChange(title, description)
   }, [])
 
   return {

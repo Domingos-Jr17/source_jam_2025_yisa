@@ -50,6 +50,13 @@ export const useServiceWorker = () => {
     try {
       setUpdateStatus(prev => ({ ...prev, checking: true, error: null }))
 
+      // Only register service worker in production
+      if (!import.meta.env.PROD) {
+        setStatus(prev => ({ ...prev, enabled: false }))
+        setUpdateStatus(prev => ({ ...prev, checking: false }))
+        return
+      }
+
       // Register the service worker
       const registration = await navigator.serviceWorker.register('/sw.js', {
         scope: '/'

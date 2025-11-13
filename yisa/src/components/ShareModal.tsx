@@ -276,74 +276,76 @@ const ShareModal: React.FC<ShareModalProps> = ({
                   }}
                 />
               ) : (
-                <div className="grid grid-cols-1 gap-3">
-                {shareMethods.map((method) => (
-                  <motion.button
-                    key={method.id}
-                    onClick={method.action}
-                    disabled={!method.available || isSharing}
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    className={`p-4 rounded-xl border-2 transition-all ${
-                      !method.available
-                        ? 'border-gray-100 bg-gray-50 opacity-50 cursor-not-allowed'
-                        : selectedMethod === method.id
-                        ? 'border-primary-500 bg-primary-50'
-                        : 'border-gray-200 bg-white hover:border-primary-300 hover:bg-gray-50 cursor-pointer'
-                    }`}
-                  >
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-3">
-                        <div className={`p-2 rounded-lg ${
-                          selectedMethod === method.id
-                            ? 'bg-primary-100 text-primary-600'
-                            : 'bg-gray-100 text-gray-600'
-                        }`}>
-                          {method.icon}
+                <>
+                  <div className="grid grid-cols-1 gap-3">
+                    {shareMethods.map((method) => (
+                      <motion.button
+                        key={method.id}
+                        onClick={method.action}
+                        disabled={!method.available || isSharing}
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        className={`p-4 rounded-xl border-2 transition-all ${
+                          !method.available
+                            ? 'border-gray-100 bg-gray-50 opacity-50 cursor-not-allowed'
+                            : selectedMethod === method.id
+                            ? 'border-primary-500 bg-primary-50'
+                            : 'border-gray-200 bg-white hover:border-primary-300 hover:bg-gray-50 cursor-pointer'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center space-x-3">
+                            <div className={`p-2 rounded-lg ${
+                              selectedMethod === method.id
+                                ? 'bg-primary-100 text-primary-600'
+                                : 'bg-gray-100 text-gray-600'
+                            }`}>
+                              {method.icon}
+                            </div>
+                            <div className="text-left">
+                              <h4 className="font-medium text-gray-900">{method.name}</h4>
+                              <p className="text-sm text-gray-500">{method.description}</p>
+                            </div>
+                          </div>
+
+                          {/* Loading indicator */}
+                          {selectedMethod === method.id && isSharing && (
+                            <div className="spinner spinner-sm" />
+                          )}
+
+                          {/* Success indicator */}
+                          {selectedMethod === method.id && !isSharing && shareResult?.success && (
+                            <CheckCircleIcon className="w-5 h-5 text-green-500" />
+                          )}
+
+                          {/* Error indicator */}
+                          {selectedMethod === method.id && !isSharing && !shareResult?.success && (
+                            <ExclamationTriangleIcon className="w-5 h-5 text-red-500" />
+                          )}
                         </div>
-                        <div className="text-left">
-                          <h4 className="font-medium text-gray-900">{method.name}</h4>
-                          <p className="text-sm text-gray-500">{method.description}</p>
-                        </div>
-                      </div>
-
-                      {/* Loading indicator */}
-                      {selectedMethod === method.id && isSharing && (
-                        <div className="spinner spinner-sm" />
-                      )}
-
-                      {/* Success indicator */}
-                      {selectedMethod === method.id && !isSharing && shareResult?.success && (
-                        <CheckCircleIcon className="w-5 h-5 text-green-500" />
-                      )}
-
-                      {/* Error indicator */}
-                      {selectedMethod === method.id && !isSharing && !shareResult?.success && (
-                        <ExclamationTriangleIcon className="w-5 h-5 text-red-500" />
-                      )}
-                    </div>
-                  </motion.button>
-                ))}
-              </div>
-
-              {/* QR Code Section */}
-              <div className="mt-6 p-4 bg-gray-50 rounded-xl border border-gray-200">
-                <div className="flex items-center mb-3">
-                  <QrCodeIcon className="w-5 h-5 text-primary-600 mr-2" />
-                  <h4 className="font-medium text-gray-900">QR Code de Partilha</h4>
-                </div>
-                <p className="text-sm text-gray-600 mb-3">
-                  Escaneie este QR code para aceder ao documento
-                </p>
-                <div className="bg-white p-3 rounded-lg border border-gray-200 inline-block">
-                  <div className="w-32 h-32 bg-gray-200 rounded flex items-center justify-center text-gray-400">
-                    <QrCodeIcon className="w-16 h-16" />
+                      </motion.button>
+                    ))}
                   </div>
-                </div>
-                <p className="text-xs text-gray-500 mt-2 break-all font-mono">
-                  {generateQRCode()}
-                </p>
-              </div>
+
+                  <div className="mt-6 p-4 bg-gray-50 rounded-xl border border-gray-200">
+                    <div className="flex items-center mb-3">
+                      <QrCodeIcon className="w-5 h-5 text-primary-600 mr-2" />
+                      <h4 className="font-medium text-gray-900">QR Code de Partilha</h4>
+                    </div>
+                    <p className="text-sm text-gray-600 mb-3">
+                      Escaneie este QR code para aceder ao documento
+                    </p>
+                    <div className="bg-white p-3 rounded-lg border border-gray-200 inline-block">
+                      <div className="w-32 h-32 bg-gray-200 rounded flex items-center justify-center text-gray-400">
+                        <QrCodeIcon className="w-16 h-16" />
+                      </div>
+                    </div>
+                    <p className="text-xs text-gray-500 mt-2 break-all font-mono">
+                      {generateQRCode()}
+                    </p>
+                  </div>
+                </>
+              )}
             </div>
 
             {/* Result Messages */}

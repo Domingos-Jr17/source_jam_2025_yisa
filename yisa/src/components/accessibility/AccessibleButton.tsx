@@ -1,4 +1,4 @@
-import React, { forwardRef, useRef, useEffect } from 'react'
+import React, { forwardRef, useRef } from 'react'
 import { motion } from 'framer-motion'
 import type { ButtonHTMLAttributes } from 'react'
 import { useAccessibility } from '../../hooks/useAccessibility'
@@ -38,8 +38,7 @@ const AccessibleButton = forwardRef<HTMLButtonElement, AccessibleButtonProps>(
     },
     ref
   ) => {
-    const { announce, isNavigatingWithKeyboard } = useAccessibility()
-    const buttonRef = useRef<HTMLButtonElement>(null)
+    const { announce } = useAccessibility()
 
     // Combine refs
     const setRefs = (element: HTMLButtonElement | null) => {
@@ -47,10 +46,9 @@ const AccessibleButton = forwardRef<HTMLButtonElement, AccessibleButtonProps>(
         if (typeof ref === 'function') {
           ref(element)
         } else {
-          ref.current = element
+          ;(ref as React.MutableRefObject<HTMLButtonElement | null>).current = element
         }
       }
-      buttonRef.current = element
     }
 
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -142,7 +140,6 @@ const AccessibleButton = forwardRef<HTMLButtonElement, AccessibleButtonProps>(
         onKeyDown={handleKeyDown}
         whileTap={!disabled && !loading ? { scale: 0.95 } : undefined}
         whileHover={!disabled && !loading ? { scale: 1.02 } : undefined}
-        {...props}
       >
         {/* Left Icon */}
         {leftIcon && (
