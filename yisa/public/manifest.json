@@ -1,0 +1,62 @@
+{
+  "name": "YISA - Gestão de Documentos Escolares",
+  "short_name": "YISA",
+  "description": "Sistema seguro de gestão de documentos para estudantes de Moçambique",
+  "theme_color": "#1e40af",
+  "background_color": "#ffffff",
+  "display": "standalone",
+  "orientation": "portrait",
+  "scope": "/",
+  "start_url": "/",
+  "lang": "pt-MZ",
+  "categories": ["education", "productivity"],
+  "icons": [
+    {
+      "src": "/vite.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Emitir Documento",
+      "short_name": "Emitir",
+      "description": "Emitir novo documento de transferência",
+      "url": "/emitir",
+      "icons": [
+        {
+          "src": "/vite.svg",
+          "sizes": "any",
+          "type": "image/svg+xml"
+        }
+      ]
+    },
+    {
+      "name": "Verificar Documento",
+      "short_name": "Verificar",
+      "description": "Verificar autenticidade de documento",
+      "url": "/verificar",
+      "icons": [
+        {
+          "src": "/vite.svg",
+          "sizes": "any",
+          "type": "image/svg+xml"
+        }
+      ]
+    },
+    {
+      "name": "Minha Carteira",
+      "short_name": "Carteira",
+      "description": "Acessar documentos guardados",
+      "url": "/carteira",
+      "icons": [
+        {
+          "src": "/vite.svg",
+          "sizes": "any",
+          "type": "image/svg+xml"
+        }
+      ]
+    }
+  ]
+}
