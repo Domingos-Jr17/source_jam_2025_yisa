@@ -1,7 +1,9 @@
 import Dexie, { Table } from 'dexie'
 import { DATABASE_CONFIG } from '../utils/constants'
+import { CryptoService } from './crypto'
 import type {
   YISADatabase,
+  UserEntity,
   StudentEntity,
   DocumentEntity,
   SessionEntity,
@@ -21,6 +23,7 @@ export class DatabaseService extends Dexie {
   private static instance: DatabaseService
 
   // Tables
+  users!: Table<UserEntity>
   students!: Table<StudentEntity>
   documents!: Table<DocumentEntity>
   sessions!: Table<SessionEntity>
@@ -30,10 +33,12 @@ export class DatabaseService extends Dexie {
   security!: Table<SecurityEntity>
 
   private constructor() {
+    console.log('🔧 DEBUG - DatabaseService constructor called, version:', DATABASE_CONFIG.VERSION)
     super(DATABASE_CONFIG.NAME)
 
     // Define schema
     this.version(DATABASE_CONFIG.VERSION).stores({
+      users: '++id, email, telefone, nomeCompleto, isActive',
       students: '++id, numeroBI, nomeCompleto, createdAt, isActive',
       documents: '++id, estudanteId, tipo, status, dataEmissao, numeroDocumento',
       sessions: '++id, deviceId, pinHash, pinSalt, isActive, createdAt, lastLoginAt, expiresAt, securityLevel, failedAttempts, lockedUntil',
@@ -43,15 +48,30 @@ export class DatabaseService extends Dexie {
       security: '++id, type, timestamp, deviceId'
     })
 
+    console.log('🗄️ DEBUG - Database schema defined, initializing default data...')
     // Initialize default data
     this.initializeDefaultData()
   }
 
   public static getInstance(): DatabaseService {
     if (!DatabaseService.instance) {
+      console.log('🏭 DEBUG - Creating new DatabaseService instance')
       DatabaseService.instance = new DatabaseService()
+    } else {
+      console.log('♻️ DEBUG - Returning existing DatabaseService instance')
     }
     return DatabaseService.instance
+  }
+
+  /**
+   * Ensure database is open and ready
+   */
+  public async ensureOpen(): Promise<void> {
+    console.log('🔓 DEBUG - Ensuring database is open...')
+    // Dexie automatically opens the database when needed
+    await this.table('users').toArray().catch(() => {
+      console.log('🔧 DEBUG - Database not ready yet, will open automatically')
+    })
   }
 
   /**
@@ -59,13 +79,32 @@ export class DatabaseService extends Dexie {
    */
   private async initializeDefaultData(): Promise<void> {
     try {
-      // Check if first run
-      const isFirstRun = await this.settings.get('first_run')
+      console.log('🚀 DEBUG - Initializing default data...')
 
+      // Always try to create default users if they don't exist
+      await this.createDefaultSettings()
+      console.log('✅ DEBUG - Settings created')
+
+      await this.createDefaultSchools()
+      console.log('✅ DEBUG - Schools created')
+
+      // Check if test users already exist
+      const existingUsers = await this.users.toArray()
+      const testUserExists = existingUsers.some(u => u.nomeCompleto === 'Maria José Massingue')
+
+      console.log('🔍 DEBUG - Existing users count:', existingUsers.length, 'testUserExists:', testUserExists)
+
+      if (!testUserExists) {
+        console.log('✅ DEBUG - Creating test users...')
+        await this.createDefaultUsers()
+        console.log('✅ DEBUG - Test users created')
+      } else {
+        console.log('ℹ️ DEBUG - Test users already exist, skipping creation')
+      }
+
+      // Set first run flag if not set
+      const isFirstRun = await this.settings.get('first_run')
       if (!isFirstRun) {
-        await this.createDefaultSettings()
-        await this.createDefaultSchools()
-        await this.createDefaultStudents()
         await this.settings.add({
           id: 'first_run',
           key: 'first_run',
@@ -74,9 +113,10 @@ export class DatabaseService extends Dexie {
           category: 'system',
           updatedAt: new Date()
         })
+        console.log('✅ DEBUG - First run flag set')
       }
     } catch (error) {
-      console.error('Database initialization error:', error)
+      console.error('❌ DEBUG - Database initialization error:', error)
     }
   }
 
@@ -187,17 +227,36 @@ export class DatabaseService extends Dexie {
   }
 
   /**
-   * Create default students for testing
+   * Create default users for testing
    */
-  private async createDefaultStudents(): Promise<void> {
-    const defaultStudents = [
+  private async createDefaultUsers(): Promise<void> {
+    const cryptoService = CryptoService.getInstance()
+
+    // Create PIN hashes for test users
+    const mariaPinData = await cryptoService.hashPin('123456')
+    const carlosPinData = await cryptoService.hashPin('111111')
+    const adminPinData = await cryptoService.hashPin('000000')
+
+    console.log('🔧 DEBUG - Creating users with PINs:', {
+      mariaPin: '123456',
+      mariaHash: mariaPinData.hash?.substring(0, 20) + '...',
+      mariaSalt: mariaPinData.salt?.substring(0, 20) + '...',
+      carlosPin: '111111',
+      carlosHash: carlosPinData.hash?.substring(0, 20) + '...',
+      carlosSalt: carlosPinData.salt?.substring(0, 20) + '...',
+      adminPin: '000000',
+      adminHash: adminPinData.hash?.substring(0, 20) + '...',
+      adminSalt: adminPinData.salt?.substring(0, 20) + '...'
+    })
+
+    const defaultUsers = [
       {
         id: 'usr-001',
         nomeCompleto: 'Maria José Massingue',
         email: 'maria.massingue@email.com',
         telefone: '+258 84 123 4567',
-        pinHash: '', // Será definido no cadastro
-        pinSalt: '', // Será definido no cadastro
+        pinHash: mariaPinData.hash,
+        pinSalt: mariaPinData.salt,
         createdAt: new Date(),
         updatedAt: new Date(),
         isActive: true
@@ -207,15 +266,36 @@ export class DatabaseService extends Dexie {
         nomeCompleto: 'Carlos António Nhantumbo',
         email: 'carlos.nhantumbo@email.com',
         telefone: '+258 82 987 6543',
-        pinHash: '', // Será definido no cadastro
-        pinSalt: '', // Será definido no cadastro
+        pinHash: carlosPinData.hash,
+        pinSalt: carlosPinData.salt,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        isActive: true
+      },
+      {
+        id: 'usr-003',
+        nomeCompleto: 'Administrador YISA',
+        email: 'admin@yisa.education.mz',
+        telefone: '+258 21 123 4567',
+        pinHash: adminPinData.hash,
+        pinSalt: adminPinData.salt,
         createdAt: new Date(),
         updatedAt: new Date(),
         isActive: true
       }
     ]
 
-    await this.students.bulkAdd(defaultStudents)
+    try {
+      await this.users.bulkAdd(defaultUsers)
+      console.log('✅ DEBUG - Users created successfully:', defaultUsers.map(u => ({ nome: u.nomeCompleto, hasPinHash: !!u.pinHash, hasPinSalt: !!u.pinSalt })))
+
+      // Verify users were actually created
+      const createdUsers = await this.users.toArray()
+      console.log('🔍 DEBUG - Verifying created users in DB:', createdUsers.map(u => ({ id: u.id, nome: u.nomeCompleto, email: u.email, isActive: u.isActive })))
+    } catch (error) {
+      console.error('❌ DEBUG - Error creating users:', error)
+      throw error
+    }
   }
 
   // STUDENT OPERATIONS

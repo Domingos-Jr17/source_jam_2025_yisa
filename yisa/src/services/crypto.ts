@@ -425,10 +425,35 @@ export class CryptoService {
    */
   public async verifyPin(pin: string, hash: string, salt: string): Promise<boolean> {
     try {
+      // Generate hash using the provided salt (not a new one)
       const saltBuffer = this.base64ToArrayBuffer(salt)
-      const hashedPin = await this.hashPin(pin)
-      return hashedPin.hash === hash && hashedPin.salt === salt
-    } catch {
+      const iterations = SECURITY_CONFIG.PBKDF2.ITERATIONS
+
+      const passwordKey = await crypto.subtle.importKey(
+        'raw',
+        this.stringToArrayBuffer(pin) as BufferSource,
+        { name: 'PBKDF2' },
+        false,
+        ['deriveBits']
+      )
+
+      const derivedBits = await crypto.subtle.deriveBits(
+        {
+          name: 'PBKDF2',
+          salt: saltBuffer,
+          iterations,
+          hash: 'SHA-256'
+        },
+        passwordKey,
+        SECURITY_CONFIG.PBKDF2.KEY_LENGTH * 8
+      )
+
+      const derivedKey = new Uint8Array(derivedBits)
+      const derivedHash = this.arrayBufferToBase64(derivedKey)
+
+      return derivedHash === hash
+    } catch (error) {
+      console.error('PIN verification error:', error)
       return false
     }
   }

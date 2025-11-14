@@ -14,10 +14,12 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onLoginSuccess
   const [isNewUser, setIsNewUser] = useState(false)
   const [confirmPin, setConfirmPin] = useState('')
   const [fullName, setFullName] = useState('')
+  const [email, setEmail] = useState('')
+  const [telefone, setTelefone] = useState('')
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
 
-  const { login, verifyPin } = useAuthStore()
+  const { login, register } = useAuthStore()
 
   // Clear form when modal opens/closes
   useEffect(() => {
@@ -25,6 +27,8 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onLoginSuccess
       setPin('')
       setConfirmPin('')
       setFullName('')
+      setEmail('')
+      setTelefone('')
       setError('')
       setIsNewUser(false)
     }
@@ -38,6 +42,18 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onLoginSuccess
     try {
       if (isNewUser) {
         // Register new user
+        if (!fullName.trim()) {
+          setError('Nome completo é obrigatório')
+          setIsLoading(false)
+          return
+        }
+
+        if (!email.trim() && !telefone.trim()) {
+          setError('Email ou telefone é obrigatório')
+          setIsLoading(false)
+          return
+        }
+
         if (pin.length !== 6) {
           setError('PIN deve ter 6 dígitos')
           setIsLoading(false)
@@ -50,38 +66,44 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onLoginSuccess
           return
         }
 
-        if (!fullName.trim()) {
-          setError('Nome é obrigatório')
-          setIsLoading(false)
-          return
-        }
-
-        // For new users, we use the same login method
-        // The system will handle first-time setup automatically
-        const success = await login({ pin })
+        const success = await register({
+          nomeCompleto: fullName,
+          email: email.trim() || undefined,
+          telefone: telefone.trim() || undefined,
+          pin
+        })
         if (success) {
           setError('')
           onLoginSuccess?.()
           onClose()
         } else {
-          setError('Falha ao criar conta. Verifique o PIN e tente novamente.')
+          setError('Falha ao criar conta. Tente novamente.')
         }
-        
+
       } else {
         // Login existing user
+        if (!fullName.trim()) {
+          setError('Nome completo é obrigatório')
+          setIsLoading(false)
+          return
+        }
+
         if (pin.length !== 6) {
           setError('PIN deve ter 6 dígitos')
           setIsLoading(false)
           return
         }
 
-        const success = await login({ pin })
+        const success = await login({
+          identificador: fullName,
+          pin
+        })
         if (success) {
           setError('')
           onLoginSuccess?.()
           onClose()
         } else {
-          setError('PIN incorreto')
+          setError('Nome ou PIN incorretos')
         }
       }
     } catch (err) {
@@ -146,31 +168,73 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onLoginSuccess
               {isNewUser ? 'Criar Conta' : 'Bem-vindo de Volta'}
             </h2>
             <p className="text-center text-gray-600 mb-6">
-              {isNewUser 
+              {isNewUser
                 ? 'Crie sua conta para acessar o sistema YISA'
-                : 'Digite seu PIN de 6 dígitos para acessar sua conta'
+                : 'Digite seu nome completo e PIN para acessar sua conta'
               }
             </p>
 
             {/* Form */}
             <form onSubmit={handleSubmit} className="space-y-4">
+              {/* Nome Completo - Sempre visível */}
+              <div>
+                <label htmlFor="fullName" className="block text-sm font-medium text-gray-700 mb-2">
+                  Nome Completo
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <UserIcon className="h-5 w-5 text-gray-400" />
+                  </div>
+                  <input
+                    type="text"
+                    id="fullName"
+                    value={fullName}
+                    onChange={(e) => setFullName(e.target.value)}
+                    className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors"
+                    placeholder="Seu nome completo"
+                    required
+                  />
+                </div>
+              </div>
+
+              {/* Email/Telefone - Apenas para cadastro */}
               {isNewUser && (
                 <div>
-                  <label htmlFor="fullName" className="block text-sm font-medium text-gray-700 mb-2">
-                    Nome Completo
+                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                    Email (opcional)
                   </label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                       <UserIcon className="h-5 w-5 text-gray-400" />
                     </div>
                     <input
-                      type="text"
-                      id="fullName"
-                      value={fullName}
-                      onChange={(e) => setFullName(e.target.value)}
+                      type="email"
+                      id="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
                       className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors"
-                      placeholder="Seu nome completo"
-                      required
+                      placeholder="seu.email@exemplo.com"
+                    />
+                  </div>
+                </div>
+              )}
+
+              {isNewUser && (
+                <div>
+                  <label htmlFor="telefone" className="block text-sm font-medium text-gray-700 mb-2">
+                    Telefone (opcional)
+                  </label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <UserIcon className="h-5 w-5 text-gray-400" />
+                    </div>
+                    <input
+                      type="tel"
+                      id="telefone"
+                      value={telefone}
+                      onChange={(e) => setTelefone(e.target.value)}
+                      className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors"
+                      placeholder="+258 84 123 4567"
                     />
                   </div>
                 </div>
@@ -263,6 +327,8 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onLoginSuccess
                     setPin('')
                     setConfirmPin('')
                     setFullName('')
+                    setEmail('')
+                    setTelefone('')
                   }}
                   className="text-primary-600 hover:text-primary-700 font-medium transition-colors"
                 >

@@ -7,6 +7,7 @@ import type { SecurityEvent, BiometricData } from './security'
  */
 
 export interface YISADatabase {
+  users: UserEntity;
   students: StudentEntity;
   documents: DocumentEntity;
   sessions: SessionEntity;
@@ -14,6 +15,18 @@ export interface YISADatabase {
   audit: AuditEntity;
   settings: SettingsEntity;
   security: SecurityEntity;
+}
+
+export interface UserEntity {
+  id: string;
+  nomeCompleto: string;
+  email: string;
+  telefone: string;
+  pinHash: string;
+  pinSalt: string;
+  createdAt: Date;
+  updatedAt: Date;
+  isActive: boolean;
 }
 
 export interface StudentEntity {

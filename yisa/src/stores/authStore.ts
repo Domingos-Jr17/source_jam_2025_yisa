@@ -34,7 +34,8 @@ interface AuthState {
   securityEvents: SecurityEvent[]
 
   // Actions
-  login: (credentials: AuthCredentials) => Promise<boolean>
+  register: (userData: { nomeCompleto: string; email?: string; telefone?: string; pin: string }) => Promise<boolean>
+  login: (credentials: { identificador: string; pin: string }) => Promise<boolean>
   logout: () => Promise<void>
   verifyPin: (pin: string) => Promise<boolean>
   changePin: (oldPin: string, newPin: string) => Promise<boolean>
@@ -65,8 +66,45 @@ export const useAuthStore = create<AuthState>()(
       deviceFingerprint: null,
       securityEvents: [],
 
-      // Initialize device on first load
-      login: async (credentials: AuthCredentials) => {
+      // Register new user
+      register: async (userData: { nomeCompleto: string; email?: string; telefone?: string; pin: string }) => {
+        try {
+          set(state => { state.isLoading = true })
+
+          const db = DatabaseService.getInstance()
+          const cryptoService = CryptoService.getInstance()
+
+          // Hash the PIN
+          const { hash: pinHash, salt: pinSalt } = await cryptoService.hashPin(userData.pin)
+
+          // Create new user
+          const newUser = {
+            id: crypto.randomUUID(),
+            nomeCompleto: userData.nomeCompleto,
+            email: userData.email || '',
+            telefone: userData.telefone || '',
+            pinHash,
+            pinSalt,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            isActive: true
+          }
+
+          await db.users.add(newUser)
+
+          // Auto-login after registration
+          return await get().login({ identificador: userData.nomeCompleto, pin: userData.pin })
+
+        } catch (error) {
+          console.error('Registration error:', error)
+          return false
+        } finally {
+          set(state => { state.isLoading = false })
+        }
+      },
+
+      // Login user
+      login: async (credentials: { identificador: string; pin: string }) => {
         try {
           set(state => { state.isLoading = true })
 
@@ -84,43 +122,55 @@ export const useAuthStore = create<AuthState>()(
           // Initialize device if not already done
           await get()._initializeDevice()
 
-          // Get stored session data
+          // Get user by name
           const db = DatabaseService.getInstance()
-          let sessions = await db.getSessionsByDevice(state.deviceId)
-          let session: SessionEntity
-          let isNewUser = false
-
-          if (sessions.length === 0) {
-            // Create new session for first-time user
-            isNewUser = true
-            session = await get()._createSession(state.deviceId)
-
-            // Hash the PIN and store in session
-            const cryptoService = CryptoService.getInstance()
-            const { hash: pinHash, salt: pinSalt } = await cryptoService.hashPin(credentials.pin)
-
-            await db.updateSession(session.id, { pinHash, pinSalt })
-
-            await get()._recordSecurityEvent(
-              'account_created',
-              'New user account created',
-              { deviceId: state.deviceId, sessionId: session.id }
-            )
-          } else {
-            session = sessions[0]
-          }
-
-          // Verify PIN (skip for new users as PIN was just set)
           const cryptoService = CryptoService.getInstance()
-          let pinValid = true
 
-          if (!isNewUser) {
-            pinValid = await cryptoService.verifyPin(
-              credentials.pin,
-              session.pinHash,
-              session.pinSalt
+          // Search user by nomeCompleto
+          const users = await db.users.where('nomeCompleto').equals(credentials.identificador).toArray()
+
+          console.log('🔍 DEBUG - Login attempt:', {
+            identificador: credentials.identificador,
+            pin: credentials.pin,
+            usersFound: users.length,
+            users: users.map(u => ({ id: u.id, nome: u.nomeCompleto, isActive: u.isActive, hasPinHash: !!u.pinHash, hasPinSalt: !!u.pinSalt }))
+          })
+
+          if (users.length === 0) {
+            console.log('❌ DEBUG - User not found')
+            await get()._recordSecurityEvent(
+              'login_failure',
+              'User not found',
+              { identificador: credentials.identificador, deviceId: state.deviceId }
             )
+            return false
           }
+
+          const user = users[0]
+          if (!user.isActive) {
+            console.log('❌ DEBUG - User not active')
+            await get()._recordSecurityEvent(
+              'login_failure',
+              'User account is inactive',
+              { userId: user.id, deviceId: state.deviceId }
+            )
+            return false
+          }
+
+          console.log('🔐 DEBUG - Verifying PIN:', {
+            inputPin: credentials.pin,
+            storedPinHash: user.pinHash?.substring(0, 20) + '...',
+            storedPinSalt: user.pinSalt?.substring(0, 20) + '...'
+          })
+
+          // Verify PIN
+          const pinValid = await cryptoService.verifyPin(
+            credentials.pin,
+            user.pinHash,
+            user.pinSalt
+          )
+
+          console.log('✅ DEBUG - PIN verification result:', pinValid)
 
           if (!pinValid) {
             set(state => {
@@ -133,7 +183,7 @@ export const useAuthStore = create<AuthState>()(
             await get()._recordSecurityEvent(
               'login_failure',
               `Invalid PIN. Attempt ${state.pinAttempts + 1} of 5`,
-              { deviceId: state.deviceId }
+              { userId: user.id, deviceId: state.deviceId }
             )
             return false
           }
@@ -142,27 +192,19 @@ export const useAuthStore = create<AuthState>()(
           set(state => {
             state.pinAttempts = 0
             state.lockedUntil = null
-            state.session = session
             state.isAuthenticated = true
             state.user = {
               deviceId: state.deviceId,
-              sessionId: session.id,
-              securityLevel: session.securityLevel,
+              sessionId: user.id,
+              securityLevel: 'medium',
               lastLoginAt: new Date()
             }
           })
 
-          // Update session last activity
-          await db.updateSession(session.id, {
-            lastLoginAt: new Date(),
-            failedAttempts: 0,
-            lockedUntil: undefined
-          })
-
           await get()._recordSecurityEvent(
-            isNewUser ? 'first_login' : 'login_success',
-            isNewUser ? 'First-time user authenticated successfully' : 'User authenticated successfully',
-            { deviceId: state.deviceId, sessionId: session.id }
+            'login_success',
+            'User authenticated successfully',
+            { userId: user.id, deviceId: state.deviceId }
           )
 
           return true
