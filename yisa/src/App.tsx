@@ -81,7 +81,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
       </div>
 
       {/* Desktop Layout */}
-      <div className="hidden lg:flex pt-16 min-h-[calc(100vh-4rem)]">
+      <div className="hidden lg:flex pt-12 h-screen">
         {/* Desktop Sidebar */}
         <Navigation
           isOpen={true} // Always open on desktop
@@ -89,7 +89,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
         />
 
         {/* Desktop Main Content */}
-        <main className="flex-1">
+        <main className="flex-1 overflow-y-auto pt-16">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 2xl:px-12 py-6 max-w-7xl 2xl:max-w-8xl">
             {/* Breadcrumb Navigation */}
             <Breadcrumb />
