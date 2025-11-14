@@ -6,7 +6,7 @@
 
 ## 📋 **Overview**
 
-Welcome to the **YISA** project repository! YISA (_Your Interactive School Assistant_) is an innovative **Progressive Web App (PWA)** for digitizing school documents in Mozambique, solving the critical school transfer bureaucracy problem.
+Welcome to the **YISA** project repository! YISA (that means To Carry, To Lead, To Bring in ronga/changana, mozambican lamguage) is an innovative **Progressive Web App (PWA)** for digitizing school documents in Mozambique, solving the critical school transfer bureaucracy problem.
 
 ### 🎯 **Event**
 
@@ -256,3 +256,5 @@ This project is licensed under the **MIT License** - see [LICENSE](LICENSE) file
 **"Building Open Source Solutions Together"** 🇲🇿
 
 _Let's transform education in Mozambique with technology!_
+
+"YISA - To Carry, To Lead, To Bring (Ronga/Changana)

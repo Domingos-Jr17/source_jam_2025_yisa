@@ -12,9 +12,9 @@ const LoadingScreen: React.FC = () => {
           className="mb-8"
         >
           {/* YISA Logo */}
-          <div className="w-32 h-32 mx-auto mb-6 flex items-center justify-center shadow-2xl">
+          <div className="w-40 h-12 mx-auto mb-6 flex items-center justify-center ">
             <img
-              src="/yisa-logo.png"
+              src="/yisa-.ico"
               alt="YISA Logo"
               className="w-full h-full object-contain"
             />

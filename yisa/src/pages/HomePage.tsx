@@ -1,7 +1,8 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
+import LoginModal from '../components/LoginModal'
 import { ROUTES } from '../utils/constants'
 import {
   DocumentTextIcon,
@@ -15,6 +16,7 @@ import {
 const HomePage: React.FC = () => {
   const { isAuthenticated, login } = useAuth()
   const navigate = useNavigate()
+  const [showLoginModal, setShowLoginModal] = useState(false)
 
   const handleQuickAction = (action: string) => {
     switch (action) {
@@ -22,8 +24,7 @@ const HomePage: React.FC = () => {
         if (isAuthenticated) {
           navigate(ROUTES.EMITIR)
         } else {
-          // TODO: Show login modal
-          console.log('Show login modal')
+          setShowLoginModal(true)
         }
         break
       case 'verify':
@@ -33,8 +34,7 @@ const HomePage: React.FC = () => {
         if (isAuthenticated) {
           navigate(ROUTES.CARTEIRA)
         } else {
-          // TODO: Show login modal
-          console.log('Show login modal')
+          setShowLoginModal(true)
         }
         break
       default:
@@ -109,7 +109,8 @@ const HomePage: React.FC = () => {
   ]
 
   return (
-    <div className="max-w-7xl mx-auto">
+    <>
+      <div className="max-w-7xl mx-auto">
       {/* Hero Section */}
       <motion.section
         initial={{ opacity: 0, y: 20 }}
@@ -249,17 +250,28 @@ const HomePage: React.FC = () => {
             Proteja seus documentos escolares com tecnologia militar e garanta acesso rápido e seguro.
           </p>
           <button
-            onClick={() => {
-              // TODO: Show login/register modal
-              console.log('Show login modal')
-            }}
+            onClick={() => setShowLoginModal(true)}
             className="bg-primary-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-primary-700 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
           >
             Começar Agora
           </button>
         </motion.section>
       )}
+
+      {/* Login Modal */}
+      <LoginModal
+        isOpen={showLoginModal}
+        onClose={() => setShowLoginModal(false)}
+        onLoginSuccess={() => {
+          setShowLoginModal(false)
+          // Navigate to the intended page after login
+          if (location.pathname === ROUTES.HOME) {
+            navigate(ROUTES.CARTEIRA)
+          }
+        }}
+      />
     </div>
+    </>
   )
 }
 
