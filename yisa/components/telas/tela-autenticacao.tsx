@@ -33,7 +33,7 @@ export default function TelaAutenticacao() {
     email: "",
     senha: "",
     confirmarSenha: "",
-    papel: "diretor",
+    papel: "diretor" as any,
     escola: "",
     cidade: "",
   })
