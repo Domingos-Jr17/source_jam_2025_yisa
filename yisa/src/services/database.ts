@@ -34,13 +34,13 @@ export class DatabaseService extends Dexie {
 
     // Define schema
     this.version(DATABASE_CONFIG.VERSION).stores({
-      students: '++id, numeroBI, nomeCompleto, createdAt, isActive, *documents',
-      documents: '++id, estudanteId, tipo, status, dataEmissao, numeroDocumento, *estudanteId',
-      sessions: '++id, deviceId, isActive, *deviceId',
+      students: '++id, numeroBI, nomeCompleto, createdAt, isActive',
+      documents: '++id, estudanteId, tipo, status, dataEmissao, numeroDocumento',
+      sessions: '++id, deviceId, isActive',
       schools: '++id, codigo, nome, provincia, distrito, isActive',
-      audit: '++id, action, timestamp, deviceId, *action, *deviceId',
-      settings: '++id, key, category, *key, *category',
-      security: '++id, type, timestamp, deviceId, *type, *deviceId'
+      audit: '++id, action, timestamp, deviceId',
+      settings: '++id, key, category',
+      security: '++id, type, timestamp, deviceId'
     })
 
     // Initialize default data

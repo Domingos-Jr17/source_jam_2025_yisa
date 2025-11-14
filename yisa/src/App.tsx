@@ -27,8 +27,6 @@ import { useNetworkStatus } from './hooks/useNetworkStatus'
 import { useAppInstall } from './hooks/useAppInstall'
 import { useAccessibility } from './hooks/useAccessibility'
 
-// Stores
-import { useAuthStore } from './stores/authStore'
 
 // Utils
 import { ROUTES } from './utils/constants'
@@ -81,7 +79,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
       </div>
 
       {/* Desktop Layout */}
-      <div className="hidden lg:flex pt-12 h-screen">
+      <div className="hidden lg:flex pt-16 h-screen">
         {/* Desktop Sidebar */}
         <Navigation
           isOpen={true} // Always open on desktop
@@ -89,7 +87,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
         />
 
         {/* Desktop Main Content */}
-        <main className="flex-1 overflow-y-auto pt-16">
+        <main className="flex-1 overflow-y-auto">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 2xl:px-12 py-6 max-w-7xl 2xl:max-w-8xl">
             {/* Breadcrumb Navigation */}
             <Breadcrumb />
@@ -115,7 +113,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
 const App: React.FC = () => {
   const { isOnline } = useNetworkStatus()
   const { showInstallPrompt, installApp } = useAppInstall()
-  const { isAuthenticated, isLoading } = useAuthStore()
+  const { isAuthenticated, isLoading } = useAuth()
   const { announce, announcePageChange, getAccessibilityClasses } = useAccessibility()
 
   // Show install banner if PWA install is available
@@ -218,21 +216,8 @@ const App: React.FC = () => {
     return <OfflinePage />
   }
 
-  // Show loading screen during initial load (with timeout for development)
+  // Show loading screen during initial load
   if (isLoading) {
-    // Add timeout to prevent infinite loading
-    setTimeout(() => {
-      console.warn('Loading timeout - forcing app to continue (development mode)')
-      // In development, force continue instead of reload to avoid infinite loop
-      if (process.env.NODE_ENV === 'development') {
-        console.log('Forcing app to continue in development mode')
-        // Force the auth store to stop loading
-        useAuthStore.setState({ isLoading: false })
-      } else {
-        window.location.reload()
-      }
-    }, 3000) // 3 seconds timeout (very aggressive for development)
-
     return <LoadingScreen />
   }
 
