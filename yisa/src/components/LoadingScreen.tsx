@@ -19,8 +19,8 @@ const LoadingScreen: React.FC = () => {
               className="w-full h-full object-contain"
             />
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            YISA - Gestão de Documentos Escolares
+          <h1 className="text-xl font-bold text-gray-900 mb-2">
+            PLATAFORMA DE DOCUMENTOS ESCOLARES DIGITAIS
           </h1>
           <p className="text-gray-600 max-w-md mx-auto">
             Sistema seguro e offline para gestão de documentos de estudantes em Moçambique
@@ -70,10 +70,16 @@ const LoadingScreen: React.FC = () => {
             <div className="text-xs text-gray-600">Offline</div>
           </div>
           <div className="bg-white rounded-lg p-3 shadow-sm">
-            <div className="text-primary-600 text-2xl mb-1">⚡</div>
+            <div className="text-primary-500 text-2xl mb-1">⚡</div>
             <div className="text-xs text-gray-600">Rápido</div>
           </div>
+          
         </motion.div>
+
+         <p className="text-primary-700 text-lg font-semibold max-w-md mx-auto py-6 leading-relaxed">
+           YISA - Fazer Chegar, Carregar, Trazer (Ronga/Changana)
+          </p>
+
       </div>
     </div>
   )
