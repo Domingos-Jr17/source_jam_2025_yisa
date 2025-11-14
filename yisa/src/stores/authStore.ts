@@ -86,26 +86,41 @@ export const useAuthStore = create<AuthState>()(
 
           // Get stored session data
           const db = DatabaseService.getInstance()
-          const sessions = await db.getSessionsByDevice(state.deviceId)
+          let sessions = await db.getSessionsByDevice(state.deviceId)
+          let session: SessionEntity
+          let isNewUser = false
 
           if (sessions.length === 0) {
+            // Create new session for first-time user
+            isNewUser = true
+            session = await get()._createSession(state.deviceId)
+
+            // Hash the PIN and store in session
+            const cryptoService = CryptoService.getInstance()
+            const { hash: pinHash, salt: pinSalt } = await cryptoService.hashPin(credentials.pin)
+
+            await db.updateSession(session.id, { pinHash, pinSalt })
+
             await get()._recordSecurityEvent(
-              'login_failure',
-              'No session found for device',
-              { deviceId: state.deviceId }
+              'account_created',
+              'New user account created',
+              { deviceId: state.deviceId, sessionId: session.id }
             )
-            return false
+          } else {
+            session = sessions[0]
           }
 
-          const session = sessions[0]
-
-          // Verify PIN
+          // Verify PIN (skip for new users as PIN was just set)
           const cryptoService = CryptoService.getInstance()
-          const pinValid = await cryptoService.verifyPin(
-            credentials.pin,
-            session.pinHash,
-            session.pinSalt
-          )
+          let pinValid = true
+
+          if (!isNewUser) {
+            pinValid = await cryptoService.verifyPin(
+              credentials.pin,
+              session.pinHash,
+              session.pinSalt
+            )
+          }
 
           if (!pinValid) {
             set(state => {
@@ -145,8 +160,8 @@ export const useAuthStore = create<AuthState>()(
           })
 
           await get()._recordSecurityEvent(
-            'login_success',
-            'User authenticated successfully',
+            isNewUser ? 'first_login' : 'login_success',
+            isNewUser ? 'First-time user authenticated successfully' : 'User authenticated successfully',
             { deviceId: state.deviceId, sessionId: session.id }
           )
 
@@ -403,18 +418,21 @@ export const useAuthStore = create<AuthState>()(
               set(state => {
                 state.deviceId = fallbackId
                 state.deviceFingerprint = {
-                  canvas: fallbackId,
-                  webgl: '',
-                  fonts: [],
-                  timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                  userAgent: navigator.userAgent,
                   language: navigator.language,
+                  hardware: navigator.hardwareConcurrency?.toString() || 'unknown',
+                  platform: navigator.platform,
                   screen: {
                     width: screen.width,
                     height: screen.height,
                     colorDepth: screen.colorDepth,
                     pixelRatio: window.devicePixelRatio || 1
                   },
-                  platform: navigator.platform
+                  timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                  canvas: fallbackId,
+                  webgl: '',
+                  fonts: [],
+                  timestamp: Date.now()
                 }
               })
             }

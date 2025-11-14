@@ -73,7 +73,7 @@ const QRScanner: React.FC<QRScannerProps> = ({
         async (decodedText: string) => {
           await handleScanSuccess(decodedText)
         },
-        (error: any) => {
+        (error: Error | string | unknown) => {
           console.warn('QR scan error:', error)
           // Don't show error for continuous scanning failures
         }
@@ -150,7 +150,7 @@ const QRScanner: React.FC<QRScannerProps> = ({
           codigo: 'EXPIRING_SOON',
           gravidade: 'aviso'
         }] : [],
-        documentoVerificado: document as any
+        documentoVerificado: document
       })
 
       onScanComplete?.(qrData)

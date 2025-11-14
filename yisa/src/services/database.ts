@@ -36,7 +36,7 @@ export class DatabaseService extends Dexie {
     this.version(DATABASE_CONFIG.VERSION).stores({
       students: '++id, numeroBI, nomeCompleto, createdAt, isActive',
       documents: '++id, estudanteId, tipo, status, dataEmissao, numeroDocumento',
-      sessions: '++id, deviceId, isActive',
+      sessions: '++id, deviceId, pinHash, pinSalt, isActive, createdAt, lastLoginAt, expiresAt, securityLevel, failedAttempts, lockedUntil',
       schools: '++id, codigo, nome, provincia, distrito, isActive',
       audit: '++id, action, timestamp, deviceId',
       settings: '++id, key, category',

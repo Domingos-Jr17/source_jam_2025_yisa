@@ -64,7 +64,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onLoginSuccess
           onLoginSuccess?.()
           onClose()
         } else {
-          setError('Falha ao criar sessão. Tente novamente.')
+          setError('Falha ao criar conta. Verifique o PIN e tente novamente.')
         }
         
       } else {

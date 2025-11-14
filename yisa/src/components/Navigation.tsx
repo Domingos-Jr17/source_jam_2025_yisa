@@ -218,10 +218,10 @@ const Navigation: React.FC<NavigationProps> = ({ isOpen, onClose }) => {
                 {/* Mobile Footer */}
                 <div className="p-4 border-t border-gray-200">
                   <div className="text-xs text-gray-500">
-                    <div className="flex items-center justify-between mb-2">
+                    {/* <div className="flex items-center justify-between mb-2">
                       <span>Versão 1.0.0</span>
                       <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                    </div>
+                    </div> */}
                     <div className="text-center">
                       <p>&copy; 2025 YISA Team</p>
                       <p className="mt-1">Moçambique 🇲🇿</p>
@@ -284,15 +284,8 @@ const Navigation: React.FC<NavigationProps> = ({ isOpen, onClose }) => {
         {/* Desktop Footer */}
         <div className="p-4 border-t border-gray-200">
           <div className="text-xs text-gray-500">
-            <div className="flex items-center justify-between mb-2">
-              <span>Versão 1.0.0</span>
-              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-            </div>
-            <div className="text-center">
-              <p>&copy; 2025 YISA Team</p>
-              <p className="mt-1">Moçambique 🇲🇿</p>
-            </div>
-
+          
+          
             {/* Quick stats (if authenticated) */}
             {isAuthenticated && (
               <div className="mt-4 pt-4 border-t border-gray-200">
@@ -308,6 +301,15 @@ const Navigation: React.FC<NavigationProps> = ({ isOpen, onClose }) => {
                 </div>
               </div>
             )}
+            
+            {/* <div className="flex items-center justify-between mb-2">
+              <span>Versão 1.0.0</span>
+              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+            </div> */}
+            <div className="text-center">
+              <p>&copy; 2025 YISA Team</p>
+              <p className="mt-1">Moçambique 🇲🇿</p>
+            </div>
           </div>
         </div>
       </aside>

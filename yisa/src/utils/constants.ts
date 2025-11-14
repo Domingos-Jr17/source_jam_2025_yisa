@@ -64,7 +64,7 @@ export const SECURITY_CONFIG = {
 // Database Configuration
 export const DATABASE_CONFIG = {
   NAME: 'YISADatabase',
-  VERSION: 1,
+  VERSION: 2,
   STORES: [
     {
       name: 'students',
