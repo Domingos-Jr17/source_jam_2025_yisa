@@ -65,6 +65,7 @@ export class DatabaseService extends Dexie {
       if (!isFirstRun) {
         await this.createDefaultSettings()
         await this.createDefaultSchools()
+        await this.createDefaultStudents()
         await this.settings.add({
           id: 'first_run',
           key: 'first_run',
@@ -149,37 +150,33 @@ export class DatabaseService extends Dexie {
   private async createDefaultSchools(): Promise<void> {
     const defaultSchools = [
       {
-        id: 'esc-001',
+        id: 'esc-emissora',
         codigo: '100001',
         nome: 'Escola Secundária da Manhiça',
         provincia: 'Maputo (Província)',
         distrito: 'Manhiça',
         nomenclatura: 'ESG',
         tipo: 'publica' as const,
+        endereco: 'Avenida Principal, Manhiça',
+        contacto: '+258 21 970 12345',
+        email: 'direcao@esgmanhica.edu.mz',
+        diretor: 'Dr. João Muthemba',
         isActive: true,
         createdAt: new Date(),
         updatedAt: new Date()
       },
       {
-        id: 'esc-002',
-        codigo: '100002',
-        nome: 'Escola Primária Completa da Manhiça',
-        provincia: 'Maputo (Província)',
-        distrito: 'Manhiça',
-        nomenclatura: 'EB2',
-        tipo: 'publica' as const,
-        isActive: true,
-        createdAt: new Date(),
-        updatedAt: new Date()
-      },
-      {
-        id: 'esc-003',
+        id: 'esc-receptora',
         codigo: '200001',
         nome: 'Escola Secundária 25 de Setembro',
         provincia: 'Maputo (Cidade)',
         distrito: 'KaMpfumu',
         nomenclatura: 'ESG',
         tipo: 'publica' as const,
+        endereco: 'Rua da Matola, Maputo',
+        contacto: '+258 21 320 67890',
+        email: 'secretaria@esg25setembro.edu.mz',
+        diretor: 'Dra. Ana Fernandes',
         isActive: true,
         createdAt: new Date(),
         updatedAt: new Date()
@@ -187,6 +184,38 @@ export class DatabaseService extends Dexie {
     ]
 
     await this.schools.bulkAdd(defaultSchools)
+  }
+
+  /**
+   * Create default students for testing
+   */
+  private async createDefaultStudents(): Promise<void> {
+    const defaultStudents = [
+      {
+        id: 'usr-001',
+        nomeCompleto: 'Maria José Massingue',
+        email: 'maria.massingue@email.com',
+        telefone: '+258 84 123 4567',
+        pinHash: '', // Será definido no cadastro
+        pinSalt: '', // Será definido no cadastro
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        isActive: true
+      },
+      {
+        id: 'usr-002',
+        nomeCompleto: 'Carlos António Nhantumbo',
+        email: 'carlos.nhantumbo@email.com',
+        telefone: '+258 82 987 6543',
+        pinHash: '', // Será definido no cadastro
+        pinSalt: '', // Será definido no cadastro
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        isActive: true
+      }
+    ]
+
+    await this.students.bulkAdd(defaultStudents)
   }
 
   // STUDENT OPERATIONS
