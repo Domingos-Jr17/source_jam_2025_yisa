@@ -32,7 +32,7 @@ const Header: React.FC<HeaderProps> = ({ onMenuToggle }) => {
               <Bars3Icon className="h-6 w-6" />
             </button>
 
-            {/* Logo */}
+            {/* Logo - Visible on all devices */}
             <div className="flex items-center ml-2 lg:ml-0">
               <div className="w-32 h-12 flex items-center justify-center mr-3">
                 <img
@@ -41,7 +41,6 @@ const Header: React.FC<HeaderProps> = ({ onMenuToggle }) => {
                   className="w-full h-full object-contain"
                 />
               </div>
-             
             </div>
           </div>
 

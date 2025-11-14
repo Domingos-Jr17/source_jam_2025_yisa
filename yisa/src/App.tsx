@@ -39,8 +39,8 @@ interface AppLayoutProps {
 
 const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
   const { isLoading } = useAuth()
-  // Start with sidebar open on desktop by default
-  const [sidebarOpen, setSidebarOpen] = useState(true)
+  // Responsive sidebar state: closed on mobile, open on desktop
+  const [sidebarOpen, setSidebarOpen] = useState(false)
 
   if (isLoading) {
     return <LoadingScreen />
@@ -51,39 +51,63 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
       {/* Header */}
       <Header onMenuToggle={() => setSidebarOpen(!sidebarOpen)} />
 
-      {/* Mobile Sidebar Overlay */}
-      {sidebarOpen && (
-        <div
-          className="fixed inset-0 z-40 bg-black bg-opacity-25 lg:hidden"
-          onClick={() => setSidebarOpen(false)}
+      {/* Mobile Layout */}
+      <div className="lg:hidden">
+        <main className="pt-16 min-h-screen">
+          {/* Mobile Navigation Overlay */}
+          <Navigation
+            isOpen={sidebarOpen}
+            onClose={() => setSidebarOpen(false)}
+          />
+
+          {/* Mobile Main Content */}
+          <div className="container mx-auto px-4 py-6 max-w-7xl">
+            {/* Breadcrumb Navigation */}
+            <Breadcrumb />
+
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={location.pathname}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.3 }}
+              >
+                {children}
+              </motion.div>
+            </AnimatePresence>
+          </div>
+        </main>
+      </div>
+
+      {/* Desktop Layout */}
+      <div className="hidden lg:flex pt-16 min-h-[calc(100vh-4rem)]">
+        {/* Desktop Sidebar */}
+        <Navigation
+          isOpen={true} // Always open on desktop
+          onClose={() => {}} // No-op on desktop
         />
-      )}
 
-      {/* Navigation Sidebar */}
-      <Navigation
-        isOpen={sidebarOpen}
-        onClose={() => setSidebarOpen(false)}
-      />
+        {/* Desktop Main Content */}
+        <main className="flex-1">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8 2xl:px-12 py-6 max-w-7xl 2xl:max-w-8xl">
+            {/* Breadcrumb Navigation */}
+            <Breadcrumb />
 
-      {/* Main Content */}
-      <main className="lg:ml-64 pt-16 min-h-[calc(100vh-4rem)]">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 2xl:px-12 py-6 max-w-7xl 2xl:max-w-8xl">
-          {/* Breadcrumb Navigation */}
-          <Breadcrumb />
-
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={location.pathname}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.3 }}
-            >
-              {children}
-            </motion.div>
-          </AnimatePresence>
-        </div>
-      </main>
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={location.pathname}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.3 }}
+              >
+                {children}
+              </motion.div>
+            </AnimatePresence>
+          </div>
+        </main>
+      </div>
     </div>
   )
 }

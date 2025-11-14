@@ -12,9 +12,9 @@
   "categories": ["education", "productivity"],
   "icons": [
     {
-      "src": "/vite.svg",
+      "src": "/yisa.ico",
       "sizes": "any",
-      "type": "image/svg+xml",
+      "type": "image/x-icon",
       "purpose": "maskable any"
     }
   ],
@@ -26,9 +26,9 @@
       "url": "/emitir",
       "icons": [
         {
-          "src": "/vite.svg",
+          "src": "/yisa.ico",
           "sizes": "any",
-          "type": "image/svg+xml"
+          "type": "image/x-icon"
         }
       ]
     },
@@ -39,9 +39,9 @@
       "url": "/verificar",
       "icons": [
         {
-          "src": "/vite.svg",
+          "src": "/yisa.ico",
           "sizes": "any",
-          "type": "image/svg+xml"
+          "type": "image/x-icon"
         }
       ]
     },
@@ -52,9 +52,9 @@
       "url": "/carteira",
       "icons": [
         {
-          "src": "/vite.svg",
+          "src": "/yisa.ico",
           "sizes": "any",
-          "type": "image/svg+xml"
+          "type": "image/x-icon"
         }
       ]
     }

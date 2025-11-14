@@ -124,127 +124,173 @@ const Navigation: React.FC<NavigationProps> = ({ isOpen, onClose }) => {
 
   return (
     <>
-      {/* Mobile overlay */}
+      {/* Mobile Sidebar - Overlay */}
       <AnimatePresence>
         {isOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-40 bg-black bg-opacity-25 lg:hidden"
-            onClick={onClose}
-          />
+          <>
+            {/* Mobile overlay */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="fixed inset-0 z-40 bg-black bg-opacity-25 lg:hidden"
+              onClick={onClose}
+            />
+
+            {/* Mobile Sidebar */}
+            <motion.aside
+              ref={navigationRef}
+              initial={{ x: -300 }}
+              animate={{ x: isOpen ? 0 : -300 }}
+              exit={{ x: -300 }}
+              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+              className={`
+                fixed top-0 left-0 z-50 w-64 h-screen bg-white border-r border-gray-200 lg:hidden
+                ${isOpen ? 'translate-x-0' : '-translate-x-full'}
+                transition-transform duration-300 ease-in-out
+              `}
+              role="navigation"
+              aria-label="Main navigation"
+              aria-hidden={!isOpen}
+            >
+              <div className="flex flex-col h-full">
+                {/* Mobile Header */}
+                <div className="flex items-center justify-end p-4 border-b border-gray-200">
+                  <button
+                    type="button"
+                    className="p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100"
+                    onClick={onClose}
+                    aria-label="Fechar menu"
+                  >
+                    <XMarkIcon className="h-6 w-6" />
+                  </button>
+                </div>
+
+                {/* Navigation Items */}
+                <nav className="flex-1 px-3 py-6 space-y-1 overflow-y-auto">
+                  {filteredNavItems.map((item, index) => {
+                    const Icon = item.icon
+
+                    return (
+                      <NavLink
+                        key={item.name}
+                        to={item.href}
+                        onClick={() => {
+                          handleNavigationClick(item.name)
+                          onClose()
+                        }}
+                        className={({ isActive }) => `
+                          group flex items-center px-3 py-3 text-sm font-medium rounded-lg transition-all duration-200
+                          focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2
+                          ${isActive
+                            ? 'bg-primary-50 text-primary-700 border-r-2 border-primary-600'
+                            : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                          }
+                        `}
+                        aria-label={`${item.name} - ${item.description}`}
+                        role="menuitem"
+                        aria-current={location.pathname === item.href ? 'page' : undefined}
+                        data-index={index}
+                      >
+                        <Icon
+                          className={`
+                            mr-3 h-5 w-5 flex-shrink-0
+                            ${({ isActive }: { isActive: boolean }) => isActive ? 'text-primary-600' : 'text-gray-400 group-hover:text-gray-500'}
+                          `}
+                          aria-hidden="true"
+                        />
+                        <div className="flex-1">
+                          <div className="font-medium">{item.name}</div>
+                          {item.description && (
+                            <div className="text-xs text-gray-500 mt-0.5">{item.description}</div>
+                          )}
+                        </div>
+                        {/* Screen reader only status indicator */}
+                        {location.pathname === item.href && (
+                          <span className="sr-only">Current page</span>
+                        )}
+                      </NavLink>
+                    )
+                  })}
+                </nav>
+
+                {/* Mobile Footer */}
+                <div className="p-4 border-t border-gray-200">
+                  <div className="text-xs text-gray-500">
+                    <div className="flex items-center justify-between mb-2">
+                      <span>Versão 1.0.0</span>
+                      <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                    </div>
+                    <div className="text-center">
+                      <p>&copy; 2025 YISA Team</p>
+                      <p className="mt-1">Moçambique 🇲🇿</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </motion.aside>
+          </>
         )}
       </AnimatePresence>
 
-      {/* Sidebar */}
-      <motion.aside
-        ref={navigationRef}
-        initial={{ x: -300 }}
-        animate={{ x: isOpen ? 0 : -300 }}
-        exit={{ x: -300 }}
-        transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-        className={`
-          fixed top-0 left-0 z-40 w-64 h-screen bg-white border-r border-gray-200
-          lg:translate-x-0 lg:static lg:inset-0 lg:z-auto
-          ${isOpen ? 'translate-x-0' : '-translate-x-full'}
-          transition-transform duration-300 ease-in-out
-        `}
-        role="navigation"
-        aria-label="Main navigation"
-        aria-hidden={!isOpen}
-      >
-        <div className="flex flex-col h-full">
-          {/* Header */}
-          <div className="flex items-center justify-between p-4 border-b border-gray-200 lg:hidden">
-            <div className="flex items-center">
-              <div className="w-32 h-12 flex items-center justify-center mr-3">
-                <img
-                  src="/yisa-.ico"
-                  alt="Logo YISA"
-                  className="w-full h-full object-contain"
-                />
-              </div>
-          
-            </div>
-            <button
-              type="button"
-              className="p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 lg:hidden"
-              onClick={onClose}
-              aria-label="Fechar menu"
-            >
-              <XMarkIcon className="h-6 w-6" />
-            </button>
-          </div>
+      {/* Desktop Sidebar - Always Visible */}
+      <aside className="hidden lg:flex lg:flex-col lg:w-64 lg:h-screen lg:bg-white lg:border-r lg:border-gray-200">
+        {/* Desktop Navigation Items */}
+        <nav className="flex-1 px-3 py-6 space-y-1 overflow-y-auto">
+          {filteredNavItems.map((item, index) => {
+            const Icon = item.icon
 
-          {/* Navigation */}
-          <nav
-            className="flex-1 px-3 py-6 space-y-1 overflow-y-auto"
-            role="menu"
-            aria-label="Navigation menu"
-          >
-            {filteredNavItems.map((item, index) => {
-              const Icon = item.icon
-
-              return (
-                <NavLink
-                  key={item.name}
-                  to={item.href}
-                  onClick={() => {
-                    handleNavigationClick(item.name)
-                    if (window.innerWidth < 1024) {
-                      onClose()
-                    }
-                  }}
-                  className={({ isActive }) => `
-                    group flex items-center px-3 py-3 text-sm font-medium rounded-lg transition-all duration-200
-                    focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2
-                    ${isActive
-                      ? 'bg-primary-50 text-primary-700 border-r-2 border-primary-600'
-                      : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
-                    }
+            return (
+              <NavLink
+                key={item.name}
+                to={item.href}
+                onClick={() => handleNavigationClick(item.name)}
+                className={({ isActive }) => `
+                  group flex items-center px-3 py-3 text-sm font-medium rounded-lg transition-all duration-200
+                  focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2
+                  ${isActive
+                    ? 'bg-primary-50 text-primary-700 border-r-2 border-primary-600'
+                    : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                  }
+                `}
+                aria-label={`${item.name} - ${item.description}`}
+                role="menuitem"
+                aria-current={location.pathname === item.href ? 'page' : undefined}
+                data-index={index}
+              >
+                <Icon
+                  className={`
+                    mr-3 h-5 w-5 flex-shrink-0
+                    ${({ isActive }: { isActive: boolean }) => isActive ? 'text-primary-600' : 'text-gray-400 group-hover:text-gray-500'}
                   `}
-                  aria-label={`${item.name} - ${item.description}`}
-                  role="menuitem"
-                  aria-current={location.pathname === item.href ? 'page' : undefined}
-                  data-index={index}
-                >
-                  <Icon
-                    className={`
-                      mr-3 h-5 w-5 flex-shrink-0
-                      ${({ isActive }: { isActive: boolean }) => isActive ? 'text-primary-600' : 'text-gray-400 group-hover:text-gray-500'}
-                    `}
-                    aria-hidden="true"
-                  />
-                  <div className="flex-1">
-                    <div className="font-medium">{item.name}</div>
-                    {item.description && (
-                      <div className="text-xs text-gray-500 mt-0.5">{item.description}</div>
-                    )}
-                  </div>
-                  {/* Screen reader only status indicator */}
-                  {location.pathname === item.href && (
-                    <span className="sr-only">Current page</span>
+                  aria-hidden="true"
+                />
+                <div className="flex-1">
+                  <div className="font-medium">{item.name}</div>
+                  {item.description && (
+                    <div className="text-xs text-gray-500 mt-0.5">{item.description}</div>
                   )}
-                </NavLink>
-              )
-            })}
-          </nav>
+                </div>
+                {/* Screen reader only status indicator */}
+                {location.pathname === item.href && (
+                  <span className="sr-only">Current page</span>
+                )}
+              </NavLink>
+            )
+          })}
+        </nav>
 
-          {/* Footer */}
-          <div className="p-4 border-t border-gray-200">
-            <div className="text-xs text-gray-500">
-              <div className="flex items-center justify-between mb-2">
-                <span>Versão 1.0.0</span>
-                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-              </div>
-              <div className="text-center">
-                <p>&copy; 2025 YISA Team</p>
-                <p className="mt-1">Moçambique 🇲🇿</p>
-              </div>
-
-            
+        {/* Desktop Footer */}
+        <div className="p-4 border-t border-gray-200">
+          <div className="text-xs text-gray-500">
+            <div className="flex items-center justify-between mb-2">
+              <span>Versão 1.0.0</span>
+              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+            </div>
+            <div className="text-center">
+              <p>&copy; 2025 YISA Team</p>
+              <p className="mt-1">Moçambique 🇲🇿</p>
             </div>
 
             {/* Quick stats (if authenticated) */}
@@ -264,7 +310,7 @@ const Navigation: React.FC<NavigationProps> = ({ isOpen, onClose }) => {
             )}
           </div>
         </div>
-      </motion.aside>
+      </aside>
     </>
   )
 }
