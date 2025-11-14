@@ -8,10 +8,11 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { AlertCircle,ArrowLeft , Send, Clock, CheckCircle, Loader2 } from "lucide-react"
+import { AlertCircle, ArrowLeft, Send, Clock, CheckCircle, Loader2 } from 'lucide-react'
 import { verificarAutenticacao } from "@/lib/autenticacao"
 import { escolasSistema } from "@/lib/autenticacao"
-import { useRouter } from "next/navigation"
+import { useRouter } from 'next/navigation'
+import { criarNotificacao, salvarNotificacao } from "@/lib/notificacoes"
 
 interface SolicitacaoTransferencia {
   id: string
@@ -37,6 +38,9 @@ export default function TelaSolicitacoes() {
 
   const [dados, setDados] = useState({
     escolaDestino: "",
+    turma: "",
+    classe: "",
+    bi: "",
     motivo: "",
   })
 
@@ -49,7 +53,7 @@ export default function TelaSolicitacoes() {
   }, [])
 
   const onVoltar = () => {
-     router.push("/")
+    router.push("/")
   }
 
   const handleDadosChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -68,7 +72,7 @@ export default function TelaSolicitacoes() {
   }
 
   const handleSubmeterSolicitacao = async () => {
-    if (!dados.escolaDestino || !dados.motivo) {
+    if (!dados.escolaDestino || !dados.turma || !dados.classe || !dados.bi || !dados.motivo) {
       setMensagem("Por favor, preencha todos os campos obrigatórios")
       setMensagemTipo("erro")
       return
@@ -81,9 +85,9 @@ export default function TelaSolicitacoes() {
         escolaOrigem: usuario?.escola || "",
         escolaDestino: dados.escolaDestino,
         nomeEstudante: usuario?.nome || "",
-        turma: usuario?.turma || "",
-        classe: usuario?.classe || "",
-        bi: usuario?.bi || "",
+        turma: dados.turma,
+        classe: dados.classe,
+        bi: dados.bi,
         motivo: dados.motivo,
         dataSolicitacao: new Date().toLocaleDateString("pt-MZ"),
         status: "pendente",
@@ -93,6 +97,16 @@ export default function TelaSolicitacoes() {
       localStorage.setItem("solicitacoesTransferencia", JSON.stringify(solicitacoesAtualizado))
       setSolicitacoes(solicitacoesAtualizado)
       setSolicitacaoGerada(novaSolicitacao)
+
+      const notificacao = criarNotificacao(
+        "solicitacao",
+        "Nova Solicitação de Transferência",
+        `${usuario?.nome} solicitou transferência para ${dados.escolaDestino}. Turma: ${dados.turma}, Classe: ${dados.classe}ª. Motivo: ${dados.motivo.substring(0, 100)}...`,
+        usuario?.escola || "", // destinatario: escola atual
+        usuario?.nome || "", // remetente: nome do aluno
+        novaSolicitacao.id,
+      )
+      salvarNotificacao(notificacao)
 
       setMensagem("Solicitação submetida com sucesso!")
       setMensagemTipo("sucesso")
@@ -132,28 +146,28 @@ export default function TelaSolicitacoes() {
   return (
     <div className="space-y-6 py-4">
       <div className="flex justify-between items-center">
-      {/* Lado esquerdo: botão voltar + título */}
-      <div className="flex items-center gap-3">
-        <button
-          onClick={onVoltar}
-          className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
-          title="Voltar"
-        >
-          <ArrowLeft size={20} className="text-[#1f1c45]" />
-        </button>
+        {/* Lado esquerdo: botão voltar + título */}
+        <div className="flex items-center gap-3">
+          <button
+            onClick={onVoltar}
+            className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
+            title="Voltar"
+          >
+            <ArrowLeft size={20} className="text-[#1f1c45]" />
+          </button>
 
-        <div>
-          <h2 className="text-2xl font-bold text-[#1f1c45]">Meus Pedidos de Transferência</h2>
-          <p className="text-gray-500">Submeta e acompanhe seus pedidos de transferência</p>
+          <div>
+            <h2 className="text-2xl font-bold text-[#1f1c45]">Meus Pedidos de Transferência</h2>
+            <p className="text-gray-500">Submeta e acompanhe seus pedidos de transferência</p>
+          </div>
         </div>
-      </div>
 
-      {/* Lado direito: badge */}
-      <Badge className="bg-[#1f1c45] text-white">
-        <Send size={16} className="mr-1" />
-        {solicitacoes.length} Pedido{solicitacoes.length !== 1 ? "s" : ""}
-      </Badge>
-    </div>
+        {/* Lado direito: badge */}
+        <Badge className="bg-[#1f1c45] text-white">
+          <Send size={16} className="mr-1" />
+          {solicitacoes.length} Pedido{solicitacoes.length !== 1 ? "s" : ""}
+        </Badge>
+      </div>
 
       {mensagem && (
         <Card
@@ -204,13 +218,9 @@ export default function TelaSolicitacoes() {
                 <span className="font-semibold">{usuario?.nome}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-600">BI:</span>
-                <span className="font-semibold">{usuario?.bi}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600">Turma/Classe:</span>
+                <span className="text-gray-600">Cidade:</span>
                 <span className="font-semibold">
-                  {usuario?.turma} ({usuario?.classe}ª)
+                  {usuario?.cidade}
                 </span>
               </div>
               <div className="flex justify-between">
@@ -233,6 +243,42 @@ export default function TelaSolicitacoes() {
                   ))}
                 </SelectContent>
               </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="turma">Turma *</Label>
+              <input
+                id="turma"
+                name="turma"
+                placeholder="Digite a turma..."
+                value={dados.turma}
+                onChange={handleDadosChange}
+                className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#1f1c45]"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="classe">Classe *</Label>
+              <input
+                id="classe"
+                name="classe"
+                placeholder="Digite a classe..."
+                value={dados.classe}
+                onChange={handleDadosChange}
+                className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#1f1c45]"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="bi">BI *</Label>
+              <input
+                id="bi"
+                name="bi"
+                placeholder="Digite o BI..."
+                value={dados.bi}
+                onChange={handleDadosChange}
+                className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#1f1c45]"
+              />
             </div>
 
             <div className="space-y-2">
@@ -271,6 +317,18 @@ export default function TelaSolicitacoes() {
               <div className="flex justify-between">
                 <span className="text-gray-600">Escola Destino:</span>
                 <span className="font-semibold">{dados.escolaDestino}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-600">Turma:</span>
+                <span className="font-semibold">{dados.turma}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-600">Classe:</span>
+                <span className="font-semibold">{dados.classe}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-600">BI:</span>
+                <span className="font-semibold">{dados.bi}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600">Motivo:</span>
@@ -340,7 +398,7 @@ export default function TelaSolicitacoes() {
               className="w-full bg-[#1f1c45] hover:bg-[#2d2a5a]"
               onClick={() => {
                 setEtapa("formulario")
-                setDados({ escolaDestino: "", motivo: "" })
+                setDados({ escolaDestino: "", turma: "", classe: "", bi: "", motivo: "" })
                 setMensagem("")
               }}
             >

@@ -5,8 +5,10 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
-import { Download, FileText, Search, Trash2, Wallet } from "lucide-react"
-import { obterTodosDocumentos, type DocumentoTransferencia } from "@/lib/documentos"
+import { Download, FileText, Search, Trash2, Wallet } from 'lucide-react'
+import { obterTodosDocumentos, type DocumentoTransferencia, DISCIPLINAS_POR_NIVEL } from "@/lib/documentos"
+import { verificarAutenticacao } from "@/lib/autenticacao"
+import { handleBaixarPDF, handleVisualizar } from '@/lib/pdf-generator'
 
 export default function TelaCarteira() {
   const [documentos, setDocumentos] = useState<DocumentoTransferencia[]>([])
@@ -16,62 +18,21 @@ export default function TelaCarteira() {
 
   useEffect(() => {
     // Load documents from localStorage
+    const usuario = verificarAutenticacao()
     const docs = obterTodosDocumentos()
     setDocumentos(docs)
     setCarregando(false)
   }, [])
-
+  const usuario = verificarAutenticacao()
   const documentosFiltrados = documentos.filter(
     (doc) =>
-      doc.estudante.nomeCompleto.toLowerCase().includes(filtro.toLowerCase()) ||
-      doc.estudante.numeroBi.includes(filtro) ||
-      doc.shortId.includes(filtro.toUpperCase()),
+      doc.estudante.nomeCompleto.toLowerCase().includes(usuario?.nome.toLowerCase()) ||
+      doc.shortId.includes(usuario?.shortId),
   )
 
   const handleBaixarDocumento = (documento: DocumentoTransferencia) => {
-    const conteudo = `
-DOCUMENTO DE TRANSFERÊNCIA ESCOLAR
-====================================
-
-ID: ${documento.shortId}
-Data: ${documento.dataEmissao}
-
-ESTUDANTE:
-${documento.estudante.nomeCompleto}
-BI: ${documento.estudante.numeroBi}
-Classe: ${documento.estudante.classe}
-
-NOTAS:
-Português: ${documento.estudante.notas.lingua_portuguesa}/20
-Matemática: ${documento.estudante.notas.matematica}/20
-História: ${documento.estudante.notas.historia}/20
-Geografia: ${documento.estudante.notas.geografia}/20
-Ciências: ${documento.estudante.notas.ciencias}/20
-E.F.: ${documento.estudante.notas.educacao_fisica}/20
-
-ESCOLA ORIGEM:
-${documento.escolaOrigem}, ${documento.cidadeOrigem}
-
-Hash SHA-256: ${documento.hash}
-    `
-
-    const element = document.createElement("a")
-    element.setAttribute("href", "data:text/plain;charset=utf-8," + encodeURIComponent(conteudo))
-    element.setAttribute("download", `Documento_${documento.shortId}.txt`)
-    element.style.display = "none"
-    document.body.appendChild(element)
-    element.click()
-    document.body.removeChild(element)
-  }
-
-  const handleApagarDocumento = (shortId: string) => {
-    if (window.confirm("Tem certeza que deseja apagar este documento?")) {
-      const documentosArmazenados = JSON.parse(localStorage.getItem("documentosEmitidos") || "{}")
-      delete documentosArmazenados[shortId]
-      localStorage.setItem("documentosEmitidos", JSON.stringify(documentosArmazenados))
-      setDocumentos(documentos.filter((d) => d.shortId !== shortId))
-      setDocumentoSelecionado(null)
-    }
+    if (!documento) return
+    handleBaixarPDF(documento)
   }
 
   return (
@@ -83,7 +44,7 @@ Hash SHA-256: ${documento.hash}
         </div>
         <Badge className="bg-[#1f1c45] text-white">
           <Wallet size={16} className="mr-1" />
-          {documentos.length} Documento{documentos.length !== 1 ? "s" : ""}
+          {documentosFiltrados.length} Documento{documentos.length !== 1 ? "s" : ""}
         </Badge>
       </div>
 
@@ -200,28 +161,24 @@ Hash SHA-256: ${documento.hash}
                   <span className="text-gray-600">Data de Matrícula:</span>
                   <span className="font-semibold">{documentoSelecionado.estudante.dataMatricula}</span>
                 </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Nível:</span>
+                  <span className="font-semibold">
+                    {documentoSelecionado.estudante.nivelAcademico === "primario" ? "Primário" : "Secundário"}
+                  </span>
+                </div>
               </div>
             </div>
 
             <div className="border-t pt-4">
               <h4 className="font-semibold text-[#1f1c45] mb-3">Notas</h4>
               <div className="grid grid-cols-2 gap-2">
-                {Object.entries(documentoSelecionado.estudante.notas).map(([materia, nota]) => {
-                  const materiaLabel = {
-                    lingua_portuguesa: "Português",
-                    matematica: "Matemática",
-                    historia: "História",
-                    geografia: "Geografia",
-                    ciencias: "Ciências",
-                    educacao_fisica: "E.F.",
-                  }[materia as keyof typeof documentoSelecionado.estudante.notas]
-                  return (
-                    <div key={materia} className="bg-gray-50 p-2 rounded text-sm">
-                      <p className="text-xs text-gray-600">{materiaLabel}</p>
-                      <p className="font-bold">{nota}/20</p>
-                    </div>
-                  )
-                })}
+                {DISCIPLINAS_POR_NIVEL[documentoSelecionado.estudante.nivelAcademico].map(({ key, label }) => (
+                  <div key={key} className="bg-gray-50 p-2 rounded text-sm">
+                    <p className="text-xs text-gray-600">{label}</p>
+                    <p className="font-bold">{documentoSelecionado.estudante.notas[key] || "-"}/20</p>
+                  </div>
+                ))}
               </div>
             </div>
 

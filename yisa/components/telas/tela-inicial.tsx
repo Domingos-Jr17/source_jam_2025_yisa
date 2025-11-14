@@ -3,33 +3,43 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { verificarAutenticacao } from "@/lib/autenticacao"
-import { FileText, Send, ArrowRight , GraduationCap, Shield} from "lucide-react"
+import { getDocumentsBySchool , type SolicitacaoTransferencia, obterTodosSolicitacoes} from "@/lib/documentos"
+import { FileText, Send, ArrowRight } from 'lucide-react'
 import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
+import { useRouter } from 'next/navigation'
 
-interface SolicitacaoTransferencia {
-  id: string
-  escolaOrigem: string
-  escolaDestino: string
+
+
+interface DocumentoEmitido {
+  shortId: string
   nomeEstudante: string
-  turma: string
   classe: string
-  bi: string
-  motivo: string
-  dataSolicitacao: string
-  status: "pendente" | "aprovada" | "rejeitada"
+  dataEmissao: string
+  escolaOrigem: string
+  status: string
 }
 
 export default function TelaInicial({ onNavigateTo }: { onNavigateTo?: (tab: string) => void }) {
   const usuario = verificarAutenticacao()
   const [solicitacoes, setSolicitacoes] = useState<SolicitacaoTransferencia[]>([])
+  const [documentos, setDocumentos] = useState<DocumentoEmitido[]>([])
   const router = useRouter()
-
 
   useEffect(() => {
     // Load requests from localStorage
-    const solicitacoesArmazenadas = JSON.parse(localStorage.getItem("solicitacoesTransferencia") || "[]")
+    const solicitacoesArmazenadas = obterTodosSolicitacoes()
+    const solicitacoesFiltrados = solicitacoesArmazenadas.filter(
+    (sol) =>
+      sol.nomeEstudante.toLowerCase().includes(usuario?.nome.toLowerCase()) ||
+      sol.bi.includes(usuario?.bi),
+  )
     setSolicitacoes(solicitacoesArmazenadas)
+
+    // Load emitted documents from localStorage
+    const documentosArmazenados = getDocumentsBySchool(usuario?.escola)
+   
+    setDocumentos(Object.values(documentosArmazenados))
+  
   }, [])
 
   const getStatusBadge = (status: string) => {
@@ -182,7 +192,7 @@ export default function TelaInicial({ onNavigateTo }: { onNavigateTo?: (tab: str
                   </CardHeader>
                   <CardContent className="text-sm text-gray-700 space-y-2">
                     <p>Veja os pedidos de transferência dos alunos aguardando análise e aprovação.</p>
-                    <p className="text-xs text-gray-500">Acesse a aba "Início" para ver todas as solicitações.</p>
+                    <p className="text-xs text-gray-500">Acesse a aba "Emitir" para responder às solicitações.</p>
                   </CardContent>
                 </Card>
 
@@ -195,84 +205,99 @@ export default function TelaInicial({ onNavigateTo }: { onNavigateTo?: (tab: str
                   </CardHeader>
                   <CardContent className="text-sm text-gray-700 space-y-2">
                     <p>Histórico dos documentos emitidos recentemente pela sua escola.</p>
-                    <p className="text-xs text-gray-500">Acesse a aba "Emitir" para ver o histórico completo.</p>
+                    <p className="text-xs text-gray-500">Acesse a aba "Histórico" para ver todos os documentos.</p>
                   </CardContent>
                 </Card>
               </div>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-base text-[#004b87]">Documentos Emitidos Recentemente</CardTitle>
+                  <CardDescription>Últimos 5 documentos gerados</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-2">
+                    {(() => {
+                      // Gerar dados de simulação se não houver documentos
+                      const simulados = [
+                        { shortId: "DOC001", nomeEstudante: "João Silva", classe: "10ª Classe", dataEmissao: "2024-11-14", status: "Válido" },
+                        { shortId: "DOC002", nomeEstudante: "Maria Santos", classe: "11ª Classe", dataEmissao: "2024-11-13", status: "Válido" },
+                        { shortId: "DOC003", nomeEstudante: "Pedro Oliveira", classe: "10ª Classe", dataEmissao: "2024-11-12", status: "Válido" },
+                      ]
+                      
+                      // Se não houver documentos, mostrar simulação
+                      if (documentos.length === 0) {
+                         return (
+                           <div className="flex flex-col items-center justify-center p-6 text-gray-500 animate-fadeIn">
+                             <div className="text-4xl mb-2">📄</div>
+                       
+                             <p className="font-semibold text-gray-700">
+                               Nenhum documento encontrado
+                             </p>
+                       
+                             <p className="text-xs text-gray-400 mt-1">
+                               Não existem documentos emitidos para esta escola.
+                             </p>
+                       
+                             {/* Botão opcional */}
+                             <button
+                               onClick={() => console.log("Criar documento")}
+                               className="mt-4 px-4 py-2 bg-[#004b87] text-white text-xs rounded-lg hover:bg-[#00345f] transition-colors"
+                             >
+                               Criar documento
+                             </button>
+                           </div>
+                         );
+                       }
+                      
+                      return documentos.slice(-5).reverse().map((doc: any) => (
+                        <div key={doc.shortId} className="flex items-center justify-between p-3 border-2 border-[#1b8856]/20 rounded-lg hover:bg-[#1b8856]/5 transition-colors">
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2 mb-1">
+                              <h4 className="font-semibold text-[#004b87] text-sm">{doc.estudante.nomeCompleto}</h4>
+                              <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">Válido</span>
+                            </div>
+                            <p className="text-xs text-gray-600">{doc.estudante.classe} • {doc.dataEmissao}</p>
+                          </div>
+                          <span className="text-xs text-gray-500 ml-2 bg-gray-100 px-2 py-1 rounded">{doc.shortId}</span>
+                        </div>
+                      ))
+                    })()}
+                  </div>
+                </CardContent>
+              </Card>
             </>
           )}
         </>
       ) : (
-        <Card className="max-w-2xl mx-auto overflow-hidden">
-      <div className="relative h-48 bg-gradient-to-br from-[#004b87] via-[#1b8856] to-[#1b8856] flex items-center justify-center">
-        <div className="absolute inset-0 bg-black/10"></div>
-        <div className="relative z-10 flex items-center gap-4">
-          <GraduationCap size={64} className="text-white opacity-90" strokeWidth={1.5} />
-          <div className="h-16 w-px bg-white/30"></div>
-          <Shield size={56} className="text-white opacity-90" strokeWidth={1.5} />
-        </div>
-      </div>
-      
-      <CardHeader className="text-center pb-3">
-        <CardTitle className="text-2xl font-bold text-gray-900">
-          Bem-vindo ao DocEscola
-        </CardTitle>
-        <CardDescription className="text-base mt-2">
-          Sistema de Gestão e Transferência de Documentos Escolares de Moçambique
-        </CardDescription>
-      </CardHeader>
-      
-      <CardContent className="space-y-6 px-6 pb-6">
-        <div className="text-center">
-          <p className="text-gray-700 leading-relaxed">
-            Aceda ao sistema com as suas credenciais para utilizar os serviços de emissão, 
-            verificação e consulta de documentos académicos.
-          </p>
-        </div>
-        
-        <div className="border-t border-gray-200 pt-4">
-          <h3 className="font-semibold text-gray-900 mb-5 text-center">
-            Selecione o Seu Perfil de Acesso
-          </h3>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <button className="group relative overflow-hidden p-6 rounded-xl border-2 border-blue-200 bg-[#1b8856] hover:from-blue-100 hover:to-blue-200 hover:border-blue-400 transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
-              <div className="flex flex-col items-center gap-3">
-                <div className="w-16 h-16 rounded-full bg-blue-600 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                  <Shield size={32} className="text-white" strokeWidth={2.5} />
-                </div>
-                <div className="text-center">
-                  <p className="font-bold text-lg text-gray-200">Direção Escolar</p>
-                  <p className="text-xs text-gray-100 mt-1">
-                    Emissão e verificação de documentos
-                  </p>
-                </div>
-              </div>
-            </button>
-            
-            <button className="group relative overflow-hidden p-6 rounded-xl border-2 border-purple-200 bg-[#004b87] hover:from-purple-100 hover:to-purple-200 hover:border-purple-400 transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
-              <div className="flex flex-col items-center gap-3">
-                <div className="w-16 h-16 rounded-full bg-purple-600 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                  <GraduationCap size={32} className="text-white" strokeWidth={2.5} />
-                </div>
-                <div className="text-center">
-                  <p className="font-bold text-lg text-gray-300">Estudante</p>
-                  <p className="text-xs text-gray-100 mt-1">
-                    Submissão e consulta de documentos
-                  </p>
-                </div>
-              </div>
-            </button>
-          </div>
-        </div>
-        
-        <div className="text-center pt-2">
-          <p className="text-xs text-gray-500">
-            Sistema seguro e certificado para gestão académica
-          </p>
-        </div>
-      </CardContent>
-    </Card>
+        <Card className="text-center">
+          <CardHeader>
+            <CardTitle>Bem-vindo ao DocEscola</CardTitle>
+            <CardDescription>Sistema de Transferência de Documentos Escolares para Moçambique</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <p className="text-gray-700">
+              Faça login com sua conta para acessar o sistema de emissão, verificação ou visualização de documentos.
+            </p>
+            <div className="bg-gray-50 p-4 rounded-lg space-y-3">
+              <p className="font-semibold text-sm">Tipos de acesso:</p>
+              <ul className="text-sm text-gray-700 space-y-2">
+                <li className="flex items-center gap-2">
+                  <FileText size={16} className="text-blue-600" />
+                  <span>
+                    <span className="font-semibold">Direção:</span> Emite e verifica documentos
+                  </span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <Send size={16} className="text-purple-600" />
+                  <span>
+                    <span className="font-semibold">Aluno:</span> Submete pedidos e visualiza documentos
+                  </span>
+                </li>
+              </ul>
+            </div>
+          </CardContent>
+        </Card>
       )}
     </div>
   )

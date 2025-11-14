@@ -9,7 +9,7 @@ export const usuariosTeste = [
     email: "diretor@escola1.com",
     senha: "senha123",
     papel: "diretor" as UserRole,
-    escola: "Escola Primária São João",
+    escola: "Escola Secundária São João",
     cidade: "Maputo",
   },
   {
@@ -18,7 +18,7 @@ export const usuariosTeste = [
     email: "joao@aluno.com",
     senha: "senha789",
     papel: "aluno" as UserRole,
-    escola: "Escola Secundária Machel",
+    escola: "Escola Secundária São João",
     cidade: "Maputo",
     turma: "10A",
     classe: "10",
@@ -35,6 +35,15 @@ export const usuariosTeste = [
     turma: "11B",
     classe: "11",
     bi: "987654321",
+  },
+  {
+    id: "4",
+    nome: "Dr. Edgar Cossa",
+    email: "diretor@escola2.com",
+    senha: "senha234",
+    papel: "diretor" as UserRole,
+    escola: "Escola Secundária Machel",
+    cidade: "Maputo",
   },
 ]
 
@@ -209,4 +218,81 @@ export async function verificarPIN(pin: string): Promise<boolean> {
 
 export function pinJaDefinido(): boolean {
   return localStorage.getItem("pinCriptografado") !== null
+}
+
+export interface Aluno {
+  id: string
+  nome: string
+  bi: string
+  escola: string
+  turma: string
+  classe: string
+  dataCadastro: string
+}
+
+export const alunosRegistados: Aluno[] = [
+  {
+    id: "ALU001",
+    nome: "João Mateus",
+    bi: "123456789",
+    escola: "Escola Primária São João",
+    turma: "5A",
+    classe: "5",
+    dataCadastro: "2024-01-15",
+  },
+  {
+    id: "ALU002",
+    nome: "Maria Silva",
+    bi: "987654321",
+    escola: "Escola Secundária Machel",
+    turma: "10B",
+    classe: "10",
+    dataCadastro: "2024-02-10",
+  },
+  {
+    id: "ALU003",
+    nome: "Pedro Oliveira",
+    bi: "456789123",
+    escola: "Escola Primária São João",
+    turma: "4C",
+    classe: "4",
+    dataCadastro: "2024-01-20",
+  },
+  {
+    id: "ALU004",
+    nome: "Ana Costa",
+    bi: "321654987",
+    escola: "Escola Técnica de Gaza",
+    turma: "11A",
+    classe: "11",
+    dataCadastro: "2024-03-05",
+  },
+  {
+    id: "ALU005",
+    nome: "Carlos Mango",
+    bi: "789123456",
+    escola: "Escola Secundária Machel",
+    turma: "12C",
+    classe: "12",
+    dataCadastro: "2024-02-28",
+  },
+  {
+    id: "ALU006",
+    nome: "Zélia Mendes",
+    bi: "654321789",
+    escola: "Escola Primária São João",
+    turma: "6B",
+    classe: "6",
+    dataCadastro: "2024-03-12",
+  },
+]
+
+// Function to get students by school
+export function obterAlunosPorEscola(escola: string): Aluno[] {
+  return alunosRegistados.filter((aluno) => aluno.escola === escola)
+}
+
+// Function to get student by ID
+export function obterAlunoPorId(id: string): Aluno | undefined {
+  return alunosRegistados.find((aluno) => aluno.id === id)
 }

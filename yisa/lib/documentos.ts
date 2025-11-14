@@ -5,14 +5,8 @@ export interface DadosEstudante {
   numeroBi: string
   dataMatricula: string
   classe: string
-  notas: {
-    lingua_portuguesa: string
-    matematica: string
-    historia: string
-    geografia: string
-    ciencias: string
-    educacao_fisica: string
-  }
+  nivelAcademico: "primario" | "secundario"
+  notas: Record<string, string>
   observacoes: string
 }
 
@@ -23,8 +17,50 @@ export interface DocumentoTransferencia {
   dataEmissao: string
   escolaOrigem: string
   cidadeOrigem: string
+  nivelAcademico: "primario" | "secundario"
   hash: string
   qrCodeData: string
+}
+
+export interface SolicitacaoTransferencia {
+  id: string
+  escolaOrigem: string
+  escolaDestino: string
+  nomeEstudante: string
+  turma: string
+  classe: string
+  bi: string
+  motivo: string
+  dataSolicitacao: string
+  status: "pendente" | "aprovada" | "rejeitada"
+}
+
+export const DISCIPLINAS_POR_NIVEL = {
+  primario: [
+    { key: "matematica", label: "Matemática" },
+    { key: "portugues", label: "Português" },
+    { key: "ciencias_naturais", label: "Ciências Naturais" },
+    { key: "ciencias_sociais", label: "Ciências Sociais" },
+    { key: "ingles", label: "Inglês" },
+    { key: "ed_moral_civica", label: "Ed Moral Cívica" },
+    { key: "oficios", label: "Ofícios" },
+    { key: "ed_visual", label: "Ed Visual" },
+    { key: "ed_fisica", label: "Ed Física" },
+  ],
+  secundario: [
+    { key: "matematica", label: "Matemática" },
+    { key: "portugues", label: "Português" },
+    { key: "fisica", label: "Física" },
+    { key: "ed_visual", label: "Ed Visual" },
+    { key: "biologia", label: "Biologia" },
+    { key: "quimica", label: "Química" },
+    { key: "historia", label: "História" },
+    { key: "ingles", label: "Inglês" },
+    { key: "filosofia", label: "Filosofia" },
+    { key: "empreendedorismo", label: "Empreendedorismo" },
+    { key: "ed_fisica", label: "Ed Física" },
+    { key: "tics", label: "TICS" },
+  ],
 }
 
 // Generate QR code data for the document
@@ -90,8 +126,53 @@ export function obterTodosDocumentos(): DocumentoTransferencia[] {
   return Object.values(documentosArmazenados) as DocumentoTransferencia[]
 }
 
+export function obterTodosSolicitacoes(): SolicitacaoTransferencia[] {
+  const solicitacoesArmazenados = JSON.parse(localStorage.getItem("solicitacoesTransferencia") || "{}")
+  return Object.values(solicitacoesArmazenados) as SolicitacaoTransferencia[]
+}
+
+export function getDocumentsBySchool(escolaBuscada: string): any[] {
+  const raw = localStorage.getItem("documentosEmitidos");
+
+  if (!raw) return []; 
+
+  let parsed: any;
+  try {
+    parsed = JSON.parse(raw);
+  } catch (e) {
+    console.error("JSON inválido em localStorage.documentosEmitidos:", e, raw);
+    return [];
+  }
+
+  if (Array.isArray(parsed)) {
+    return parsed.filter((doc: any) => doc && doc.escolaOrigem === escolaBuscada);
+  }
+
+  if (parsed && typeof parsed === "object") {
+    const valores = Object.values(parsed);
+
+     const pareceDocumento = (obj: any) =>
+      obj && typeof obj === "object" && "escolaOrigem" in obj;
+
+    if (pareceDocumento(parsed) && !Array.isArray(parsed)) {
+      return parsed.escolaOrigem === escolaBuscada ? [parsed] : [];
+    }
+
+    return valores
+      .filter((v: any) => typeof v === "object" && v !== null && "escolaOrigem" in v)
+      .filter((doc: any) => doc.escolaOrigem === escolaBuscada);
+  }
+
+  return [];
+}
+
 // Format document for PDF display
 export function formatarDocumentoPDF(documento: DocumentoTransferencia): string {
+  const disciplinas = DISCIPLINAS_POR_NIVEL[documento.estudante.nivelAcademico]
+  const notasFormatadas = disciplinas
+    .map((d) => `${d.label}: ${documento.estudante.notas[d.key] || "-"}/20`)
+    .join("\n")
+
   return `
 DOCUMENTO DE TRANSFERÊNCIA ESCOLAR
 ===================================
@@ -104,16 +185,12 @@ ESTUDANTE:
 Nome: ${documento.estudante.nomeCompleto}
 BI: ${documento.estudante.numeroBi}
 Classe: ${documento.estudante.classe}
+Nível: ${documento.estudante.nivelAcademico === "primario" ? "Primário" : "Secundário"}
 Data de Matrícula: ${documento.estudante.dataMatricula}
 
 NOTAS:
 ------
-Língua Portuguesa: ${documento.estudante.notas.lingua_portuguesa}/20
-Matemática: ${documento.estudante.notas.matematica}/20
-História: ${documento.estudante.notas.historia}/20
-Geografia: ${documento.estudante.notas.geografia}/20
-Ciências: ${documento.estudante.notas.ciencias}/20
-Educação Física: ${documento.estudante.notas.educacao_fisica}/20
+${notasFormatadas}
 
 OBSERVAÇÕES:
 ${documento.estudante.observacoes || "Nenhuma observação"}

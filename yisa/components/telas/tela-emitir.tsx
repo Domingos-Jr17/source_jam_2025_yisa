@@ -1,19 +1,22 @@
 "use client"
 
 import type React from "react"
-import { useState } from "react"
+import { useState, useEffect, useMemo } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { AlertCircle, FileText, Loader2, Lock, Download } from "lucide-react"
-import { pinJaDefinido, armazenarPIN, verificarAutenticacao } from "@/lib/autenticacao"
-import { gerarDocumento, type DadosEstudante } from "@/lib/documentos"
+import { AlertCircle, FileText, Loader2, Lock, Download, Send } from 'lucide-react'
+import { pinJaDefinido, armazenarPIN, verificarAutenticacao, obterAlunosPorEscola, escolasSistema as escolas, type Aluno } from "@/lib/autenticacao"
+import { gerarDocumento, type DadosEstudante, DISCIPLINAS_POR_NIVEL } from "@/lib/documentos"
 import { gerarQRCode } from "@/lib/qr-generator"
+import { criarNotificacao, salvarNotificacao } from "@/lib/notificacoes"
+import { handleBaixarPDF, handleVisualizar } from '@/lib/pdf-generator'
 
 export default function TelaEmitir() {
+  const [escolaDestino, setEscolaDestino] = useState("")
   const [etapa, setEtapa] = useState<"pin" | "formulario" | "confirmacao" | "sucesso">("pin")
   const [pinDefinido, setPinDefinido] = useState(pinJaDefinido())
   const [carregando, setCarregando] = useState(false)
@@ -23,31 +26,31 @@ export default function TelaEmitir() {
   const [documentoGerado, setDocumentoGerado] = useState<any>(null)
   const [qrImageUrl, setQrImageUrl] = useState("")
 
-  // PIN states
   const [pinInserido, setPinInserido] = useState("")
   const [confirmarPin, setConfirmarPin] = useState("")
   const [mostrarPin, setMostrarPin] = useState(false)
 
-  // Dados do estudante para transferência
+  const [alunosDisponiveis, setAlunosDisponiveis] = useState<Aluno[]>([])
+  const [estudanteSelecionado, setEstudanteSelecionado] = useState<Aluno | null>(null)
+
   const [dados, setDados] = useState({
     nomeCompleto: "",
     numeroBi: "",
     dataMatricula: "",
     classe: "",
-    notas: {
-      lingua_portuguesa: "",
-      matematica: "",
-      historia: "",
-      geografia: "",
-      ciencias: "",
-      educacao_fisica: "",
-    },
+    nivelAcademico: "primario" as "primario" | "secundario",
+    notas: {} as Record<string, string>,
     observacoes: "",
   })
 
-  const usuario = verificarAutenticacao()
+  const usuario = useMemo(() => verificarAutenticacao(), [])
 
-  // ... existing PIN functions ...
+  useEffect(() => {
+    if (usuario?.escola) {
+      const alunos = obterAlunosPorEscola(usuario.escola)
+      setAlunosDisponiveis(alunos)
+    }
+  }, [usuario.escola])
 
   const handleDefinirPin = async () => {
     if (!pinInserido || !confirmarPin) {
@@ -94,6 +97,12 @@ export default function TelaEmitir() {
       return
     }
 
+    if (!escolaDestino) {
+      setMensagem("Por favor, selecione a escola de destino")
+      setMensagemTipo("erro")
+      return
+    }
+
     setCarregando(true)
     try {
       const { verificarPIN: verifFunc } = await import("@/lib/autenticacao")
@@ -107,6 +116,7 @@ export default function TelaEmitir() {
           numeroBi: dados.numeroBi,
           dataMatricula: dados.dataMatricula,
           classe: dados.classe,
+          nivelAcademico: dados.nivelAcademico,
           notas: dados.notas,
           observacoes: dados.observacoes,
         }
@@ -117,11 +127,31 @@ export default function TelaEmitir() {
           usuario?.cidade || "Maputo",
         )
 
-        // Generate QR code image
         const qrUrl = await gerarQRCode(documento.qrCodeData)
 
         setDocumentoGerado(documento)
         setQrImageUrl(qrUrl)
+
+        const notificacaoAluno = criarNotificacao(
+          "aprovacao",
+          "Documento de Transferência Emitido",
+          `Seu documento de transferência foi emitido com sucesso! ID: ${documento.shortId}. Você pode visualizá-lo em sua carteira digital.`,
+          dados.nomeCompleto,
+          usuario?.escola || "Direção",
+          documento.shortId,
+        )
+        salvarNotificacao(notificacaoAluno)
+
+        const notificacaoEscolaDestino = criarNotificacao(
+          "emissao",
+          "Novo Documento de Transferência Recebido",
+          `Documento de transferência emitido para ${dados.nomeCompleto} (BI: ${dados.numeroBi}, Classe: ${dados.classe}ª). Use o código QR ou ID para verificar: ${documento.shortId}`,
+          escolaDestino,
+          usuario?.escola || "Escola Origem",
+          documento.shortId,
+          qrUrl,
+        )
+        salvarNotificacao(notificacaoEscolaDestino)
 
         setTimeout(() => {
           setEtapa("sucesso")
@@ -165,41 +195,32 @@ export default function TelaEmitir() {
     }))
   }
 
+  const handleEstudanteSelecionado = (alunoId: string) => {
+    const aluno = alunosDisponiveis.find((a) => a.id === alunoId)
+    if (aluno) {
+      setEstudanteSelecionado(aluno)
+      setDados((prev) => ({
+        ...prev,
+        nomeCompleto: aluno.nome,
+        numeroBi: aluno.bi,
+        classe: aluno.classe,
+      }))
+    }
+  }
+
+  const handleNivelChange = (value: "primario" | "secundario") => {
+    const disciplinas = DISCIPLINAS_POR_NIVEL[value]
+    const notasVazias = disciplinas.reduce((acc, d) => ({ ...acc, [d.key]: "" }), {})
+    setDados((prev) => ({
+      ...prev,
+      nivelAcademico: value,
+      notas: notasVazias,
+    }))
+  }
+
   const handleBaixarDocumento = () => {
     if (!documentoGerado) return
-
-    const conteudo = `
-DOCUMENTO DE TRANSFERÊNCIA ESCOLAR
-====================================
-
-Código ID: ${documentoGerado.shortId}
-Data: ${documentoGerado.dataEmissao}
-
-ESTUDANTE:
-----------
-Nome: ${documentoGerado.estudante.nomeCompleto}
-BI: ${documentoGerado.estudante.numeroBi}
-Classe: ${documentoGerado.estudante.classe}
-
-NOTAS:
-------
-Português: ${documentoGerado.estudante.notas.lingua_portuguesa}
-Matemática: ${documentoGerado.estudante.notas.matematica}
-História: ${documentoGerado.estudante.notas.historia}
-Geografia: ${documentoGerado.estudante.notas.geografia}
-Ciências: ${documentoGerado.estudante.notas.ciencias}
-E.F.: ${documentoGerado.estudante.notas.educacao_fisica}
-
-Hash: ${documentoGerado.hash}
-    `
-
-    const element = document.createElement("a")
-    element.setAttribute("href", "data:text/plain;charset=utf-8," + encodeURIComponent(conteudo))
-    element.setAttribute("download", `Transferencia_${documentoGerado.shortId}.txt`)
-    element.style.display = "none"
-    document.body.appendChild(element)
-    element.click()
-    document.body.removeChild(element)
+    handleBaixarPDF(documentoGerado)
   }
 
   return (
@@ -306,9 +327,31 @@ Hash: ${documentoGerado.hash}
         <Card>
           <CardHeader>
             <CardTitle>Dados do Estudante</CardTitle>
-            <CardDescription>Preencha as informações do estudante para transferência</CardDescription>
+            <CardDescription>Selecione um aluno registado ou preencha manualmente</CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
+            <div className="space-y-2">
+              <Label htmlFor="estudanteSelecionado">Selecionar Aluno Registado</Label>
+              <Select value={estudanteSelecionado?.id || ""} onValueChange={handleEstudanteSelecionado}>
+                <SelectTrigger id="estudanteSelecionado">
+                  <SelectValue placeholder="Selecione um aluno da escola" />
+                </SelectTrigger>
+                <SelectContent>
+                  {alunosDisponiveis.length > 0 ? (
+                    alunosDisponiveis.map((aluno) => (
+                      <SelectItem key={aluno.id} value={aluno.id}>
+                        {aluno.nome} ({aluno.bi})
+                      </SelectItem>
+                    ))
+                  ) : (
+                    <SelectItem value="sem-alunos" disabled>
+                      Nenhum aluno registado nesta escola
+                    </SelectItem>
+                  )}
+                </SelectContent>
+              </Select>
+            </div>
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="nomeCompleto">Nome Completo *</Label>
@@ -344,18 +387,43 @@ Hash: ${documentoGerado.hash}
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="classe">Classe/Nível</Label>
-                <Select value={dados.classe} onValueChange={(value) => handleSelectChange("classe", value)}>
-                  <SelectTrigger id="classe">
+                <Label htmlFor="nivelAcademico">Nível Académico</Label>
+                <Select value={dados.nivelAcademico} onValueChange={handleNivelChange}>
+                  <SelectTrigger id="nivelAcademico">
                     <SelectValue placeholder="Selecione o nível" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="7">7ª Classe</SelectItem>
-                    <SelectItem value="8">8ª Classe</SelectItem>
-                    <SelectItem value="9">9ª Classe</SelectItem>
-                    <SelectItem value="10">10ª Classe</SelectItem>
-                    <SelectItem value="11">11ª Classe</SelectItem>
-                    <SelectItem value="12">12ª Classe</SelectItem>
+                    <SelectItem value="primario">Primário</SelectItem>
+                    <SelectItem value="secundario">Secundário</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="classe">Classe</Label>
+                <Select value={dados.classe} onValueChange={(value) => handleSelectChange("classe", value)}>
+                  <SelectTrigger id="classe">
+                    <SelectValue placeholder="Selecione a classe" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {dados.nivelAcademico === "primario" ? (
+                      <>
+                        <SelectItem value="1">1ª Classe</SelectItem>
+                        <SelectItem value="2">2ª Classe</SelectItem>
+                        <SelectItem value="3">3ª Classe</SelectItem>
+                        <SelectItem value="4">4ª Classe</SelectItem>
+                        <SelectItem value="5">5ª Classe</SelectItem>
+                        <SelectItem value="6">6ª Classe</SelectItem>
+                      </>
+                    ) : (
+                      <>
+                        <SelectItem value="7">7ª Classe</SelectItem>
+                        <SelectItem value="8">8ª Classe</SelectItem>
+                        <SelectItem value="9">9ª Classe</SelectItem>
+                        <SelectItem value="10">10ª Classe</SelectItem>
+                        <SelectItem value="11">11ª Classe</SelectItem>
+                        <SelectItem value="12">12ª Classe</SelectItem>
+                      </>
+                    )}
                   </SelectContent>
                 </Select>
               </div>
@@ -364,14 +432,7 @@ Hash: ${documentoGerado.hash}
             <div className="space-y-4">
               <h3 className="font-semibold text-[#1f1c45]">Notas dos Testes (0-20)</h3>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                {Object.entries({
-                  lingua_portuguesa: "Língua Portuguesa",
-                  matematica: "Matemática",
-                  historia: "História",
-                  geografia: "Geografia",
-                  ciencias: "Ciências",
-                  educacao_fisica: "Educação Física",
-                }).map(([key, label]) => (
+                {DISCIPLINAS_POR_NIVEL[dados.nivelAcademico].map(({ key, label }) => (
                   <div key={key} className="space-y-1">
                     <Label htmlFor={`nota_${key}`} className="text-sm">
                       {label}
@@ -383,7 +444,7 @@ Hash: ${documentoGerado.hash}
                       min="0"
                       max="20"
                       placeholder="0-20"
-                      value={dados.notas[key as keyof typeof dados.notas]}
+                      value={dados.notas[key] || ""}
                       onChange={handleDadosChange}
                     />
                   </div>
@@ -417,7 +478,7 @@ Hash: ${documentoGerado.hash}
         <Card>
           <CardHeader>
             <CardTitle>Confirmar Emissão de Documento</CardTitle>
-            <CardDescription>Insira seu PIN para confirmar a emissão</CardDescription>
+            <CardDescription>Selecione a escola de destino e insira seu PIN</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="bg-[#1f1c45]/5 p-4 rounded-lg space-y-2">
@@ -433,6 +494,27 @@ Hash: ${documentoGerado.hash}
                 <span className="text-gray-600">Classe:</span>
                 <span className="font-semibold">{dados.classe}ª Classe</span>
               </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="escolaDestino">Escola de Destino *</Label>
+              <Select value={escolaDestino} onValueChange={setEscolaDestino}>
+                <SelectTrigger id="escolaDestino">
+                  <SelectValue placeholder="Selecione a escola de destino" />
+                </SelectTrigger>
+                <SelectContent>
+                  {escolas
+                    .filter((escola) => escola !== usuario?.escola)
+                    .map((escola) => (
+                      <SelectItem key={escola} value={escola}>
+                        {escola}
+                      </SelectItem>
+                    ))}
+                </SelectContent>
+              </Select>
+              <p className="text-xs text-gray-500">
+                O documento será enviado para a escola selecionada via notificação
+              </p>
             </div>
 
             <div className="space-y-2">
@@ -466,8 +548,8 @@ Hash: ${documentoGerado.hash}
                 </>
               ) : (
                 <>
-                  <FileText className="mr-2 h-4 w-4" />
-                  Emitir Documento
+                  <Send className="mr-2 h-4 w-4" />
+                  Emitir e Enviar
                 </>
               )}
             </Button>
@@ -477,7 +559,9 @@ Hash: ${documentoGerado.hash}
         <Card>
           <CardHeader>
             <CardTitle className="text-green-600">Documento Emitido com Sucesso!</CardTitle>
-            <CardDescription>Seu documento foi gerado e armazenado</CardDescription>
+            <CardDescription>
+              Documento enviado para {escolaDestino}
+            </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="bg-[#1f1c45]/5 p-4 rounded-lg space-y-3">
@@ -508,8 +592,8 @@ Hash: ${documentoGerado.hash}
 
             <div className="bg-blue-50 border border-blue-200 p-4 rounded-lg">
               <p className="text-sm text-blue-700">
-                <span className="font-semibold">Nota:</span> O documento foi salvo localmente e pode ser compartilhado
-                com a escola destino. O código QR contém todas as informações necessárias para verificação.
+                <span className="font-semibold">Nota:</span> O documento foi enviado para {escolaDestino} via
+                notificação. A escola destino receberá o código QR e poderá verificar a autenticidade do documento.
               </p>
             </div>
           </CardContent>
@@ -522,19 +606,15 @@ Hash: ${documentoGerado.hash}
               className="flex-1 bg-[#1f1c45] hover:bg-[#2d2a5a]"
               onClick={() => {
                 setEtapa("formulario")
+                setEstudanteSelecionado(null)
+                setEscolaDestino("")
                 setDados({
                   nomeCompleto: "",
                   numeroBi: "",
                   dataMatricula: "",
                   classe: "",
-                  notas: {
-                    lingua_portuguesa: "",
-                    matematica: "",
-                    historia: "",
-                    geografia: "",
-                    ciencias: "",
-                    educacao_fisica: "",
-                  },
+                  nivelAcademico: "primario",
+                  notas: {},
                   observacoes: "",
                 })
               }}
