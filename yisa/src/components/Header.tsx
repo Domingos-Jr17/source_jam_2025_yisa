@@ -34,8 +34,12 @@ const Header: React.FC<HeaderProps> = ({ onMenuToggle }) => {
 
             {/* Logo */}
             <div className="flex items-center ml-2 lg:ml-0">
-              <div className="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center mr-3">
-                <span className="text-white font-bold text-sm">Y</span>
+              <div className="w-32 h-12 flex items-center justify-center mr-3">
+                <img
+                  src="/yisa-.ico"
+                  alt="Logo YISA"
+                  className="w-full h-full object-contain"
+                />
               </div>
               <h1 className="text-xl font-semibold text-gray-900 hidden sm:block">
                 YISA

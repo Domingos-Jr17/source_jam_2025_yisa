@@ -205,35 +205,7 @@ const HomePage: React.FC = () => {
         </div>
       </motion.section>
 
-      {/* Stats Section */}
-      <motion.section
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.9, duration: 0.6 }}
-        className="py-12 bg-primary-600 rounded-xl text-white"
-      >
-        <div className="text-center">
-          <h2 className="text-2xl font-bold mb-8">Impacto na Educação</h2>
-          <div className="grid md:grid-cols-4 gap-8">
-            <div className="text-center">
-              <div className="text-3xl font-bold mb-2">12,000+</div>
-              <div className="text-primary-100">Estudantes Atendidos</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold mb-2">180,000</div>
-              <div className="text-primary-100">Dias de Aula Economizados</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold mb-2">15+</div>
-              <div className="text-primary-100">Escolas Cobertas</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold mb-2">90s</div>
-              <div className="text-primary-100">Tempo de Emissão</div>
-            </div>
-          </div>
-        </div>
-      </motion.section>
+      
 
       {/* CTA Section */}
       {!isAuthenticated && (
@@ -270,6 +242,7 @@ const HomePage: React.FC = () => {
           }
         }}
       />
+      
     </div>
     </>
   )

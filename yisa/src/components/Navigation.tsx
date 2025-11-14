@@ -159,10 +159,14 @@ const Navigation: React.FC<NavigationProps> = ({ isOpen, onClose }) => {
           {/* Header */}
           <div className="flex items-center justify-between p-4 border-b border-gray-200 lg:hidden">
             <div className="flex items-center">
-              <div className="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center mr-3">
-                <span className="text-white font-bold text-sm">Y</span>
+              <div className="w-32 h-12 flex items-center justify-center mr-3">
+                <img
+                  src="/yisa-.ico"
+                  alt="Logo YISA"
+                  className="w-full h-full object-contain"
+                />
               </div>
-              <h2 className="text-lg font-semibold text-gray-900">YISA</h2>
+          
             </div>
             <button
               type="button"
@@ -236,9 +240,11 @@ const Navigation: React.FC<NavigationProps> = ({ isOpen, onClose }) => {
                 <div className="w-2 h-2 bg-green-500 rounded-full"></div>
               </div>
               <div className="text-center">
-                <p>&copy; 2024 YISA Team</p>
+                <p>&copy; 2025 YISA Team</p>
                 <p className="mt-1">Moçambique 🇲🇿</p>
               </div>
+
+            
             </div>
 
             {/* Quick stats (if authenticated) */}
