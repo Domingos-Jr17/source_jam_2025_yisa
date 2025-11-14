@@ -6,6 +6,7 @@ import { createLazyComponent } from './utils/lazyLoad'
 // Components
 import Header from './components/Header'
 import Navigation from './components/Navigation'
+import Breadcrumb from './components/Breadcrumb'
 import LoadingScreen from './components/LoadingScreen'
 import ErrorBoundary from './components/ErrorBoundary'
 
@@ -65,8 +66,11 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
       />
 
       {/* Main Content */}
-      <main className="lg:ml-64 min-h-[calc(100vh-4rem)]">
-        <div className="container mx-auto px-4 py-6">
+      <main className="lg:ml-64 pt-16 min-h-[calc(100vh-4rem)]">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 2xl:px-12 py-6 max-w-7xl 2xl:max-w-8xl">
+          {/* Breadcrumb Navigation */}
+          <Breadcrumb />
+
           <AnimatePresence mode="wait">
             <motion.div
               key={location.pathname}
@@ -96,21 +100,34 @@ const App: React.FC = () => {
   // Handle keyboard shortcuts and announce page changes
   useEffect(() => {
     const handleKeyboardShortcuts = (event: KeyboardEvent) => {
-      // Ctrl/Cmd + K for search (future feature)
+      // Ctrl/Cmd + K for search
       if ((event.ctrlKey || event.metaKey) && event.key === 'k') {
         event.preventDefault()
-        // TODO: Open search modal
+        // Focus on search input in desktop
+        const searchInput = document.querySelector('input[placeholder*="Procurar documentos"]') as HTMLInputElement
+        if (searchInput && !searchInput.disabled) {
+          searchInput.focus()
+          searchInput.select()
+          announce('Busca ativada', 'polite')
+        } else {
+          announce('Faça login para usar a busca', 'polite')
+        }
       }
 
       // Ctrl/Cmd + / for keyboard shortcuts help
       if ((event.ctrlKey || event.metaKey) && event.key === '/') {
         event.preventDefault()
-        // TODO: Show keyboard shortcuts modal
+        announce('Atalhos disponíveis: Ctrl+K (busca), Esc (fechar), / (navegação)', 'polite')
       }
 
-      // Escape to close modals
+      // Escape to close sidebar on mobile
       if (event.key === 'Escape') {
-        // TODO: Close any open modals
+        const mobileSidebar = document.querySelector('[aria-hidden="false"]')
+        if (mobileSidebar && window.innerWidth < 1024) {
+          const closeButton = document.querySelector('[aria-label="Fechar menu"]') as HTMLButtonElement
+          closeButton?.click()
+          announce('Menu fechado', 'polite')
+        }
       }
     }
 

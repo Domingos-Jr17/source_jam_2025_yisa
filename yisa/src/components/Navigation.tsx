@@ -146,7 +146,7 @@ const Navigation: React.FC<NavigationProps> = ({ isOpen, onClose }) => {
         exit={{ x: -300 }}
         transition={{ type: 'spring', damping: 25, stiffness: 200 }}
         className={`
-          fixed top-0 left-0 z-50 w-64 h-screen bg-white border-r border-gray-200
+          fixed top-0 left-0 z-40 w-64 h-screen bg-white border-r border-gray-200
           lg:translate-x-0 lg:static lg:inset-0 lg:z-auto
           ${isOpen ? 'translate-x-0' : '-translate-x-full'}
           transition-transform duration-300 ease-in-out
