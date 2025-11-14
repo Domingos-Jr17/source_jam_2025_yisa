@@ -291,7 +291,15 @@ export const useAuthStore = create<AuthState>()(
 
       checkSessionStatus: async () => {
         try {
-          await get()._initializeDevice()
+          // Add timeout to prevent infinite loading
+          const timeoutPromise = new Promise((_, reject) => {
+            setTimeout(() => reject(new Error('Session check timeout')), 5000)
+          })
+
+          await Promise.race([
+            get()._initializeDevice(),
+            timeoutPromise
+          ])
 
           const state = get()
           if (!state.deviceId) {
@@ -370,14 +378,46 @@ export const useAuthStore = create<AuthState>()(
           let deviceId = get().deviceId
 
           if (!deviceId) {
-            // Generate device fingerprint
-            const cryptoService = CryptoService.getInstance()
-            const fingerprint = await cryptoService.generateDeviceFingerprint()
+            // Try device fingerprint with fallback
+            try {
+              const cryptoService = CryptoService.getInstance()
 
-            set(state => {
-              state.deviceId = fingerprint.canvas.slice(0, 32) // Use canvas hash as device ID
-              state.deviceFingerprint = fingerprint
-            })
+              // Add timeout for device fingerprint generation
+              const fingerprintPromise = cryptoService.generateDeviceFingerprint()
+              const timeoutPromise = new Promise((_, reject) => {
+                setTimeout(() => reject(new Error('Fingerprint generation timeout')), 8000)
+              })
+
+              const fingerprint = await Promise.race([fingerprintPromise, timeoutPromise]) as DeviceFingerprint
+
+              set(state => {
+                state.deviceId = fingerprint.canvas.slice(0, 32) // Use canvas hash as device ID
+                state.deviceFingerprint = fingerprint
+              })
+
+            } catch (fingerprintError) {
+              console.warn('Device fingerprint failed, using fallback:', fingerprintError)
+
+              // Use crypto.randomUUID() as fallback
+              const fallbackId = crypto.randomUUID()
+              set(state => {
+                state.deviceId = fallbackId
+                state.deviceFingerprint = {
+                  canvas: fallbackId,
+                  webgl: '',
+                  fonts: [],
+                  timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                  language: navigator.language,
+                  screen: {
+                    width: screen.width,
+                    height: screen.height,
+                    colorDepth: screen.colorDepth,
+                    pixelRatio: window.devicePixelRatio || 1
+                  },
+                  platform: navigator.platform
+                }
+              })
+            }
 
             deviceId = get().deviceId
           }
@@ -385,7 +425,7 @@ export const useAuthStore = create<AuthState>()(
           return deviceId
         } catch (error) {
           console.error('Device initialization error:', error)
-          // Fallback to random ID
+          // Ultimate fallback to random ID
           const fallbackId = crypto.randomUUID()
           set(state => {
             state.deviceId = fallbackId

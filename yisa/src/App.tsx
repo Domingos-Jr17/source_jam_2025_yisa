@@ -177,8 +177,21 @@ const App: React.FC = () => {
     return <OfflinePage />
   }
 
-  // Show loading screen during initial load
+  // Show loading screen during initial load (with timeout for development)
   if (isLoading) {
+    // Add timeout to prevent infinite loading
+    setTimeout(() => {
+      console.warn('Loading timeout - forcing app to continue (development mode)')
+      // In development, force continue instead of reload to avoid infinite loop
+      if (process.env.NODE_ENV === 'development') {
+        console.log('Forcing app to continue in development mode')
+        // Force the auth store to stop loading
+        useAuthStore.setState({ isLoading: false })
+      } else {
+        window.location.reload()
+      }
+    }, 3000) // 3 seconds timeout (very aggressive for development)
+
     return <LoadingScreen />
   }
 
