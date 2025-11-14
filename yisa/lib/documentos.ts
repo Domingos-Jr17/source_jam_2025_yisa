@@ -96,6 +96,7 @@ export async function gerarDocumento(
     dataEmissao,
     escolaOrigem,
     cidadeOrigem,
+    nivelAcademico: dados.nivelAcademico,
     hash,
     qrCodeData,
   }
@@ -130,6 +131,26 @@ export function obterTodosSolicitacoes(): SolicitacaoTransferencia[] {
   const solicitacoesArmazenados = JSON.parse(localStorage.getItem("solicitacoesTransferencia") || "{}")
   return Object.values(solicitacoesArmazenados) as SolicitacaoTransferencia[]
 }
+
+
+export function apagarDocumentosPorUsuario( shortId: string ) {
+  const documentosArmazenados = JSON.parse(localStorage.getItem("documentosEmitidos") || "{}");
+  const documentosArray: DocumentoTransferencia[] = Object.values(documentosArmazenados);
+
+  const documentosRestantes = documentosArray.filter((doc) =>
+      doc.shortId.includes(shortId),
+  );
+
+  const novoArmazenamento = documentosRestantes.reduce((acc, doc) => {
+    acc[doc.shortId] = doc;
+    return acc;
+  }, {} as Record<string, DocumentoTransferencia>);
+
+  localStorage.setItem("documentosEmitidos", JSON.stringify(novoArmazenamento));
+
+  return documentosRestantes; // opcional, retorna os documentos que sobraram
+}
+
 
 export function getDocumentsBySchool(escolaBuscada: string): any[] {
   const raw = localStorage.getItem("documentosEmitidos");

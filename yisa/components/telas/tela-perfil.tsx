@@ -46,7 +46,7 @@ export default function TelaPerfil() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
-    setDadosUsuario((prev) => ({
+    setDadosUsuario((prev: any) => ({
       ...prev,
       [name]: value,
     }))

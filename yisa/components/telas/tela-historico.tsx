@@ -202,15 +202,7 @@ export default function TelaHistorico({ onSelecionarDocumento }: TelaHistoricoPr
                       <Edit2 size={16} />
                       <span className="hidden sm:inline ml-1">Editar</span>
                     </Button>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      className="text-blue-600 border-blue-600 hover:bg-blue-50"
-                      onClick={() => handleDownload(doc)}
-                    >
-                      <Download size={16} />
-                      <span className="hidden sm:inline ml-1">Download</span>
-                    </Button>
+                   
                     <Button
                       size="sm"
                       variant="outline"

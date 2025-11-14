@@ -135,7 +135,7 @@ interface DadosRegistro {
   email: string
   senha: string
   confirmarSenha: string
-  papel: UserRole
+  papel: string
   escola: string
   cidade: string
 }
@@ -158,7 +158,7 @@ export async function registrar(dados: DadosRegistro) {
     nome: dados.nome,
     email: dados.email,
     senha: dados.senha,
-    papel: dados.papel,
+    papel: dados.papel.toString() as UserRole,
     escola: dados.escola,
     cidade: dados.cidade,
   }

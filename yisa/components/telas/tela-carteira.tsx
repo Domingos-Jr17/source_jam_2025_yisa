@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Download, FileText, Search, Trash2, Wallet } from 'lucide-react'
-import { obterTodosDocumentos, type DocumentoTransferencia, DISCIPLINAS_POR_NIVEL } from "@/lib/documentos"
+import { obterTodosDocumentos, apagarDocumentosPorUsuario, type DocumentoTransferencia, DISCIPLINAS_POR_NIVEL } from "@/lib/documentos"
 import { verificarAutenticacao } from "@/lib/autenticacao"
 import { handleBaixarPDF, handleVisualizar } from '@/lib/pdf-generator'
 
@@ -195,7 +195,7 @@ export default function TelaCarteira() {
             <Button
               variant="outline"
               className="flex-1 text-red-600 border-red-200 hover:bg-red-50 bg-transparent"
-              onClick={() => handleApagarDocumento(documentoSelecionado.shortId)}
+              onClick={() => apagarDocumentosPorUsuario(documentoSelecionado.shortId)}
             >
               <Trash2 className="mr-2 h-4 w-4" />
               Apagar

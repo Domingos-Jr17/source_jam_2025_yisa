@@ -159,10 +159,8 @@ export default function TelaDetalhesDocumento({ documentoId, onVoltar, onNavigat
             </div>
 
             {/* Notas */}
-            <div>
-              <h3 className="text-lg font-semibold text-[#004b87] mb-4">Notas (0-20)</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {DISCIPLINAS_POR_NIVEL[dadosEditacao.nivelAcademico].map(({ key, label }) => (
+           {DISCIPLINAS_POR_NIVEL[dadosEditacao.nivelAcademico as "primario" | "secundario"].map(
+                ({ key, label }) => (
                   <div key={key}>
                     <label className="text-sm font-semibold text-gray-700">{label}</label>
                     <Input
@@ -170,16 +168,18 @@ export default function TelaDetalhesDocumento({ documentoId, onVoltar, onNavigat
                       min="0"
                       max="20"
                       value={dadosEditacao.notas[key] || ""}
-                      onChange={(e) => setDadosEditacao({
-                        ...dadosEditacao,
-                        notas: { ...dadosEditacao.notas, [key]: e.target.value }
-                      })}
+                      onChange={(e) =>
+                        setDadosEditacao({
+                          ...dadosEditacao,
+                          notas: { ...dadosEditacao.notas, [key]: e.target.value },
+                        })
+                      }
                       className="mt-1"
                     />
                   </div>
-                ))}
-              </div>
-            </div>
+                )
+              )}
+              
 
             {/* Observações */}
             <div>
