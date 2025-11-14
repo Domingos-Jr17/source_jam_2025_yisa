@@ -1,0 +1,41 @@
+{
+  "name": "Yisa - Sistema de Transferências Escolares",
+  "short_name": "Yisa",
+  "description": "Sistema de emissão e verificação de documentos escolares com código QR para Moçambique",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2563eb",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/icon/144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon/256.png",
+      "sizes": "256x256",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["education", "productivity"],
+  "shortcuts": [
+    {
+      "name": "Emitir Documento",
+      "short_name": "Emitir",
+      "description": "Emitir novo documento de transferência",
+      "url": "/?tab=emitir",
+      "icons": [{ "src": "/icon/144.png", "sizes": "144x144" }]
+    },
+    {
+      "name": "Verificar Documento",
+      "short_name": "Verificar",
+      "description": "Verificar autenticidade de documento",
+      "url": "/?tab=verificar",
+      "icons": [{ "src": "/icon/144.png", "sizes": "144x144" }]
+    }
+  ]
+}

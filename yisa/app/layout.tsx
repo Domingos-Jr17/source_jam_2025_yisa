@@ -10,7 +10,6 @@ const _geistMono = Geist_Mono({ subsets: ["latin"] })
 export const metadata: Metadata = {
   title: "DocEscola - Sistema de Transferências Escolares",
   description: "Sistema de emissão e verificação de documentos escolares com código QR para Moçambique",
-  generator: "v0.app",
   icons: {
     icon: "/icon.svg",
   },
