@@ -249,7 +249,7 @@ const QRScanner: React.FC<QRScannerProps> = ({
             Escaneie o QR Code do Documento
           </h3>
           <p className="text-gray-600 mb-6">
-            Posicione o QR code do documento escolar dentro da área de扫描 para verificar a autenticidade.
+            Posicione o QR code do documento escolar dentro da área de QR para verificar a autenticidade.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button
