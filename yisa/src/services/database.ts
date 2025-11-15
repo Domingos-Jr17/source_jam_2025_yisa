@@ -75,6 +75,40 @@ export class DatabaseService extends Dexie {
   }
 
   /**
+   * Ensure test users exist (call this if login is failing)
+   */
+  public async ensureTestUsersExist(): Promise<void> {
+    try {
+      console.log('🔍 DEBUG - Checking if test users exist...')
+
+      const existingUsers = await this.users.toArray()
+      const testUserExists = existingUsers.some(u => u.nomeCompleto === 'Maria José Massingue')
+
+      console.log('🔍 DEBUG - Existing users count:', existingUsers.length, 'testUserExists:', testUserExists)
+
+      if (!testUserExists) {
+        console.log('✅ DEBUG - Test users missing, creating them now...')
+        await this.createDefaultUsers()
+        console.log('✅ DEBUG - Test users created successfully')
+      } else {
+        console.log('ℹ️ DEBUG - Test users already exist')
+        // Log all test users for verification
+        const testUsers = existingUsers.filter(u =>
+          ['Maria José Massingue', 'Carlos António Nhantumbo', 'Administrador YISA'].includes(u.nomeCompleto)
+        )
+        console.log('👥 DEBUG - Test users found:', testUsers.map(u => ({
+          nome: u.nomeCompleto,
+          email: u.email,
+          hasPinHash: !!u.pinHash,
+          hasPinSalt: !!u.pinSalt
+        })))
+      }
+    } catch (error) {
+      console.error('❌ DEBUG - Error ensuring test users exist:', error)
+    }
+  }
+
+  /**
    * Initialize default data and settings
    */
   private async initializeDefaultData(): Promise<void> {
@@ -105,15 +139,23 @@ export class DatabaseService extends Dexie {
       // Set first run flag if not set
       const isFirstRun = await this.settings.get('first_run')
       if (!isFirstRun) {
-        await this.settings.add({
-          id: 'first_run',
-          key: 'first_run',
-          value: new Date().toISOString(),
-          type: 'string',
-          category: 'system',
-          updatedAt: new Date()
-        })
-        console.log('✅ DEBUG - First run flag set')
+        try {
+          await this.settings.add({
+            id: 'first_run',
+            key: 'first_run',
+            value: new Date().toISOString(),
+            type: 'string',
+            category: 'system',
+            updatedAt: new Date()
+          })
+          console.log('✅ DEBUG - First run flag set')
+        } catch (addError: any) {
+          if (addError.name === 'BulkError') {
+            console.log('⚠️ DEBUG - First run flag already exists')
+          } else {
+            console.error('❌ DEBUG - Error setting first run flag:', addError)
+          }
+        }
       }
     } catch (error) {
       console.error('❌ DEBUG - Database initialization error:', error)
@@ -181,7 +223,24 @@ export class DatabaseService extends Dexie {
       }
     ]
 
-    await this.settings.bulkAdd(defaultSettings)
+    try {
+      await this.settings.bulkAdd(defaultSettings)
+      console.log('✅ DEBUG - Settings created successfully')
+    } catch (error: any) {
+      if (error.name === 'BulkError' && error.failures) {
+        console.log('⚠️ DEBUG - Some settings already exist, updating them...')
+        for (const setting of defaultSettings) {
+          try {
+            await this.settings.put(setting)
+          } catch (putError) {
+            console.log(`⚠️ DEBUG - Could not update setting ${setting.id}:`, putError)
+          }
+        }
+      } else {
+        console.error('❌ DEBUG - Error creating settings:', error)
+        throw error
+      }
+    }
   }
 
   /**
@@ -223,7 +282,24 @@ export class DatabaseService extends Dexie {
       }
     ]
 
-    await this.schools.bulkAdd(defaultSchools)
+    try {
+      await this.schools.bulkAdd(defaultSchools)
+      console.log('✅ DEBUG - Schools created successfully')
+    } catch (error: any) {
+      if (error.name === 'BulkError' && error.failures) {
+        console.log('⚠️ DEBUG - Some schools already exist, updating them...')
+        for (const school of defaultSchools) {
+          try {
+            await this.schools.put(school)
+          } catch (putError) {
+            console.log(`⚠️ DEBUG - Could not update school ${school.id}:`, putError)
+          }
+        }
+      } else {
+        console.error('❌ DEBUG - Error creating schools:', error)
+        throw error
+      }
+    }
   }
 
   /**
@@ -292,9 +368,20 @@ export class DatabaseService extends Dexie {
       // Verify users were actually created
       const createdUsers = await this.users.toArray()
       console.log('🔍 DEBUG - Verifying created users in DB:', createdUsers.map(u => ({ id: u.id, nome: u.nomeCompleto, email: u.email, isActive: u.isActive })))
-    } catch (error) {
-      console.error('❌ DEBUG - Error creating users:', error)
-      throw error
+    } catch (error: any) {
+      if (error.name === 'BulkError' && error.failures) {
+        console.log('⚠️ DEBUG - Some users already exist, updating them...')
+        for (const user of defaultUsers) {
+          try {
+            await this.users.put(user)
+          } catch (putError) {
+            console.log(`⚠️ DEBUG - Could not update user ${user.id}:`, putError)
+          }
+        }
+      } else {
+        console.error('❌ DEBUG - Error creating users:', error)
+        throw error
+      }
     }
   }
 

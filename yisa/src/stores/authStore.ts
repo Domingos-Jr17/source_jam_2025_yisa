@@ -124,6 +124,10 @@ export const useAuthStore = create<AuthState>()(
 
           // Get user by name
           const db = DatabaseService.getInstance()
+
+          // Ensure test users exist
+          await db.ensureTestUsersExist()
+
           const cryptoService = CryptoService.getInstance()
 
           // Search user by nomeCompleto
