@@ -13,6 +13,7 @@ import {
 } from '@heroicons/react/24/outline'
 import { useDocumentWallet } from '../hooks/useDocumentWallet'
 import DocumentCard from '../components/DocumentCard'
+import DocumentModal from '../components/DocumentModal'
 import type { DocumentoEscolar } from '../types'
 
 const CarteiraPage: React.FC = () => {
@@ -20,6 +21,8 @@ const CarteiraPage: React.FC = () => {
   const location = useLocation()
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
   const [showSuccessMessage, setShowSuccessMessage] = useState(false)
+  const [selectedDocument, setSelectedDocument] = useState<DocumentoEscolar | null>(null)
+  const [isModalOpen, setIsModalOpen] = useState(false)
 
   const {
     documents,
@@ -47,7 +50,16 @@ const CarteiraPage: React.FC = () => {
   }, [location.state])
 
   const handleViewDocument = (documentId: string) => {
-    navigate(`/documento/${documentId}`)
+    const document = documents.find(doc => doc.id === documentId)
+    if (document) {
+      setSelectedDocument(document)
+      setIsModalOpen(true)
+    }
+  }
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false)
+    setSelectedDocument(null)
   }
 
   const documentTypes = [
@@ -308,6 +320,15 @@ const CarteiraPage: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Document Modal */}
+      <DocumentModal
+        document={selectedDocument}
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        onDownload={downloadDocument}
+        onDelete={deleteDocument}
+      />
     </motion.div>
   )
 }
