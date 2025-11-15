@@ -6,7 +6,7 @@
 
 ## 📋 **Overview**
 
-Welcome to the **YISA** project repository! YISA (_Your Interactive School Assistant_) is an innovative **Progressive Web App (PWA)** for digitizing school documents in Mozambique, solving the critical school transfer bureaucracy problem.
+Welcome to the **YISA** project repository! YISA (that means To Carry, To Lead, To Bring in ronga/changana, mozambican lamguage) is an innovative **Progressive Web App (PWA)** for digitizing school documents in Mozambique, solving the critical school transfer bureaucracy problem.
 
 ### 🎯 **Event**
 
@@ -152,7 +152,6 @@ npm run dev
 ### **Master Documentation**
 
 - ⭐ **[`YISA_MASTER_SPECIFICATION.md`](docs/YISA_MASTER_SPECIFICATION.md)** - Complete technical specifications (single source of truth)
-- 📊 **[`DECISION_LOG.md`](docs/DECISION_LOG.md)** - All project decisions and rationale
 
 ### **Implementation Plan**
 
@@ -162,14 +161,14 @@ npm run dev
 
 ### **Core Features (F1-F6)**
 
-| Feature                      | Description                      | Priority    | Status     |
-| ---------------------------- | -------------------------------- | ----------- | ---------- |
-| **F1**: Emission Form        | 4-field form for student data    | 🔴 Critical | 📋 Planned |
-| **F2**: PDF + QR Generation  | Create secure document with QR   | 🔴 Critical | 📋 Planned |
-| **F3**: WhatsApp Sharing     | Native mobile sharing            | 🔴 Critical | 📋 Planned |
-| **F4**: Offline Verification | QR scanner with local validation | 🔴 Critical | 📋 Planned |
-| **F5**: Hash System          | SHA-256 document integrity       | 🔴 Critical | 📋 Planned |
-| **F6**: PIN Security         | 6-digit access protection        | 🔴 Critical | 📋 Planned |
+| Feature                      | Description                      | Priority    |
+| ---------------------------- | -------------------------------- | ----------- |
+| **F1**: Emission Form        | 4-field form for student data    | 🔴 Critical |
+| **F2**: PDF + QR Generation  | Create secure document with QR   | 🔴 Critical |
+| **F3**: WhatsApp Sharing     | Native mobile sharing            | 🔴 Critical |
+| **F4**: Offline Verification | QR scanner with local validation | 🔴 Critical |
+| **F5**: Hash System          | SHA-256 document integrity       | 🔴 Critical |
+| **F6**: PIN Security         | 6-digit access protection        | 🔴 Critical |
 
 ## 👥 **How to Contribute**
 
@@ -195,16 +194,6 @@ Refactor: refactoring
 Test: tests
 ```
 
-## 📊 **Impact & Success Metrics**
-
-### **Verified Impact**
-
-- **Students Helped**: 12,000 transfers per year
-- **Time Saved**: 18-30 days → 90 seconds (99.7% reduction)
-- **Money Saved**: 350 MT per family (4.2M MT total)
-- **Education Recovered**: 180,000 school days per year
-- **Schools Served**: Works without internet (60% of schools)
-
 ### **Success Criteria**
 
 - ✅ Working offline demo (WiFi disabled)
@@ -217,7 +206,7 @@ Test: tests
 
 ### **Implementation Success**
 
-- All 6 core features (F1-F6) working offline
+- All 9 core features (F1-F9) working offline
 - Demo runs successfully with WiFi disabled
 - QR codes scan and verify correctly
 - PDFs generate and share properly
@@ -241,12 +230,11 @@ Test: tests
 ### **Key Documents**
 
 - **Technical Specification**: [`YISA_MASTER_SPECIFICATION.md`](docs/YISA_MASTER_SPECIFICATION.md) ⭐
-- **Decision Log**: [`DECISION_LOG.md`](docs/DECISION_LOG.md)
 - **Execution Plan**: [`yisa_update.md`](yisa_update.md) 📋
 
 ### **Development Focus**
 
-- **Tech Lead**: React/JavaScript development
+- **Tech Lead**: React/Typescript development
 - **Security Focus**: SHA-256 implementation
 - **UX Lead**: Mobile-first design
 - **QA Focus**: Cross-device testing
@@ -262,10 +250,11 @@ This project is licensed under the **MIT License** - see [LICENSE](LICENSE) file
 - **MozDev** and **Maputo Frontenders** for organization
 - **Mentors** and **judges** of Source Jam 2025
 - **Mozambican tech community** for support
-- **Pilot schools** for collaboration in development
 
 ---
 
 **"Building Open Source Solutions Together"** 🇲🇿
 
 _Let's transform education in Mozambique with technology!_
+
+"YISA - To Carry, To Lead, To Bring (Ronga/Changana)
