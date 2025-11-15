@@ -440,7 +440,7 @@ export class CryptoService {
       const derivedBits = await crypto.subtle.deriveBits(
         {
           name: 'PBKDF2',
-          salt: saltBuffer,
+          salt: saltBuffer as BufferSource,
           iterations,
           hash: 'SHA-256'
         },

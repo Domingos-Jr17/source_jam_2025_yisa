@@ -94,15 +94,20 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onLoginSuccess
           return
         }
 
+        console.log('🚪 DEBUG - Attempting login with:', { identificador: fullName, pin: '***' })
         const success = await login({
           identificador: fullName,
           pin
         })
+        console.log('🎯 DEBUG - Login result:', success)
+
         if (success) {
+          console.log('✅ DEBUG - Login successful, closing modal')
           setError('')
           onLoginSuccess?.()
           onClose()
         } else {
+          console.log('❌ DEBUG - Login failed, showing error')
           setError('Nome ou PIN incorretos')
         }
       }

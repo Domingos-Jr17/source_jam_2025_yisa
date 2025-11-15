@@ -327,36 +327,30 @@ export class DatabaseService extends Dexie {
 
     const defaultUsers = [
       {
-        id: 'usr-001',
         nomeCompleto: 'Maria José Massingue',
         email: 'maria.massingue@email.com',
         telefone: '+258 84 123 4567',
         pinHash: mariaPinData.hash,
         pinSalt: mariaPinData.salt,
         createdAt: new Date(),
-        updatedAt: new Date(),
         isActive: true
       },
       {
-        id: 'usr-002',
         nomeCompleto: 'Carlos António Nhantumbo',
         email: 'carlos.nhantumbo@email.com',
         telefone: '+258 82 987 6543',
         pinHash: carlosPinData.hash,
         pinSalt: carlosPinData.salt,
         createdAt: new Date(),
-        updatedAt: new Date(),
         isActive: true
       },
       {
-        id: 'usr-003',
         nomeCompleto: 'Administrador YISA',
         email: 'admin@yisa.education.mz',
         telefone: '+258 21 123 4567',
         pinHash: adminPinData.hash,
         pinSalt: adminPinData.salt,
         createdAt: new Date(),
-        updatedAt: new Date(),
         isActive: true
       }
     ]
@@ -375,7 +369,7 @@ export class DatabaseService extends Dexie {
           try {
             await this.users.put(user)
           } catch (putError) {
-            console.log(`⚠️ DEBUG - Could not update user ${user.id}:`, putError)
+            console.log(`⚠️ DEBUG - Could not update user ${user.nomeCompleto}:`, putError)
           }
         }
       } else {

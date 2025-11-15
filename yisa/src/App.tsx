@@ -116,6 +116,11 @@ const App: React.FC = () => {
   const { isAuthenticated, isLoading } = useAuth()
   const { announce, announcePageChange, getAccessibilityClasses } = useAccessibility()
 
+  // Debug authentication state
+  useEffect(() => {
+    console.log('🔍 DEBUG - App Auth State:', { isAuthenticated, isLoading })
+  }, [isAuthenticated, isLoading])
+
   // Show install banner if PWA install is available
   const showInstallBanner = showInstallPrompt && !isAuthenticated
 

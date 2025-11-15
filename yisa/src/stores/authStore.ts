@@ -19,6 +19,7 @@ interface AuthState {
   user: {
     deviceId: string
     sessionId?: string
+    nomeCompleto?: string
     securityLevel: string
     lastLoginAt?: Date
   }
@@ -42,6 +43,7 @@ interface AuthState {
   lockSession: (duration?: number) => void
   checkSessionStatus: () => Promise<void>
   clearSecurityEvents: () => void
+  setLoading: (loading: boolean) => void
   addSecurityEvent: (event: Omit<SecurityEvent, 'id' | 'timestamp'>) => void
   _initializeDevice: () => Promise<string>
   _createSession: (deviceId: string) => Promise<SessionEntity>
@@ -79,14 +81,12 @@ export const useAuthStore = create<AuthState>()(
 
           // Create new user
           const newUser = {
-            id: crypto.randomUUID(),
             nomeCompleto: userData.nomeCompleto,
             email: userData.email || '',
             telefone: userData.telefone || '',
             pinHash,
             pinSalt,
             createdAt: new Date(),
-            updatedAt: new Date(),
             isActive: true
           }
 
@@ -193,16 +193,24 @@ export const useAuthStore = create<AuthState>()(
           }
 
           // Reset failed attempts on successful login
+          console.log('🔐 DEBUG - Setting user session:', {
+            userObject: user,
+            userId: user.id,
+            userNomeCompleto: user.nomeCompleto
+          })
+
           set(state => {
             state.pinAttempts = 0
             state.lockedUntil = null
             state.isAuthenticated = true
             state.user = {
               deviceId: state.deviceId,
-              sessionId: user.id,
+              sessionId: user.id?.toString() || crypto.randomUUID(),
+              nomeCompleto: user.nomeCompleto,
               securityLevel: 'medium',
               lastLoginAt: new Date()
             }
+            console.log('👤 DEBUG - User state set:', state.user)
           })
 
           await get()._recordSecurityEvent(
@@ -348,6 +356,11 @@ export const useAuthStore = create<AuthState>()(
           'Session locked due to suspicious activity',
           { deviceId: get().deviceId, duration }
         )
+      },
+
+      // Set loading state
+      setLoading: (loading: boolean) => {
+        set(state => { state.isLoading = loading })
       },
 
       checkSessionStatus: async () => {

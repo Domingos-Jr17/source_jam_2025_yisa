@@ -18,15 +18,14 @@ export interface YISADatabase {
 }
 
 export interface UserEntity {
-  id: string;
+  id?: number;
   nomeCompleto: string;
-  email: string;
-  telefone: string;
+  email?: string;
+  telefone?: string;
   pinHash: string;
   pinSalt: string;
-  createdAt: Date;
-  updatedAt: Date;
   isActive: boolean;
+  createdAt?: Date;
 }
 
 export interface StudentEntity {
