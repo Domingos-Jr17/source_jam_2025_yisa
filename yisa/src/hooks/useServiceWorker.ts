@@ -52,9 +52,10 @@ export const useServiceWorker = () => {
 
       // Only register service worker in production
       if (!import.meta.env.PROD) {
-        setStatus(prev => ({ ...prev, enabled: false }))
+        console.log('Service Worker registration skipped in development mode')
+        setStatus(prev => ({ ...prev, enabled: false, supported: true }))
         setUpdateStatus(prev => ({ ...prev, checking: false, available: false, installing: false, activated: false }))
-        return false
+        return true // Return true to indicate successful skip
       }
 
       // Register the service worker
@@ -152,7 +153,7 @@ export const useServiceWorker = () => {
 
   const unregisterServiceWorker = useCallback(async () => {
     if (!status.registration) {
-      console.warn('No Service Worker registration found')
+      console.log('No Service Worker registration found (normal in development)')
       return
     }
 
@@ -185,7 +186,17 @@ export const useServiceWorker = () => {
   }, [status.registration])
 
   const clearCache = useCallback(async () => {
-    if (!('serviceWorker' in navigator) || !status.registration) {
+    if (!('serviceWorker' in navigator)) {
+      console.warn('Service Worker not supported')
+      return
+    }
+
+    if (!status.registration && !import.meta.env.PROD) {
+      console.log('Service Worker not available in development mode')
+      return
+    }
+
+    if (!status.registration) {
       console.warn('Service Worker not available for cache clearing')
       return
     }
@@ -195,6 +206,10 @@ export const useServiceWorker = () => {
       if (navigator.serviceWorker.controller) {
         navigator.serviceWorker.controller.postMessage({ type: 'CLEAR_CACHE' })
         console.log('Cache clear request sent to Service Worker')
+      } else if (!import.meta.env.PROD) {
+        console.log('No Service Worker controller in development mode')
+      } else {
+        console.warn('No Service Worker controller available')
       }
     } catch (error) {
       console.error('Failed to clear cache:', error)
@@ -204,6 +219,11 @@ export const useServiceWorker = () => {
   const getCacheInfo = useCallback(async () => {
     if (!('caches' in window)) {
       return null
+    }
+
+    // In development, return empty cache info since service worker is not active
+    if (!import.meta.env.PROD) {
+      return []
     }
 
     try {
