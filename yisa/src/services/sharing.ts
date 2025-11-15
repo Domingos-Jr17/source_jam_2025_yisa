@@ -1,4 +1,5 @@
-import type { DocumentoEscolar, QRCodeData } from '../types'
+import type { DocumentEntity } from '../types/database'
+import type { QRCodeData } from '../types'
 
 export interface ShareOptions {
   includeQRCode?: boolean
@@ -32,7 +33,7 @@ export class SharingService {
    * Share document via WhatsApp using deep linking
    */
   async shareViaWhatsApp(
-    document: DocumentoEscolar,
+    document: DocumentEntity,
     qrCodeData?: QRCodeData,
     options: ShareOptions = {}
   ): Promise<ShareResult> {
@@ -72,7 +73,7 @@ export class SharingService {
    * Share document using Web Share API (native sharing)
    */
   async shareViaWebShare(
-    document: DocumentoEscolar,
+    document: DocumentEntity,
     qrCodeData?: QRCodeData,
     options: ShareOptions = {}
   ): Promise<ShareResult> {
@@ -125,7 +126,7 @@ export class SharingService {
    * Share document by copying link to clipboard
    */
   async shareViaClipboard(
-    document: DocumentoEscolar,
+    document: DocumentEntity,
     options: ShareOptions = {}
   ): Promise<ShareResult> {
     try {
@@ -158,7 +159,7 @@ export class SharingService {
    * Share document via email
    */
   async shareViaEmail(
-    document: DocumentoEscolar,
+    document: DocumentEntity,
     qrCodeData?: QRCodeData,
     options: ShareOptions = {}
   ): Promise<ShareResult> {
@@ -240,7 +241,7 @@ export class SharingService {
    * Smart sharing - tries best available method
    */
   async smartShare(
-    document: DocumentoEscolar,
+    document: DocumentEntity,
     qrCodeData?: QRCodeData,
     options: ShareOptions = {}
   ): Promise<ShareResult> {
@@ -285,7 +286,7 @@ export class SharingService {
   /**
    * Generate QR code for sharing
    */
-  generateShareQRCode(document: DocumentoEscolar): string {
+  generateShareQRCode(document: DocumentEntity): string {
     const verificationUrl = `${this.APP_BASE_URL}/verificar/${document.id}`
     return verificationUrl
   }
@@ -294,7 +295,7 @@ export class SharingService {
    * Build share message based on document and options
    */
   private buildShareMessage(
-    document: DocumentoEscolar,
+    document: DocumentEntity,
     qrCodeData?: QRCodeData,
     options: ShareOptions = {}
   ): string {
@@ -371,7 +372,7 @@ export class SharingService {
   /**
    * Generate share preview data
    */
-  generateSharePreview(document: DocumentoEscolar): {
+  generateSharePreview(document: DocumentEntity): {
     title: string
     description: string
     url: string

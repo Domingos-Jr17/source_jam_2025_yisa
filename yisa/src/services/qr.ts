@@ -1,7 +1,8 @@
 import QRCode from 'qrcode'
 import { CryptoService } from './crypto'
 import { SECURITY_CONFIG } from '../utils/constants'
-import type { QRCodeData, DocumentoEscolar, DocumentType } from '../types'
+import type { QRCodeData, DocumentEntity } from '../types/database'
+import type { DocumentType } from '../types'
 
 /**
  * QR Code service for document verification
@@ -22,7 +23,7 @@ export class QRService {
   /**
    * Generate QR code data for document verification
    */
-  public async generateQRCodeData(document: DocumentoEscolar): Promise<QRCodeData> {
+  public async generateQRCodeData(document: DocumentEntity): Promise<QRCodeData> {
     const qrData: QRCodeData = {
       documentoId: document.id,
       tipoDocumento: document.tipo as any,
@@ -147,7 +148,7 @@ export class QRService {
         margin: SECURITY_CONFIG.QR_CODE.MARGIN,
         errorCorrectionLevel: SECURITY_CONFIG.QR_CODE.ERROR_CORRECTION_LEVEL as 'L' | 'M' | 'Q' | 'H',
         color: {
-          dark: '#1e40af', // YISA primary color
+          dark: '#1e40af', 
           light: '#FFFFFF'
         }
       })
@@ -162,7 +163,7 @@ export class QRService {
   /**
    * Generate batch QR codes for multiple documents
    */
-  public async generateBatchQRCodes(documents: DocumentoEscolar[]): Promise<Array<{ documentId: string; qrCode: string }>> {
+  public async generateBatchQRCodes(documents: DocumentEntity[]): Promise<Array<{ documentId: string; qrCode: string }>> {
     const results = []
 
     for (const document of documents) {

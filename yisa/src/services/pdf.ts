@@ -1,6 +1,6 @@
 import { PDFDocument, rgb, StandardFonts } from 'pdf-lib'
 import { QRService } from './qr'
-import type { DocumentoEscolar } from '../types'
+import type { DocumentEntity } from '../types/database'
 
 /**
  * PDF generation service for school documents
@@ -21,7 +21,7 @@ export class PDFService {
   /**
    * Generate PDF for transfer declaration document
    */
-  public async generateTransferPDF(document: DocumentoEscolar): Promise<Uint8Array> {
+  public async generateTransferPDF(document: DocumentEntity): Promise<Uint8Array> {
     try {
       // Create a new PDF document
       const pdfDoc = await PDFDocument.create()
@@ -73,13 +73,13 @@ export class PDFService {
       this.drawStudentInfo(page, document, font, boldFont, margin, contentWidth, titleY - 70)
 
       // Transfer Information Section
-      this.drawTransferInfo(page, document, font, boldFont, margin, contentWidth, titleY - 200)
+      this.drawTransferInfo(page, document, font, boldFont, margin, contentWidth, titleY - 180)
 
       // Legal text
       this.drawLegalText(page, font, italicFont, margin, contentWidth, titleY - 300)
 
-      // QR Code
-      await this.drawQRCode(page, document, margin, 150)
+      // QR Code (moved to upper section)
+      await this.drawQRCode(pdfDoc, page, document, margin, titleY - 400)
 
       // Footer
       this.drawFooter(page, font, width, height)
@@ -139,7 +139,7 @@ export class PDFService {
    */
   private drawStudentInfo(
     page: any,
-    document: DocumentoEscolar,
+    document: DocumentEntity,
     font: any,
     boldFont: any,
     margin: number,
@@ -194,7 +194,7 @@ export class PDFService {
    */
   private drawTransferInfo(
     page: any,
-    document: DocumentoEscolar,
+    document: DocumentEntity,
     font: any,
     boldFont: any,
     margin: number,
@@ -259,40 +259,76 @@ export class PDFService {
     contentWidth: number,
     startY: number
   ): void {
-    const legalText = `Declaramos para todos os efeitos que o estudante acima identificado
-frequentou esta instituição de ensino e encontra-se regularmente matriculado
-na classe indicada, podendo proceder à sua transferência para a escola de destino.
+    const legalText = `Declaramos para todos os efeitos que o estudante acima identificado frequentou esta instituição de ensino e encontra-se regularmente matriculado na classe indicada, podendo proceder à sua transferência para a escola de destino.
 
-Este documento é válido por 30 dias a partir da data de emissão e deverá ser
-apresentado na escola de destino juntamente com o bilhete de identidade
-do estudante.
+Este documento é válido por 30 dias a partir da data de emissão e deverá ser apresentado na escola de destino juntamente com o bilhete de identidade do estudante.
 
-Documento gerado através do sistema YISA - Sistema Inteligente de Gestão
-de Documentos Escolares, com validade digital e verificação online.`
+Documento gerado através do sistema YISA - Sistema Inteligente de Gestão de Documentos Escolares, com validade digital e verificação online.`
 
-    const textLines = legalText.split('\n')
     let currentY = startY
     const lineHeight = 15
 
-    textLines.forEach(line => {
-      page.drawText(line, {
-        x: margin,
-        y: currentY,
-        size: 10,
-        font: italicFont,
-        color: rgb(0.3, 0.3, 0.3),
-        maxWidth: contentWidth
+    // Split text into paragraphs and handle word wrapping
+    const paragraphs = legalText.split('\n').filter(p => p.trim())
+
+    paragraphs.forEach(paragraph => {
+      const words = paragraph.split(' ')
+      let currentLine = ''
+
+      words.forEach(word => {
+        const testLine = currentLine ? `${currentLine} ${word}` : word
+        const textWidth = this.calculateTextWidth(testLine, italicFont, 10)
+
+        if (textWidth > contentWidth && currentLine) {
+          // Draw current line
+          page.drawText(currentLine, {
+            x: margin,
+            y: currentY,
+            size: 10,
+            font: italicFont,
+            color: rgb(0.3, 0.3, 0.3)
+          })
+          currentY -= lineHeight
+          currentLine = word
+        } else {
+          currentLine = testLine
+        }
       })
-      currentY -= lineHeight
+
+      // Draw last line of paragraph
+      if (currentLine) {
+        page.drawText(currentLine, {
+          x: margin,
+          y: currentY,
+          size: 10,
+          font: italicFont,
+          color: rgb(0.3, 0.3, 0.3)
+        })
+        currentY -= lineHeight
+      }
+
+      // Add extra space between paragraphs
+      currentY -= 5
     })
+  }
+
+  /**
+   * Calculate text width for word wrapping
+   */
+  private calculateTextWidth(text: string, font: any, fontSize: number): number {
+    // Approximate text width calculation
+    // In a real implementation, you would use font.widthOfTextAtSize(text, fontSize)
+    const averageCharWidth = fontSize * 0.6
+    return text.length * averageCharWidth
   }
 
   /**
    * Draw QR code on the document
    */
   private async drawQRCode(
+    pdfDoc: any,
     page: any,
-    document: DocumentoEscolar,
+    document: DocumentEntity,
     margin: number,
     qrCodeY: number
   ): Promise<void> {
@@ -300,17 +336,25 @@ de Documentos Escolares, com validade digital e verificação online.`
       // Generate QR code data and image
       const qrService = QRService.getInstance()
       const qrData = await qrService.generateQRCodeData(document)
-      const qrCodeImage = await qrService.generateQRCodeImage(qrData)
+      const qrCodeImageBase64 = await qrService.generateQRCodeImage(qrData)
 
-      // Convert base64 to Uint8Array (simplified for demo)
-      // In production, you would need proper base64 decoding
+      // Convert base64 to image data
+      const base64Data = qrCodeImageBase64.replace(/^data:image\/png;base64,/, '')
+      const binaryString = atob(base64Data)
+      const bytes = new Uint8Array(binaryString.length)
+      for (let i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i)
+      }
+
+      // Embed QR code image in PDF
+      const qrImage = await pdfDoc.embedPng(bytes)
       const qrCodeSize = 120
       const qrCodeX = page.getWidth() - margin - qrCodeSize
 
       // Draw QR code border
       page.drawRectangle({
         x: qrCodeX - 5,
-        y: qrCodeY - 5,
+        y: qrCodeY - qrCodeSize - 5,
         width: qrCodeSize + 10,
         height: qrCodeSize + 10,
         borderColor: rgb(0.2, 0.2, 0.2),
@@ -325,8 +369,36 @@ de Documentos Escolares, com validade digital e verificação online.`
         color: rgb(0.3, 0.3, 0.3)
       })
 
-      // In a real implementation, you would embed the actual QR code image here
-      // For demo purposes, we'll draw a placeholder rectangle
+      // Draw the actual QR code image
+      page.drawImage(qrImage, {
+        x: qrCodeX,
+        y: qrCodeY - qrCodeSize,
+        width: qrCodeSize,
+        height: qrCodeSize
+      })
+
+    } catch (error) {
+      console.error('Error drawing QR code:', error)
+      // Fallback to placeholder if QR code fails
+      const qrCodeSize = 120
+      const qrCodeX = page.getWidth() - margin - qrCodeSize
+
+      page.drawRectangle({
+        x: qrCodeX - 5,
+        y: qrCodeY - qrCodeSize - 5,
+        width: qrCodeSize + 10,
+        height: qrCodeSize + 10,
+        borderColor: rgb(0.2, 0.2, 0.2),
+        borderWidth: 1
+      })
+
+      page.drawText('QR Code de Verificação', {
+        x: qrCodeX,
+        y: qrCodeY + 10,
+        size: 10,
+        color: rgb(0.3, 0.3, 0.3)
+      })
+
       page.drawRectangle({
         x: qrCodeX,
         y: qrCodeY - qrCodeSize,
@@ -343,9 +415,6 @@ de Documentos Escolares, com validade digital e verificação online.`
         size: 12,
         color: rgb(0.2, 0.2, 0.2)
       })
-
-    } catch (error) {
-      console.error('Error drawing QR code:', error)
     }
   }
 
@@ -405,7 +474,7 @@ de Documentos Escolares, com validade digital e verificação online.`
   /**
    * Generate PDF for school history document
    */
-  public async generateHistoryPDF(document: DocumentoEscolar): Promise<Uint8Array> {
+  public async generateHistoryPDF(document: DocumentEntity): Promise<Uint8Array> {
     // Similar structure to transfer PDF but with different content
     // This would include grade information, subjects, etc.
     const pdfDoc = await PDFDocument.create()
