@@ -65,8 +65,8 @@ export const useDocumentForm = (): UseDocumentFormReturn => {
 
     if (!formData.numeroBI.trim()) {
       newErrors.numeroBI = 'Número do BI é obrigatório'
-    } else if (!/^[0-9]{9}[A-Z]{2}[0-9]{3}$/.test(formData.numeroBI)) {
-      newErrors.numeroBI = 'Formato de BI inválido. Use: 9 números + 2 letras + 3 números'
+    } else if (!/^[0-9]{12}[A-Z]{1}$/.test(formData.numeroBI.replace(/\s/g, ''))) {
+      newErrors.numeroBI = 'Formato de BI inválido. Use: 12 números + 1 letra (ex: 123456789012A)'
     }
 
     if (!formData.nomeEscolaOrigem.trim()) {

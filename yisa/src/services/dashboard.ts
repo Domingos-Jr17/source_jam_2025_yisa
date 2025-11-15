@@ -1,4 +1,4 @@
-import type { DocumentoEscolar, AuditEvent } from '../types'
+import type { DocumentEntity, AuditEntity } from '../types/database'
 import { DatabaseService } from './database'
 
 export interface DashboardStats {
@@ -216,7 +216,7 @@ export class DashboardService {
   /**
    * Calculate basic document statistics
    */
-  private async calculateBasicStats(documents: DocumentoEscolar[]) {
+  private async calculateBasicStats(documents: DocumentEntity[]) {
     const now = new Date()
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
     const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000)
@@ -245,7 +245,7 @@ export class DashboardService {
   /**
    * Process activity events from audit logs
    */
-  private processActivityEvents(auditEvents: AuditEvent[], timeRange: TimeRangeFilter): ActivityEvent[] {
+  private processActivityEvents(auditEvents: AuditEntity[], timeRange: TimeRangeFilter): ActivityEvent[] {
     const events = auditEvents
       .filter(event => {
         const eventDate = new Date(event.timestamp)
@@ -296,7 +296,7 @@ export class DashboardService {
   /**
    * Calculate school statistics
    */
-  private calculateSchoolStats(documents: DocumentoEscolar[]): SchoolStats[] {
+  private calculateSchoolStats(documents: DocumentEntity[]): SchoolStats[] {
     const schoolMap = new Map<string, SchoolStats>()
 
     documents.forEach(doc => {
@@ -335,7 +335,7 @@ export class DashboardService {
   /**
    * Calculate sharing statistics
    */
-  private calculateSharingStats(auditEvents: AuditEvent[], timeRange: TimeRangeFilter): SharingStats {
+  private calculateSharingStats(auditEvents: AuditEntity[], timeRange: TimeRangeFilter): SharingStats {
     const sharingEvents = auditEvents.filter(event => {
       const eventDate = new Date(event.timestamp)
       return event.action === 'document_shared' &&
@@ -367,7 +367,7 @@ export class DashboardService {
   /**
    * Calculate verification statistics
    */
-  private calculateVerificationStats(auditEvents: AuditEvent[], timeRange: TimeRangeFilter): VerificationStats {
+  private calculateVerificationStats(auditEvents: AuditEntity[], timeRange: TimeRangeFilter): VerificationStats {
     const verificationEvents = auditEvents.filter(event => {
       const eventDate = new Date(event.timestamp)
       return event.action === 'document_verified' &&
@@ -395,14 +395,14 @@ export class DashboardService {
   /**
    * Helper methods
    */
-  private filterDocumentsByTimeRange(documents: DocumentoEscolar[], timeRange: TimeRangeFilter): DocumentoEscolar[] {
+  private filterDocumentsByTimeRange(documents: DocumentEntity[], timeRange: TimeRangeFilter): DocumentEntity[] {
     return documents.filter(doc => {
       const docDate = new Date(doc.criadoEm)
       return docDate >= timeRange.start && docDate <= timeRange.end
     })
   }
 
-  private groupDocumentsByMonth(documents: DocumentoEscolar[], timeRange: TimeRangeFilter) {
+  private groupDocumentsByMonth(documents: DocumentEntity[], timeRange: TimeRangeFilter) {
     const monthlyMap = new Map<string, number>()
     const labels: string[] = []
 
@@ -427,7 +427,7 @@ export class DashboardService {
     }
   }
 
-  private calculateDocumentTypeDistribution(documents: DocumentoEscolar[]) {
+  private calculateDocumentTypeDistribution(documents: DocumentEntity[]) {
     const typeMap = new Map<string, number>()
 
     documents.forEach(doc => {
@@ -441,7 +441,7 @@ export class DashboardService {
     }
   }
 
-  private groupEventsByWeek(events: AuditEvent[], timeRange: TimeRangeFilter) {
+  private groupEventsByWeek(events: AuditEntity[], timeRange: TimeRangeFilter) {
     const weeklyMap = new Map<string, number>()
     const labels: string[] = []
 
@@ -499,7 +499,7 @@ export class DashboardService {
     }
   }
 
-  private getMostSharedDocument(sharingEvents: AuditEvent[]): string {
+  private getMostSharedDocument(sharingEvents: AuditEntity[]): string {
     const docCounts = new Map<string, number>()
 
     sharingEvents.forEach(event => {

@@ -150,11 +150,11 @@ const EmitirPage: React.FC = () => {
               name="numeroBI"
               value={formData.numeroBI}
               onChange={(value) => handleInputChange('numeroBI', biMask(value))}
-              placeholder="Ex: 123456789AB123"
+              placeholder="Ex: 123456789012A"
               required
               error={errors.numeroBI}
-              helper="Formato: 9 números + 2 letras + 3 números"
-              maxLength={14}
+              helper="Formato: 12 números + 1 letra (13 caracteres)"
+              maxLength={13}
               mask={biMask}
               className="uppercase"
             />

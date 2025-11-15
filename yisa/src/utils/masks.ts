@@ -7,13 +7,11 @@ export const biMask = (value: string): string => {
   // Remove all non-alphanumeric characters
   const cleaned = value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase()
 
-  // Format: 9 numbers + 2 letters + 3 numbers
-  if (cleaned.length <= 9) {
+  // Format: 12 numbers + 1 letter (13 characters total)
+  if (cleaned.length <= 13) {
     return cleaned
-  } else if (cleaned.length <= 11) {
-    return cleaned.slice(0, 9) + cleaned.slice(9)
   } else {
-    return cleaned.slice(0, 12)
+    return cleaned.slice(0, 13)
   }
 }
 
@@ -49,9 +47,9 @@ export const processNumberMask = (value: string): string => {
 }
 
 export const validateBI = (bi: string): boolean => {
-  // Check format: 9 numbers + 2 letters + 3 numbers
-  const biPattern = /^[0-9]{9}[A-Z]{2}[0-9]{3}$/
-  return biPattern.test(bi)
+  // Check format: 12 numbers + 1 letter (13 characters total)
+  const biPattern = /^[0-9]{12}[A-Z]{1}$/
+  return biPattern.test(bi.replace(/\s/g, ''))
 }
 
 export const validatePhone = (phone: string): boolean => {
@@ -61,12 +59,8 @@ export const validatePhone = (phone: string): boolean => {
 }
 
 export const formatBI = (value: string): string => {
-  const bi = value.replace(/\D/g, '').toUpperCase()
-  if (bi.length <= 9) {
-    return bi
-  } else if (bi.length <= 11) {
-    return bi.slice(0, 9) + '/' + bi.slice(9)
-  } else {
-    return bi.slice(0, 9) + '/' + bi.slice(9, 11) + '/' + bi.slice(11, 14)
-  }
+  const bi = value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase()
+  // For Mozambique BI format: 12 numbers + 1 letter
+  // No special formatting needed, just return clean value
+  return bi
 }

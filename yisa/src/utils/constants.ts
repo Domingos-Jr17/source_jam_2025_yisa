@@ -64,7 +64,7 @@ export const SECURITY_CONFIG = {
 // Database Configuration
 export const DATABASE_CONFIG = {
   NAME: 'YISADatabase',
-  VERSION: 7,
+  VERSION: 8,
   STORES: [
     {
       name: 'students',
@@ -238,7 +238,7 @@ export const SUBJECTS = [
 
 // Validation Patterns
 export const VALIDATION_PATTERNS = {
-  BI_NUMBER: /^[0-9]{9}[A-Z]{2}[0-9]{3}$/,
+  BI_NUMBER: /^[0-9]{12}[A-Z]{1}$/,
   PHONE: /^\+258[84|85|86|87][0-9]{7}$/,
   EMAIL: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
   NAME: /^[A-Za-zÀ-ÿ\s]{2,50}$/,
